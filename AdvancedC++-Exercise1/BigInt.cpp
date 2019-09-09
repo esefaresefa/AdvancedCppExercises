@@ -8,7 +8,7 @@
 BigInt::BigInt() {}
 
 
-BigInt::BigInt(const std::string& literals) throw(std::runtime_error)
+BigInt::BigInt(const std::string& literals)
 {
 	if(!IsOnlyDigits(literals))
 	{
@@ -29,6 +29,9 @@ BigInt::BigInt(const std::string& literals) throw(std::runtime_error)
 		_data.push_back(block);
 		first += MaxBlockDigits();
 	}
+
+	// Reverse order to mantain the lowest digits at the lowest indices
+	std::reverse(_data.begin(), _data.end());
 }
 
 
@@ -42,6 +45,27 @@ bool BigInt::IsOnlyDigits(const std::string& value) const
 }
 
 
+BigInt BigInt::operator+ (const BigInt& other)
+{
+	BigInt returnValue;
+
+	unsigned long long int carry = 0;
+	for (size_t i = 0; i < other._data.size(); i++) 
+	{
+		// TODO(luca)
+	}
+
+	return returnValue;
+}
+
+
+unsigned long long int BigInt::Carry(unsigned long long int a, unsigned long long int b) const
+{
+	// TODO(luca)
+	return 0;
+}
+
+
 std::ostream& operator<< (std::ostream& stream, const BigInt& big)
 {
 	return stream << big.ToString();
@@ -51,18 +75,18 @@ std::ostream& operator<< (std::ostream& stream, const BigInt& big)
 std::string BigInt::ToString() const 
 {
 	std::string serialized;
-	if (_sign)
-	{
-		serialized += "-";
-	}
 	for (auto it = _data.begin(); it != _data.end(); it++)
 	{
-		serialized += std::to_string(*it);
+		serialized.insert(0, std::to_string(*it));
 	}
+
+	if (_sign)
+	{
+		serialized.insert(0, "-");
+	}
+
 	return serialized;
 }
 
 
-BigInt::~BigInt()
-{
-}
+BigInt::~BigInt() {}

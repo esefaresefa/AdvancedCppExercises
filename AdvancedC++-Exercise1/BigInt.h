@@ -10,7 +10,7 @@ public:
 	
 	BigInt();
 	
-	BigInt(const std::string& value) throw(std::runtime_error);
+	BigInt(const std::string& value);
 
 	// The maximum number of digits of a single block
 	static int MaxBlockDigits();
@@ -24,6 +24,8 @@ public:
 	// Output stream operator
 	friend std::ostream& operator<< (std::ostream& stream, const BigInt& matrix);
 
+	BigInt operator+ (const BigInt& other);
+
 	virtual ~BigInt();
 
 protected:
@@ -34,13 +36,14 @@ protected:
 
 	bool IsOnlyDigits(const std::string& value) const;
 
+	unsigned long long int Carry(unsigned long long int a, unsigned long long int b) const;
 };
 
 
 inline unsigned long long BigInt::MaxBlockValue()
 {
-	unsigned long long int value = pow(10, std::numeric_limits<unsigned long long int>::digits10);
-	return value - 1;
+	double value = pow(10, std::numeric_limits<unsigned long long int>::digits10);
+	return (value - 1);
 }
 
 
