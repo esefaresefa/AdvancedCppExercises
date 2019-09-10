@@ -80,6 +80,7 @@ std::string BigInt::ToString() const
 		serialized.insert(0, std::to_string(*it));
 	}
 
+	// Add the sign in top of the number
 	if (_sign)
 	{
 		serialized.insert(0, "-");
