@@ -7,8 +7,15 @@ class BigInt
 {
 
 public:
-	
+
+	BigInt(int integer);
+
 	BigInt();
+
+
+	BigInt operator* (const BigInt& other);
+
+	BigInt Power(BigInt base, int exponent);
 	
 	BigInt(const std::string& value);
 
@@ -16,7 +23,7 @@ public:
 	static int MaxBlockDigits();
 
 	// The maximum value of a single block of digits
-	static unsigned long long MaxBlockValue();
+	static unsigned long MaxBlockValue();
 
 	// BigInt to string
 	std::string ToString() const;
@@ -30,24 +37,25 @@ public:
 
 protected:
 
+	//true == -
 	bool _sign;
 
-	std::vector<unsigned long long int> _data;
+	std::vector<unsigned long int> _data;
 
 	bool IsOnlyDigits(const std::string& value) const;
 
-	unsigned long long int Carry(unsigned long long int a, unsigned long long int b) const;
+	unsigned long int Carry(unsigned long int a, unsigned long int b) const;
 };
 
 
-inline unsigned long long BigInt::MaxBlockValue()
+inline unsigned long BigInt::MaxBlockValue()
 {
-	double value = pow(10, std::numeric_limits<unsigned long long int>::digits10);
+	double value = pow(10, std::numeric_limits<unsigned long int>::digits10);
 	return (value - 1);
 }
 
 
 inline int BigInt::MaxBlockDigits()
 {
-	return std::numeric_limits<unsigned long long int>::digits10;
+	return std::numeric_limits<unsigned long int>::digits10;
 }
