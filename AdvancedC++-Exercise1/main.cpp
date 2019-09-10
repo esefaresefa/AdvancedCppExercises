@@ -15,11 +15,14 @@ int main()
 		
 		BigInt big_1(test1);
 		std::cout << "Constructor - BigIng(const std::string& value)" << std::endl << test1 << std::endl << "=" << std::endl << big_1.ToString() << std::endl << std::endl;
-		assert(test1 == big_1.ToString(), "Constructor with string has failed");
+		assert(test1 == big_1.ToString());
 		
 		BigInt big_2(big_1);
 		std::cout << "Copy constructor - BigIng(const BigInt& other)" << std::endl << big_1.ToString() << std::endl << "=" << std::endl << big_2.ToString() << std::endl << std::endl;
-		assert(big_1.ToString() == big_2.ToString(), "Copy constructor has failed");
+		assert(big_1.ToString() == big_2.ToString());
+
+		// TODO(luca)
+		BigInt big_3 = big_1 + big_2;
 	}
 	catch (std::runtime_error e)
 	{

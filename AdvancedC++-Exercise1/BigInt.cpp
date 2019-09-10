@@ -80,7 +80,7 @@ BigInt::BigInt(const std::string& literals)
 	
 	while (first < literals.size())
 	{
-		unsigned long block = stoll(literals.substr(first, MaxBlockDigits()));
+		unsigned long block = stol(literals.substr(first, MaxBlockDigits()));
 		_data.push_back(block);
 		first += MaxBlockDigits();
 	}
@@ -100,30 +100,65 @@ bool BigInt::IsOnlyDigits(const std::string& value) const
 }
 
 
-BigInt BigInt::operator+ (const BigInt& other)
+BigInt& BigInt::operator+= (const BigInt& other)
 {
-	BigInt returnValue;
+	return *this;
+	// actual addition of rhs to *this
+	/*
+	if (_sign == other._sign) {
 
-	unsigned long int carry = 0;
-	for (size_t i = 0; i < other._data.size(); i++) 
-	{
-		// TODO(luca)
+		BigInt res = other;
+		for (int i = 0, carry = 0; i < (int)max(a.size(), v.a.size()) || carry; ++i) {
+			if (i == (int)res.a.size())
+				res.a.push_back(0);
+			res.a[i] += carry + (i < (int)a.size() ? a[i] : 0);
+			carry = res.a[i] >= base;
+			if (carry)
+				res.a[i] -= base;
+		}
+		return res;
 	}
-
-	return returnValue;
+	else {
+		return *this - (-other);
+	}
+	*/
 }
 
 
-unsigned long int BigInt::Carry(unsigned long int a, unsigned long int b) const
+BigInt& BigInt::operator-= (const BigInt& other)
 {
-	// TODO(luca)
-	return 0;
+	return *this;
+	/*
+	if (sign == v.sign) {
+		if (abs() >= v.abs()) {
+			bigint res = *this;
+			for (int i = 0, carry = 0; i < (int)v.a.size() || carry; ++i) {
+				res.a[i] -= carry + (i < (int)v.a.size() ? v.a[i] : 0);
+				carry = res.a[i] < 0;
+				if (carry)
+					res.a[i] += base;
+			}
+			res.trim();
+			return res;
+		}
+		return -(v - *this);
+	}
+	return *this + (-v);
+	*/
 }
 
 
-std::ostream& operator<< (std::ostream& stream, const BigInt& big)
+BigInt BigInt::operator- () const 
 {
-	return stream << big.ToString();
+	BigInt result;
+
+	/*
+	bigint res = *this;
+	res.sign = -sign;
+	return res;
+	*/
+
+	return result;
 }
 
 

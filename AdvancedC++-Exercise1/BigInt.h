@@ -12,7 +12,6 @@ public:
 
 	BigInt();
 
-
 	BigInt operator* (const BigInt& other);
 
 	BigInt Power(BigInt base, int exponent);
@@ -27,11 +26,13 @@ public:
 
 	// BigInt to string
 	std::string ToString() const;
+	// operator std::string() const; // TODO
 
-	// Output stream operator
-	friend std::ostream& operator<< (std::ostream& stream, const BigInt& matrix);
+	BigInt& operator+= (const BigInt& other);
 
-	BigInt operator+ (const BigInt& other);
+	BigInt& operator-= (const BigInt& other);
+
+	BigInt operator- () const;
 
 	virtual ~BigInt();
 
@@ -43,15 +44,35 @@ protected:
 	std::vector<unsigned long int> _data;
 
 	bool IsOnlyDigits(const std::string& value) const;
-
-	unsigned long int Carry(unsigned long int a, unsigned long int b) const;
 };
+
+
+// Binary operators are typically implemented as non-members to maintain symmetry
+// No need to access internal data so it's not friend function of BigInt
+inline BigInt operator+ (BigInt lhs, const BigInt& rhs)
+{
+	lhs += rhs;
+	return lhs;
+}
+
+
+inline BigInt operator- (BigInt lhs, const BigInt& rhs)
+{
+	lhs -= rhs;
+	return lhs;
+}
+
+
+inline std::ostream& operator<< (std::ostream& stream, const BigInt& big)
+{
+	return stream << big.ToString();
+}
 
 
 inline unsigned long BigInt::MaxBlockValue()
 {
 	double value = pow(10, std::numeric_limits<unsigned long int>::digits10);
-	return (value - 1);
+	return (static_cast<unsigned long int>(value) - 1);
 }
 
 
