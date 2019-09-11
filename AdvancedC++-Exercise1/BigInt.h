@@ -28,11 +28,33 @@ public:
 	std::string ToString() const;
 	// operator std::string() const; // TODO
 
+	BigInt& operator= (const BigInt& other);
+
 	BigInt& operator+= (const BigInt& other);
+
+	BigInt& operator% (const BigInt& other);
+
+	BigInt& operator/ (const BigInt& other);
+
+	BigInt& operator%= (const BigInt& other);
+
+	BigInt& operator/= (const BigInt& other);
+
 
 	BigInt& operator-= (const BigInt& other);
 
 	BigInt operator- () const;
+
+	BigInt& operator++ ();
+	BigInt operator++ (int);
+	//da definire
+	bool operator== (const BigInt& other)const;
+	bool operator> (const BigInt& other)const;
+	bool operator< (const BigInt& other)const;
+	bool operator>= (const BigInt& other)const;
+	bool operator<= (const BigInt& other)const;
+
+	BigInt& operator&= (const BigInt& other);
 
 	virtual ~BigInt();
 

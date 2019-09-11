@@ -26,12 +26,13 @@ BigInt::BigInt() {}
 
 BigInt BigInt::operator*(const BigInt & other)
 {
-	int i = 0;
+	size_t i = 0;
 	if (_data.size() > other._data.size())
 		i = _data.size();
 	else
 		i = other._data.size();
 	BigInt returnValue = BigInt();
+	returnValue._sign = _sign ^ other._sign;
 	unsigned long long int carry = 0;
 	for (; i > 0; i--)
 	{
@@ -57,7 +58,7 @@ BigInt BigInt::Power(BigInt base, int exponent)
 	BigInt returnValue = BigInt();
 	for (int i = 0; i < exponent; i++)
 	{
-		//returnValue+=base * base;
+		returnValue+=base * base;
 	}
 	return returnValue;
 }
@@ -100,6 +101,14 @@ bool BigInt::IsOnlyDigits(const std::string& value) const
 }
 
 
+BigInt & BigInt::operator=(const BigInt & other)
+{
+
+	_sign = other._sign;
+	_data = std::vector<unsigned long int>(other._data);
+	return *this;
+}
+
 BigInt& BigInt::operator+= (const BigInt& other)
 {
 	return *this;
@@ -122,6 +131,60 @@ BigInt& BigInt::operator+= (const BigInt& other)
 		return *this - (-other);
 	}
 	*/
+}
+
+BigInt& BigInt::operator%(const BigInt & other)
+{
+	if (*this >= other)
+	{
+		for (; *this >= other; *this -= other);
+		{}
+		return *this;
+	}
+	else
+	{
+		BigInt returnValue = other;
+		for (; returnValue>= *this;  returnValue -= *this);
+		{}
+		return returnValue;
+	}
+}
+
+BigInt& BigInt::operator/(const BigInt & other)
+{
+	BigInt returnValue = BigInt();
+	if (_data.size() > other._data.size())
+	{
+		for (returnValue = 0; *this >= other; *this -= other, returnValue++);
+	}
+	else
+	{
+		BigInt aux = other;
+		for (; aux >= *this; aux -= *this, returnValue++);
+	}
+	return returnValue;
+}
+
+BigInt& BigInt::operator%=(const BigInt & other)
+{
+	return *this = *this%other;
+}
+
+BigInt& BigInt::operator/=(const BigInt & other)
+{
+	return *this = *this/other;
+}
+
+BigInt& BigInt::operator++()
+{
+	*this += 1;
+	return *this;
+}
+
+BigInt BigInt::operator++(int)
+{
+	*this += 1;
+	return *this;
 }
 
 
@@ -150,15 +213,45 @@ BigInt& BigInt::operator-= (const BigInt& other)
 
 BigInt BigInt::operator- () const 
 {
-	BigInt result;
-
-	/*
-	bigint res = *this;
-	res.sign = -sign;
-	return res;
-	*/
-
+	BigInt result = *this;
+	result._sign = !_sign;
 	return result;
+}
+
+bool BigInt::operator==(const BigInt & other) const
+{
+	return false;
+}
+
+bool BigInt::operator>(const BigInt & other) const
+{
+	return false;
+}
+
+bool BigInt::operator<(const BigInt & other) const
+{
+	return false;
+}
+
+bool BigInt::operator>=(const BigInt & other) const
+{
+	return false;
+}
+
+bool BigInt::operator<=(const BigInt & other) const
+{
+	return false;
+}
+
+BigInt& BigInt::operator&=(const BigInt & other)
+{
+	int minSize = _data.size() >= other._data.size() ? _data.size()-1 : other._data.size()-1;
+	_data.erase(_data.begin()+minSize,_data.end());
+	for (; minSize >= 0; minSize--)
+	{
+		_data[minSize] = _data[minSize] & other._data[minSize];
+	}
+	return *this;
 }
 
 
