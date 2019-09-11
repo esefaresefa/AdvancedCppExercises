@@ -254,6 +254,26 @@ BigInt& BigInt::operator&=(const BigInt & other)
 	return *this;
 }
 
+BigInt & BigInt::operator|=(const BigInt & other)
+{
+	int minSize = _data.size() >= other._data.size() ? _data.size() - 1 : other._data.size() - 1;
+	for (; minSize >= 0; minSize--)
+	{
+		_data[minSize] = _data[minSize] & other._data[minSize];
+	}
+	return *this;
+}
+
+BigInt & BigInt::operator^=(const BigInt & other)
+{
+	int minSize = _data.size() >= other._data.size() ? _data.size() - 1 : other._data.size() - 1;
+	for (; minSize >= 0; minSize--)
+	{
+		_data[minSize] = _data[minSize] ^ other._data[minSize];
+	}
+	return *this;
+}
+
 
 std::string BigInt::ToString() const 
 {
