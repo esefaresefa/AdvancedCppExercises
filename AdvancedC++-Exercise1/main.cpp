@@ -14,15 +14,17 @@ int main()
 		std::string test1 = "-5146513549846549864646546468448";
 		
 		BigInt big_1(test1);
-		std::cout << "Constructor - BigIng(const std::string& value)" << std::endl << test1 << std::endl << "=" << std::endl << big_1.ToString() << std::endl << std::endl;
+		std::cout	<< "Constructor - BigIng(const std::string& value)" << std::endl 
+					<< test1 << std::endl << "=" << std::endl << big_1.ToString() << std::endl << std::endl;
 		assert(test1 == big_1.ToString());
 		
 		BigInt big_2(big_1);
-		std::cout << "Copy constructor - BigIng(const BigInt& other)" << std::endl << big_1.ToString() << std::endl << "=" << std::endl << big_2.ToString() << std::endl << std::endl;
+		std::cout	<< "Copy constructor - BigIng(const BigInt& other)" << std::endl 
+					<< big_1.ToString() << std::endl << "=" << std::endl << big_2.ToString() << std::endl << std::endl;
 		assert(big_1.ToString() == big_2.ToString());
 
-		// TODO(luca)
-		BigInt big_3 = big_1 + big_2;
+		BigInt big_3 = big_1 << 5;
+		std::cout << "Left Shift operator - << 5" << std::endl << big_3 << std::endl << std::endl;
 	}
 	catch (std::runtime_error e)
 	{
