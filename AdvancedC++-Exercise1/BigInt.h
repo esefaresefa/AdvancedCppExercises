@@ -8,57 +8,74 @@ class BigInt
 
 public:
 
-	BigInt(int integer);
-
 	BigInt();
 
-	BigInt operator* (const BigInt& other);
+	BigInt(int integer);
 
-	BigInt Power(BigInt base, int exponent);
-	
 	BigInt(const std::string& value);
 
-	// The maximum number of digits of a single block
-	static int MaxBlockDigits();
-
-	// The maximum value of a single block of digits
-	static unsigned long MaxBlockValue();
-
-	// BigInt to string
-	std::string ToString() const;
-	// operator std::string() const; // TODO
-
-	BigInt& operator= (const BigInt& other);
-
 	BigInt& operator+= (const BigInt& other);
-
-	BigInt& operator% (const BigInt& other);
-
-	BigInt& operator/ (const BigInt& other);
-
-	BigInt& operator%= (const BigInt& other);
-
-	BigInt& operator/= (const BigInt& other);
-
 
 	BigInt& operator-= (const BigInt& other);
 
 	BigInt operator- () const;
 
 	BigInt& operator++ ();
+
 	BigInt operator++ (int);
-	//da definire
-	bool operator== (const BigInt& other)const;
-	bool operator> (const BigInt& other)const;
-	bool operator< (const BigInt& other)const;
-	bool operator>= (const BigInt& other)const;
-	bool operator<= (const BigInt& other)const;
+
+	BigInt operator* (const BigInt& other);
+
+	BigInt& operator*= (const BigInt& other);
+
+	BigInt& operator% (const BigInt& other);
+
+	BigInt& operator%= (const BigInt& other);
+
+	BigInt& operator/ (const BigInt& other);
+
+	BigInt& operator/= (const BigInt& other);
 
 	BigInt& operator&= (const BigInt& other);
 
 	BigInt& operator|= (const BigInt& other);
 
 	BigInt& operator^= (const BigInt& other);
+
+	BigInt operator<< (int steps) const;
+
+	BigInt& operator<<= (int steps);
+
+	BigInt operator>> (int steps) const;
+
+	BigInt& operator>>= (int steps);
+
+	BigInt Power(BigInt base, int exponent); // TODO(luca) : farlo globale come operator+
+
+	BigInt Power(BigInt base, BigInt& exponent) { /* TODO(luca) : sviluppare e farlo globale come operator+ */ }; 
+
+	BigInt Abs() const;
+
+	bool operator== (const BigInt& other) const;
+
+	bool operator> (const BigInt& other) const;
+
+	bool operator>= (const BigInt& other) const;
+
+	bool operator< (const BigInt& other) const;
+
+	bool operator<= (const BigInt& other) const;
+
+	// BigInt to string
+	std::string ToString() const;
+
+	// operator std::string() const; // TODO
+
+	// The maximum number of digits of a single block
+	static int MaxBlockDigits();
+
+	// The maximum value of a single block of digits
+	static unsigned long MaxBlockValue();
 
 	virtual ~BigInt();
 
@@ -68,6 +85,10 @@ protected:
 	bool _sign;
 
 	std::vector<unsigned long int> _data;
+
+	int GetSign() const;
+
+	void Trim();
 
 	bool IsOnlyDigits(const std::string& value) const;
 };

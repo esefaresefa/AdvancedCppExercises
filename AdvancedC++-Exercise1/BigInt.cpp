@@ -5,6 +5,9 @@
 #include <algorithm>
 
 
+BigInt::BigInt() {}
+
+
 BigInt::BigInt(int integer)
 {
 	if (integer < 0)
@@ -22,9 +25,35 @@ BigInt::BigInt(int integer)
 	}
 }
 
-BigInt::BigInt() {}
 
-BigInt BigInt::operator*(const BigInt & other)
+BigInt::BigInt(const std::string& literals)
+{
+	if (!IsOnlyDigits(literals))
+	{
+		throw std::runtime_error("String is not a number");
+	}
+
+	size_t first = 0;
+	size_t last = 0;
+	if (literals[0] == '-')
+	{
+		_sign = true;
+		first++;
+	}
+
+	while (first < literals.size())
+	{
+		unsigned long block = stol(literals.substr(first, MaxBlockDigits()));
+		_data.push_back(block);
+		first += MaxBlockDigits();
+	}
+
+	// Reverse order to mantain the lowest digits at the lowest indices
+	std::reverse(_data.begin(), _data.end());
+}
+
+
+BigInt BigInt::operator* (const BigInt & other)
 {
 	size_t i = 0;
 	if (_data.size() > other._data.size())
@@ -64,76 +93,54 @@ BigInt BigInt::Power(BigInt base, int exponent)
 }
 
 
-BigInt::BigInt(const std::string& literals)
-{
-	if(!IsOnlyDigits(literals))
-	{
-		throw std::runtime_error("String is not a number");
-	}
-
-	size_t first = 0;
-	size_t last = 0;
-	if (literals[0] == '-') 
-	{
-		_sign = true;
-		first++;
-	}
-	
-	while (first < literals.size())
-	{
-		unsigned long block = stol(literals.substr(first, MaxBlockDigits()));
-		_data.push_back(block);
-		first += MaxBlockDigits();
-	}
-
-	// Reverse order to mantain the lowest digits at the lowest indices
-	std::reverse(_data.begin(), _data.end());
-}
-
-
-bool BigInt::IsOnlyDigits(const std::string& value) const
-{
-	std::string::const_iterator it = value.begin();
-	if (*it == '-') {
-		it++;
-	}
-	return std::all_of(it, value.end(), ::isdigit);
-}
-
-
-BigInt & BigInt::operator=(const BigInt & other)
+/*
+BigInt& BigInt::operator= (const BigInt & other)
 {
 
 	_sign = other._sign;
 	_data = std::vector<unsigned long int>(other._data);
 	return *this;
 }
+*/
+
 
 BigInt& BigInt::operator+= (const BigInt& other)
 {
-	return *this;
 	// actual addition of rhs to *this
-	/*
 	if (_sign == other._sign) {
+				
+		for (int i = 0, carry = 0; i < static_cast<int>(std::max(_data.size(), other._data.size())) || carry; ++i) 
+		{
+			if (i == (int)_data.size())
+			{
+				_data.push_back(0);
+			}
 
-		BigInt res = other;
-		for (int i = 0, carry = 0; i < (int)max(a.size(), v.a.size()) || carry; ++i) {
-			if (i == (int)res.a.size())
-				res.a.push_back(0);
-			res.a[i] += carry + (i < (int)a.size() ? a[i] : 0);
-			carry = res.a[i] >= base;
+			_data[i] += carry + (i < (int)_data.size() ? _data[i] : 0);
+			carry = _data[i] >= MaxBlockValue();
+			
 			if (carry)
-				res.a[i] -= base;
+			{
+				_data[i] -= MaxBlockValue();
+			}
 		}
-		return res;
 	}
-	else {
-		return *this - (-other);
+	else 
+	{
+		operator-= (-other);
 	}
-	*/
+
+	return *this;
 }
 
-BigInt& BigInt::operator%(const BigInt & other)
+
+BigInt& BigInt::operator*= (const BigInt& other)
+{
+	return *this;
+}
+
+
+BigInt& BigInt::operator% (const BigInt & other)
 {
 	if (*this >= other)
 	{
@@ -146,11 +153,12 @@ BigInt& BigInt::operator%(const BigInt & other)
 		BigInt returnValue = other;
 		for (; returnValue>= *this;  returnValue -= *this);
 		{}
-		return returnValue;
+		return returnValue; // TODO(mattia) BUG!
 	}
 }
 
-BigInt& BigInt::operator/(const BigInt & other)
+
+BigInt& BigInt::operator/ (const BigInt & other)
 {
 	BigInt returnValue = BigInt();
 	if (_data.size() > other._data.size())
@@ -162,24 +170,28 @@ BigInt& BigInt::operator/(const BigInt & other)
 		BigInt aux = other;
 		for (; aux >= *this; aux -= *this, returnValue++);
 	}
-	return returnValue;
+	return returnValue; // TODO(mattia) BUG!
 }
+
 
 BigInt& BigInt::operator%=(const BigInt & other)
 {
 	return *this = *this%other;
 }
 
+
 BigInt& BigInt::operator/=(const BigInt & other)
 {
 	return *this = *this/other;
 }
+
 
 BigInt& BigInt::operator++()
 {
 	*this += 1;
 	return *this;
 }
+
 
 BigInt BigInt::operator++(int)
 {
@@ -190,24 +202,45 @@ BigInt BigInt::operator++(int)
 
 BigInt& BigInt::operator-= (const BigInt& other)
 {
-	return *this;
-	/*
-	if (sign == v.sign) {
-		if (abs() >= v.abs()) {
-			bigint res = *this;
-			for (int i = 0, carry = 0; i < (int)v.a.size() || carry; ++i) {
-				res.a[i] -= carry + (i < (int)v.a.size() ? v.a[i] : 0);
-				carry = res.a[i] < 0;
+	if (_sign == other._sign) 
+	{	
+		if (Abs() >= other.Abs()) 
+		{
+
+			for (int i = 0, carry = 0; i < (int)other._data.size() || carry; ++i) {
+
+				_data[i] -= carry + (i < (int)other._data.size() ? other._data[i] : 0);
+
+				carry = _data[i] < 0;
 				if (carry)
-					res.a[i] += base;
+				{
+					_data[i] += MaxBlockValue();
+				}
 			}
-			res.trim();
-			return res;
+			
+			Trim();
 		}
-		return -(v - *this);
+		else 
+		{
+			// Equivalent expression
+			// -(other - *this)
+
+			BigInt tmp(other);
+			std::swap(*this, tmp);
+
+			operator-= (tmp);
+			_sign = !_sign;
+		}
 	}
-	return *this + (-v);
-	*/
+	else 
+	{
+		// Equivalent expression
+		// *this += -other
+
+		operator+= (-other);
+	}
+
+	return *this;
 }
 
 
@@ -218,59 +251,130 @@ BigInt BigInt::operator- () const
 	return result;
 }
 
-bool BigInt::operator==(const BigInt & other) const
+
+BigInt BigInt::operator<< (int steps) const
+{ 
+	BigInt result(*this);
+	result <<= steps;
+	return result;
+};
+
+
+// TODO(luca) BUG!
+BigInt& BigInt::operator<<= (int steps) 
+{ 
+	int lastDigits = 0;
+	for (size_t index = 0; index < _data.size(); index++)
+	{
+		_data[index] += lastDigits;
+		if (index - 1 >= 0) {
+			int lastDigits = _data[index++] / (10 * steps);
+		}
+		_data[index] <<= steps;
+	}
+
+	return *this;
+};
+
+
+BigInt BigInt::operator>> (int steps) const
+{ 
+	BigInt result(*this);
+	result >>= steps;
+	return result;
+};
+
+
+BigInt& BigInt::operator>>= (int steps)
+{ 
+	/* TODO(luca) */ 
+	return *this;
+};
+
+
+bool BigInt::operator== (const BigInt & other) const
 {
+	return !(*this < other) && !(other < *this);
+}
+
+
+bool BigInt::operator> (const BigInt & other) const
+{
+	return other < *this;
+}
+
+
+bool BigInt::operator< (const BigInt & other) const
+{
+	if (_sign != other._sign)
+	{
+		return GetSign() < other.GetSign();
+	}
+
+	if (_data.size() != other._data.size())
+	{
+		return _data.size() * GetSign() < other._data.size() * other.GetSign();
+	}
+
+	for (size_t i = _data.size() - 1; i >= 0; i--)
+	{
+		if (_data[i] != other._data[i])
+		{
+			return _data[i] * GetSign() < other._data[i] * GetSign();
+		}
+	}
+
 	return false;
 }
 
-bool BigInt::operator>(const BigInt & other) const
+
+bool BigInt::operator>= (const BigInt & other) const
 {
-	return false;
+	return !(*this < other);
 }
 
-bool BigInt::operator<(const BigInt & other) const
+
+bool BigInt::operator<= (const BigInt & other) const
 {
-	return false;
+	return !(other < *this);
 }
 
-bool BigInt::operator>=(const BigInt & other) const
-{
-	return false;
-}
 
-bool BigInt::operator<=(const BigInt & other) const
+BigInt& BigInt::operator&= (const BigInt & other)
 {
-	return false;
-}
+	size_t minSize = _data.size() >= other._data.size() ? _data.size() - 1 : other._data.size() - 1;
+	
+	_data.erase(_data.begin() + minSize, _data.end());
 
-BigInt& BigInt::operator&=(const BigInt & other)
-{
-	int minSize = _data.size() >= other._data.size() ? _data.size()-1 : other._data.size()-1;
-	_data.erase(_data.begin()+minSize,_data.end());
 	for (; minSize >= 0; minSize--)
 	{
 		_data[minSize] = _data[minSize] & other._data[minSize];
 	}
+
 	return *this;
 }
 
-BigInt & BigInt::operator|=(const BigInt & other)
+
+BigInt & BigInt::operator|= (const BigInt & other)
 {
-	int minSize = _data.size() >= other._data.size() ? _data.size() - 1 : other._data.size() - 1;
+	size_t minSize = _data.size() >= other._data.size() ? _data.size() - 1 : other._data.size() - 1;
 	for (; minSize >= 0; minSize--)
 	{
 		_data[minSize] = _data[minSize] & other._data[minSize];
 	}
+	
 	return *this;
 }
 
-BigInt & BigInt::operator^=(const BigInt & other)
+
+BigInt & BigInt::operator^= (const BigInt & other)
 {
-	int minSize = _data.size() >= other._data.size() ? _data.size() - 1 : other._data.size() - 1;
+	size_t minSize = _data.size() >= other._data.size() ? _data.size() - 1 : other._data.size() - 1;
 	for (; minSize >= 0; minSize--)
 	{
 		_data[minSize] = _data[minSize] ^ other._data[minSize];
 	}
+
 	return *this;
 }
 
@@ -290,6 +394,45 @@ std::string BigInt::ToString() const
 	}
 
 	return serialized;
+}
+
+
+BigInt BigInt::Abs() const 
+{
+	BigInt result(*this);
+	result._sign = false;
+
+	return result;
+}
+
+
+int BigInt::GetSign() const
+{
+	return _sign == true ? -1 : 1;
+}
+
+
+bool BigInt::IsOnlyDigits(const std::string& value) const
+{
+	std::string::const_iterator it = value.begin();
+	if (*it == '-') {
+		it++;
+	}
+	return std::all_of(it, value.end(), ::isdigit);
+}
+
+
+void BigInt::Trim()
+{
+	while (!_data.empty() && !_data.back())
+	{
+		_data.pop_back();
+	}
+
+	if (_data.empty())
+	{
+		_sign = false;
+	}
 }
 
 
