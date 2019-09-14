@@ -12,7 +12,7 @@ public:
 
 	BigInt(int integer);
 
-	BigInt(const std::string& value);
+	BigInt(std::string value);
 
 	BigInt& operator+= (const BigInt& other);
 
@@ -50,10 +50,6 @@ public:
 
 	BigInt& operator>>= (int steps);
 
-	BigInt Power(BigInt base, int exponent); // TODO(luca) : farlo globale come operator+
-
-	BigInt Power(BigInt base, BigInt& exponent) { /* TODO(luca) : sviluppare e farlo globale come operator+ */ }; 
-
 	BigInt Abs() const;
 
 	bool operator== (const BigInt& other) const;
@@ -72,10 +68,13 @@ public:
 	// operator std::string() const; // TODO
 
 	// The maximum number of digits of a single block
-	static int MaxBlockDigits();
+	static size_t MaxBlockDigits();
 
 	// The maximum value of a single block of digits
 	static unsigned long MaxBlockValue();
+
+	// The number of bits needed for rapresenting the MaxBlockValue
+	static size_t MaxBitPerBlock();
 
 	virtual ~BigInt();
 
@@ -116,6 +115,24 @@ inline std::ostream& operator<< (std::ostream& stream, const BigInt& big)
 }
 
 
+inline BigInt pow(BigInt base, int exponent)
+{
+	BigInt returnValue;
+	for (int i = 0; i < exponent; i++)
+	{
+		returnValue += base * base;
+	}
+	return returnValue;
+}
+
+
+inline BigInt pow(BigInt base, BigInt& exponent) 
+{ 
+	/* TODO(luca) */
+	return base;
+};
+
+
 inline unsigned long BigInt::MaxBlockValue()
 {
 	double value = pow(10, std::numeric_limits<unsigned long int>::digits10);
@@ -123,7 +140,13 @@ inline unsigned long BigInt::MaxBlockValue()
 }
 
 
-inline int BigInt::MaxBlockDigits()
+inline size_t BigInt::MaxBlockDigits()
 {
 	return std::numeric_limits<unsigned long int>::digits10;
+}
+
+
+inline size_t BigInt::MaxBitPerBlock()
+{
+	return static_cast<size_t>(std::log2(MaxBlockValue())) + 1;
 }

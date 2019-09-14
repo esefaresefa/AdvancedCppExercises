@@ -26,42 +26,62 @@ BigInt::BigInt(int integer)
 }
 
 
-BigInt::BigInt(const std::string& literals)
+BigInt::BigInt(std::string literals)
 {
-	if (!IsOnlyDigits(literals))
+	if (!IsOnlyDigits(literals.substr(1, literals.size())))
 	{
 		throw std::runtime_error("String is not a number");
 	}
 
-	size_t first = 0;
-	size_t last = 0;
+	size_t maxBlockDigits = MaxBlockDigits();
+
+	int first = literals.size() - maxBlockDigits;
+	int last = 0;
 	if (literals[0] == '-')
 	{
 		_sign = true;
-		first++;
+		last = 1;
 	}
-
-	while (first < literals.size())
+	if (literals[0] == '+')
 	{
-		unsigned long block = stol(literals.substr(first, MaxBlockDigits()));
-		_data.push_back(block);
-		first += MaxBlockDigits();
+		last = 1;
 	}
 
-	// Reverse order to mantain the lowest digits at the lowest indices
-	std::reverse(_data.begin(), _data.end());
+	// Reverse reading the string
+	bool lastBlock = false;
+	while (!lastBlock)
+	{
+		size_t count = maxBlockDigits;
+		if (first <= last)
+		{
+			count = first + maxBlockDigits - last;
+			first = last;
+			lastBlock = true;
+		}
+
+		unsigned long block = stol(literals.substr(first, count));
+		_data.push_back(block);
+		first -= maxBlockDigits;
+	}
 }
 
 
 BigInt BigInt::operator* (const BigInt & other)
 {
-	size_t i = 0;
+	int i = 0;
+	
 	if (_data.size() > other._data.size())
+	{
 		i = _data.size();
-	else
+	}
+	else 
+	{
 		i = other._data.size();
+	}
+
 	BigInt returnValue = BigInt();
 	returnValue._sign = _sign ^ other._sign;
+
 	unsigned long long int carry = 0;
 	for (; i > 0; i--)
 	{
@@ -78,30 +98,10 @@ BigInt BigInt::operator* (const BigInt & other)
 			carry = aux/(MaxBlockValue() + 1);
 		}
 	}
+
 	return returnValue;
 }
 
-BigInt BigInt::Power(BigInt base, int exponent)
-{
-
-	BigInt returnValue = BigInt();
-	for (int i = 0; i < exponent; i++)
-	{
-		returnValue+=base * base;
-	}
-	return returnValue;
-}
-
-
-/*
-BigInt& BigInt::operator= (const BigInt & other)
-{
-
-	_sign = other._sign;
-	_data = std::vector<unsigned long int>(other._data);
-	return *this;
-}
-*/
 
 
 BigInt& BigInt::operator+= (const BigInt& other)
@@ -136,7 +136,8 @@ BigInt& BigInt::operator+= (const BigInt& other)
 
 BigInt& BigInt::operator*= (const BigInt& other)
 {
-	return *this;
+	BigInt result = *this * other;
+	return result;
 }
 
 
@@ -174,13 +175,13 @@ BigInt& BigInt::operator/ (const BigInt & other)
 }
 
 
-BigInt& BigInt::operator%=(const BigInt & other)
+BigInt& BigInt::operator%= (const BigInt & other)
 {
 	return *this = *this%other;
 }
 
 
-BigInt& BigInt::operator/=(const BigInt & other)
+BigInt& BigInt::operator/= (const BigInt & other)
 {
 	return *this = *this/other;
 }
@@ -222,8 +223,7 @@ BigInt& BigInt::operator-= (const BigInt& other)
 		}
 		else 
 		{
-			// Equivalent expression
-			// -(other - *this)
+			// Equivalent expression = -(other - *this)
 
 			BigInt tmp(other);
 			std::swap(*this, tmp);
@@ -234,8 +234,7 @@ BigInt& BigInt::operator-= (const BigInt& other)
 	}
 	else 
 	{
-		// Equivalent expression
-		// *this += -other
+		// Equivalent expression = *this += -other
 
 		operator+= (-other);
 	}
@@ -263,16 +262,56 @@ BigInt BigInt::operator<< (int steps) const
 // TODO(luca) BUG!
 BigInt& BigInt::operator<<= (int steps) 
 { 
-	int lastDigits = 0;
-	for (size_t index = 0; index < _data.size(); index++)
+	operator* (pow(2, steps));
+	/*
+	if (steps < 0) 
 	{
-		_data[index] += lastDigits;
-		if (index - 1 >= 0) {
-			int lastDigits = _data[index++] / (10 * steps);
+		operator>>= (steps);
+	}
+	else if (steps > 0)
+	{
+		BigInt result;
+		result._sign = _sign; // TODO(luca) verificare correttezza
+
+		size_t jumps = 0;
+		if (steps >= MaxBitPerBlock())
+		{
+			jumps = steps / MaxBitPerBlock();
+			for (size_t i = 0; i < jumps; i++)
+			{
+				result._data.push_back(0);
+			}
 		}
-		_data[index] <<= steps;
+
+		int lastBits = 0;
+		int firstBits = 0;
+
+		size_t shift = steps % MaxBitPerBlock();
+
+		for (int index = 0; index < _data.size(); index++)
+		{
+			unsigned long tmp = _data[index] << shift;
+			
+			if (index - 1 >= 0) 
+			{
+				firstBits = _data[index] >> (MaxBitPerBlock() - shift);
+			}
+
+			tmp |= lastBits;
+			lastBits = firstBits;
+
+			result._data.push_back(tmp);
+
+			if (index == _data.size() - 1 && lastBits) 
+			{
+				result._data.push_back(lastBits);
+			}
+		}
+
+		std::swap(*this, result);
 	}
 
+	*/
 	return *this;
 };
 
@@ -316,7 +355,7 @@ bool BigInt::operator< (const BigInt & other) const
 		return _data.size() * GetSign() < other._data.size() * other.GetSign();
 	}
 
-	for (size_t i = _data.size() - 1; i >= 0; i--)
+	for (int i = _data.size() - 1; i >= 0; i--)
 	{
 		if (_data[i] != other._data[i])
 		{
