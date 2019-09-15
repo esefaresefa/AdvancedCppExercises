@@ -66,37 +66,37 @@ BigInt::BigInt(std::string literals)
 }
 
 
-BigInt BigInt::operator* (const BigInt & other)
+BigInt& BigInt::operator*= (const BigInt & other)
 {
-
-	BigInt returnValue = BigInt();
-	returnValue._sign = _sign ^ other._sign;
-	returnValue._data.resize(_data.size()+other._data.size()-1,0);
-	for (int i = 0; i < _data.size(); i++)
+	BigInt first = *this;
+	_sign = first._sign ^ other._sign;
+	_data.clear();
+	_data.resize(first._data.size()+other._data.size()-1,0);
+	for (int i = 0; i < first._data.size(); i++)
 	{
 		for (int j = 0; j < other._data.size(); j++) {
-			unsigned long long int aux = static_cast<unsigned long long int>(_data[i]) * static_cast<unsigned long long int>(other._data[j]);
-			aux+=returnValue._data[i+j];
+			unsigned long long int aux = static_cast<unsigned long long int>(first._data[i]) * static_cast<unsigned long long int>(other._data[j]);
+			aux+= _data[i+j];
 			if (aux <= MaxBlockValue())
 			{
-				returnValue._data[i+j] = static_cast<unsigned long int>(aux);
+				_data[i+j] = static_cast<unsigned long int>(aux);
 			}
 			else
 			{
-				returnValue._data[i+j] = aux % (MaxBlockValue() + 1);
-				if (returnValue._data.size() > i + j + 1)
+				_data[i+j] = aux % (MaxBlockValue() + 1);
+				if (_data.size() > i + j + 1)
 				{
-					returnValue._data[i + j +1] += aux / (MaxBlockValue() + 1); //carry
+					_data[i + j +1] += aux / (MaxBlockValue() + 1); //carry
 				}
 				else
 				{
-					returnValue._data.push_back(aux / (MaxBlockValue() + 1)); //carry
+					_data.push_back(aux / (MaxBlockValue() + 1)); //carry
 				}
 
 			}
 		}
 	}
-	return returnValue;
+	return *this;
 }
 
 
@@ -131,16 +131,9 @@ BigInt& BigInt::operator+= (const BigInt& other)
 }
 
 
-BigInt& BigInt::operator*= (const BigInt& other)
+BigInt& BigInt::operator%= (const BigInt & other)
 {
-	BigInt result = *this * other;
-	return result;
-}
-
-
-BigInt& BigInt::operator% (const BigInt & other)
-{
-	if (*this >= other)
+	/*if (*this >= other)
 	{
 		for (; *this >= other; *this -= other);
 		{}
@@ -152,37 +145,35 @@ BigInt& BigInt::operator% (const BigInt & other)
 		for (; returnValue>= *this;  returnValue -= *this);
 		{}
 		return returnValue; // TODO(mattia) BUG!
-	}
-}
-
-
-BigInt& BigInt::operator/ (const BigInt & other)
-{
-	BigInt returnValue = BigInt("0");
-	if (_data.size() >= other._data.size())
-	{
-		for (; *this >= other; *this -= other, returnValue++)
-		{
-		}
-	}
-	else
-	{
-		BigInt aux = other;
-		for (; aux >= *this; aux -= *this, returnValue++);
-	}
-	return returnValue; // TODO(mattia) BUG!
-}
-
-
-BigInt& BigInt::operator%= (const BigInt & other)
-{
-	return *this = *this%other;
+	}*/
+	return *this;
 }
 
 
 BigInt& BigInt::operator/= (const BigInt & other)
 {
-	return *this = *this/other;
+	BigInt aux = *this;
+	*this = BigInt("0");
+	aux._sign = other._sign;
+	_sign = _sign ^ other._sign;
+	if (aux >= other)
+	{
+		while (aux >= other)
+		{
+			aux -= other;
+			(*this)++;
+		}
+	}
+	else
+	{
+		BigInt aux2 = other;
+		while (aux2 >= aux)
+		{
+			aux2 -= aux;
+			*this+=1;
+		}
+	}
+	return *this; // TODO(mattia) BUG!
 }
 
 
@@ -261,7 +252,7 @@ BigInt BigInt::operator<< (int steps) const
 // TODO(luca) BUG!
 BigInt& BigInt::operator<<= (int steps) 
 { 
-	operator* (pow(2, steps));
+	operator*= (pow(2, steps));
 	/*
 	if (steps < 0) 
 	{

@@ -24,15 +24,9 @@ public:
 
 	BigInt operator++ (int);
 
-	BigInt operator* (const BigInt& other);
-
 	BigInt& operator*= (const BigInt& other);
 
-	BigInt& operator% (const BigInt& other);
-
 	BigInt& operator%= (const BigInt& other);
-
-	BigInt& operator/ (const BigInt& other);
 
 	BigInt& operator/= (const BigInt& other);
 
@@ -108,6 +102,26 @@ inline BigInt operator- (BigInt lhs, const BigInt& rhs)
 	return lhs;
 }
 
+
+inline BigInt operator* (BigInt lhs, const BigInt& rhs)
+{
+	lhs *= rhs;
+	return lhs;
+}
+
+
+inline BigInt operator% (BigInt lhs, const BigInt& rhs)
+{
+	lhs &= rhs;
+	return lhs;
+}
+
+
+inline BigInt operator/ (BigInt lhs, const BigInt& rhs)
+{
+	lhs /= rhs;
+	return lhs;
+}
 
 inline std::ostream& operator<< (std::ostream& stream, const BigInt& big)
 {
