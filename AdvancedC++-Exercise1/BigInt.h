@@ -48,6 +48,8 @@ public:
 
 	bool operator== (const BigInt& other) const;
 
+	bool operator!= (const BigInt& other) const;
+
 	bool operator> (const BigInt& other) const;
 
 	bool operator>= (const BigInt& other) const;

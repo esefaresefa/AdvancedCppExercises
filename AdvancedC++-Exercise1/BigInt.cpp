@@ -277,6 +277,12 @@ bool BigInt::operator== (const BigInt & other) const
 }
 
 
+bool BigInt::operator!= (const BigInt & other) const
+{
+	return !(*this == other);
+}
+
+
 bool BigInt::operator> (const BigInt & other) const
 {
 	return other < *this;
