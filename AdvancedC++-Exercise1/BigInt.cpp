@@ -138,18 +138,82 @@ BigInt& BigInt::operator+= (const BigInt& other)
 }
 
 
+
+
+BigInt& BigInt::operator-= (const BigInt& other)
+{
+	if (_sign == other._sign)
+	{
+		if (Abs() >= other.Abs())
+		{
+			unsigned long long tmp = 0;
+			for (int i = 0, carry = 0; i < (int)other._data.size() || carry; ++i)
+			{
+				if (i < (int)other._data.size() && _data[i]>= other._data[i]+carry)
+				{
+					_data[i] -= carry + other._data[i];
+					carry = false;
+				}
+				else
+				{
+					if (i < (int)other._data.size())
+					{
+						tmp += _data[i];
+						tmp += MaxBlockValue()+ 1 + carry;
+						if (i < (int)other._data.size())
+						{
+							tmp -= other._data[i];
+						}
+						_data[i] = tmp;
+						carry = true;
+					}
+					else
+					{
+						_data[i] -= carry;
+						carry = false;
+					}
+				}
+			}
+
+			Trim();
+		}
+		else
+		{
+			// Equivalent expression = -(other - *this)
+
+			BigInt tmp(other);
+			std::swap(*this, tmp);
+
+			operator-= (tmp);
+			_sign = !_sign;
+		}
+	}
+	else
+	{
+		// Equivalent expression = *this += -other
+
+		operator+= (-other);
+	}
+
+	return *this;
+}
+
+
+
 BigInt& BigInt::operator%= (const BigInt & other)
 {
-	if (*this >= other)
+	_sign = false;
+	if (*this >= other.Abs())
 	{
-		while (*this >= other && *this != 0)
+		while ( *this >= other.Abs() && *this != 0)
 		{
-			*this -= other;
+			*this -= other.Abs();
 		}
 	}
 	else
 	{
 		BigInt aux = other;
+		aux._sign = false;
 		while (aux >= *this && aux != 0)
 		{
 			aux -= *this;
@@ -162,23 +226,22 @@ BigInt& BigInt::operator%= (const BigInt & other)
 
 BigInt& BigInt::operator/= (const BigInt & other)
 {
-	BigInt aux = *this;
 	bool sign = _sign;
+	_sign = false;
+	BigInt aux = *this;
 	_data.clear();
 	_data.push_back(0);
-	_sign = false;
-	aux._sign = other._sign;
-	if (aux >= other)
+	if (aux >= other.Abs())
 	{
-		while (aux >= other && aux!=0)
+		while (aux >= other.Abs() && aux!=0)
 		{
-			aux -= other;
+			aux -= other.Abs();
 			operator+=(1);
 		}
 	}
 	else
 	{
-		BigInt aux2 = other;
+		BigInt aux2 = other.Abs();
 		while (aux2 >= aux && aux2 != 0)
 		{
 			aux2 -= aux;
@@ -189,49 +252,6 @@ BigInt& BigInt::operator/= (const BigInt & other)
 	_sign = sign ^ other._sign;
 	return *this;
 }
-
-
-BigInt& BigInt::operator-= (const BigInt& other)
-{
-	if (_sign == other._sign) 
-	{	
-		if (Abs() >= other.Abs()) 
-		{
-			for (int i = 0, carry = 0; i < (int)other._data.size() || carry; ++i) 
-			{
-				_data[i] -= carry + (i < (int)other._data.size() ? other._data[i] : 0);
-
-				carry = _data[i] < 0;
-				if (carry)
-				{
-					_data[i] += MaxBlockValue();
-				}
-			}
-			
-			Trim();
-		}
-		else 
-		{
-			// Equivalent expression = -(other - *this)
-
-			BigInt tmp(other);
-			std::swap(*this, tmp);
-
-			operator-= (tmp);
-			_sign = !_sign;
-		}
-	}
-	else 
-	{
-		// Equivalent expression = *this += -other
-
-		operator+= (-other);
-	}
-
-	return *this;
-}
-
-
 BigInt BigInt::operator- () const 
 {
 	BigInt result = *this;
@@ -354,9 +374,9 @@ bool BigInt::operator<= (const BigInt & other) const
 
 BigInt& BigInt::operator&= (const BigInt & other)
 {
-	size_t minSize = _data.size() >= other._data.size() ? _data.size() - 1 : other._data.size() - 1;
+	int minSize = _data.size() >= other._data.size() ? _data.size() - 1 : other._data.size() - 1;
 	
-	_data.erase(_data.begin() + minSize, _data.end());
+	_data.erase(_data.begin() + minSize+1, _data.end());
 
 	for (; minSize >= 0; minSize--)
 	{

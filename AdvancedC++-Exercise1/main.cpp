@@ -42,8 +42,6 @@ int main()
 		std::cout << "Operator+= " << big_11 << " = " << "1000000000" << std::endl << std::endl;
 		assert(big_11.ToString() == "1000000000");
 
-
-		/*
 		BigInt big_12("1000000100");
 		big_12 -= 101;
 		std::cout << "Operator-= " << big_12 << " = " << "999999999" << std::endl << std::endl;
@@ -54,7 +52,6 @@ int main()
 		big_13--;
 		std::cout << "Operator-- " << big_13 << " = " << "999999999" << std::endl << std::endl;
 		assert(big_13.ToString() == "999999999");
-		*/
 
 
 		BigInt big_6 = BigInt("999999999999999999")*BigInt("999999999999999999");
@@ -74,10 +71,16 @@ int main()
 		assert(big_8.ToString() == test5);
 
 
-		BigInt big_7= big_2 / BigInt("-1234567890");
-		std::cout << "/ operator - " << big_7 << " = " << "1" << std::endl;
-		std::string test4 = "1";
+		BigInt big_7= BigInt("9999999999") / BigInt("9");
+		std::cout << "/ operator - " << big_7 << " = " << "1111111111" << std::endl;
+		std::string test4 = "1111111111";
 		assert(big_7.ToString() == test4);
+
+
+		BigInt big_14 = big_2 % BigInt("-1234567860");
+		std::cout << "% operator - " << big_14 << " = " << "30" << std::endl;
+		std::string test15 = "30";
+		assert(big_14.ToString() == test15);
 
 
 		BigInt big_4(1);

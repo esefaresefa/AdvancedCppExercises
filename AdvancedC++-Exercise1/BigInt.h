@@ -118,7 +118,7 @@ inline BigInt operator* (BigInt lhs, const BigInt& rhs)
 
 inline BigInt operator% (BigInt lhs, const BigInt& rhs)
 {
-	lhs &= rhs;
+	lhs %= rhs;
 	return lhs;
 }
 
@@ -126,6 +126,27 @@ inline BigInt operator% (BigInt lhs, const BigInt& rhs)
 inline BigInt operator/ (BigInt lhs, const BigInt& rhs)
 {
 	lhs /= rhs;
+	return lhs;
+}
+
+
+inline BigInt operator& (BigInt lhs, const BigInt& rhs)
+{
+	lhs &= rhs;
+	return lhs;
+}
+
+
+inline BigInt operator| (BigInt lhs, const BigInt& rhs)
+{
+	lhs |= rhs;
+	return lhs;
+}
+
+
+inline BigInt operator^ (BigInt lhs, const BigInt& rhs)
+{
+	lhs ^= rhs;
 	return lhs;
 }
 
