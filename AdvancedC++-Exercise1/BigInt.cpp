@@ -249,59 +249,9 @@ BigInt BigInt::operator<< (int steps) const
 };
 
 
-// TODO(luca) BUG!
 BigInt& BigInt::operator<<= (int steps) 
 { 
 	operator*= (pow(2, steps));
-	/*
-	if (steps < 0) 
-	{
-		operator>>= (steps);
-	}
-	else if (steps > 0)
-	{
-		BigInt result;
-		result._sign = _sign; // TODO(luca) verificare correttezza
-
-		size_t jumps = 0;
-		if (steps >= MaxBitPerBlock())
-		{
-			jumps = steps / MaxBitPerBlock();
-			for (size_t i = 0; i < jumps; i++)
-			{
-				result._data.push_back(0);
-			}
-		}
-
-		int lastBits = 0;
-		int firstBits = 0;
-
-		size_t shift = steps % MaxBitPerBlock();
-
-		for (int index = 0; index < _data.size(); index++)
-		{
-			unsigned long tmp = _data[index] << shift;
-			
-			if (index - 1 >= 0) 
-			{
-				firstBits = _data[index] >> (MaxBitPerBlock() - shift);
-			}
-
-			tmp |= lastBits;
-			lastBits = firstBits;
-
-			result._data.push_back(tmp);
-
-			if (index == _data.size() - 1 && lastBits) 
-			{
-				result._data.push_back(lastBits);
-			}
-		}
-
-		std::swap(*this, result);
-	}
-
-	*/
 	return *this;
 };
 
@@ -315,8 +265,8 @@ BigInt BigInt::operator>> (int steps) const
 
 
 BigInt& BigInt::operator>>= (int steps)
-{ 
-	/* TODO(luca) */ 
+{
+	operator/= (pow(2, steps));
 	return *this;
 };
 
