@@ -24,6 +24,10 @@ public:
 
 	BigInt operator++ (int);
 
+	BigInt& operator-- ();
+
+	BigInt operator-- (int);
+
 	BigInt& operator*= (const BigInt& other);
 
 	BigInt& operator%= (const BigInt& other);

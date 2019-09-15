@@ -31,9 +31,30 @@ int main()
 		assert(big_1.ToString() == big_3.ToString());
 
 
-		BigInt big_10(0);
-		std::cout << "Operator++ " << "0++ = 1" << std::endl << std::endl;
-		assert(big_10++ == 1);
+		BigInt big_10("999999999");
+		big_10 += 101;
+		std::cout << "Operator++ " << big_10 << " = " << "1000000100" << std::endl << std::endl;
+		assert(big_10.ToString() == "1000000100");
+
+
+		BigInt big_11("999999999");
+		big_11++;
+		std::cout << "Operator+= " << big_11 << " = " << "1000000000" << std::endl << std::endl;
+		assert(big_11.ToString() == "1000000000");
+
+
+		/*
+		BigInt big_12("1000000100");
+		big_12 -= 101;
+		std::cout << "Operator-= " << big_12 << " = " << "999999999" << std::endl << std::endl;
+		assert(big_12.ToString() == "999999999");
+
+
+		BigInt big_13("1000000000");
+		big_13--;
+		std::cout << "Operator-- " << big_13 << " = " << "999999999" << std::endl << std::endl;
+		assert(big_13.ToString() == "999999999");
+		*/
 
 
 		BigInt big_6 = BigInt("999999999999999999")*BigInt("999999999999999999");

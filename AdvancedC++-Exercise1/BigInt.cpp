@@ -18,7 +18,6 @@ BigInt::BigInt(int integer)
 	}
 	else
 	{
-
 		_sign = false;
 		_data = std::vector<unsigned long int>();
 		_data.push_back(integer);
@@ -103,30 +102,38 @@ BigInt& BigInt::operator*= (const BigInt & other)
 
 BigInt& BigInt::operator+= (const BigInt& other)
 {
-	// actual addition of rhs to *this
-	if (_sign == other._sign) {
-				
-		for (int i = 0, carry = 0; i < static_cast<int>(std::max(_data.size(), other._data.size())) || carry; ++i) 
+	if (_sign == other._sign) 
+	{
+		BigInt result;
+
+		size_t maxSize = std::max(_data.size(), other._data.size());
+		for (size_t i = 0, carry = 0; i < maxSize || carry; i++) 
 		{
-			if (i == (int)_data.size())
+			if (i == result._data.size())
 			{
-				_data.push_back(0);
+				result._data.push_back(0);
 			}
 
-			_data[i] += carry + (i < (int)_data.size() ? _data[i] : 0);
-			carry = _data[i] >= MaxBlockValue();
+			unsigned long long tmp = 0;
+			tmp += i < other._data.size() ? other._data[i] : 0;
+			tmp += i < _data.size() ? _data[i] : 0;
+			tmp += carry;
+
+			carry = tmp >= MaxBlockValue() + 1;
 			
 			if (carry)
 			{
-				_data[i] -= MaxBlockValue();
+				tmp -= MaxBlockValue() + 1;
 			}
+			
+			result._data[i] = tmp;
 		}
+		std::swap(*this, result);
 	}
 	else 
 	{
-		operator-= (-other);
+		*this - (-other);
 	}
-
 	return *this;
 }
 
@@ -184,29 +191,14 @@ BigInt& BigInt::operator/= (const BigInt & other)
 }
 
 
-BigInt& BigInt::operator++()
-{
-	*this += 1;
-	return *this;
-}
-
-
-BigInt BigInt::operator++(int)
-{
-	*this += 1;
-	return *this;
-}
-
-
 BigInt& BigInt::operator-= (const BigInt& other)
 {
 	if (_sign == other._sign) 
 	{	
 		if (Abs() >= other.Abs()) 
 		{
-
-			for (int i = 0, carry = 0; i < (int)other._data.size() || carry; ++i) {
-
+			for (int i = 0, carry = 0; i < (int)other._data.size() || carry; ++i) 
+			{
 				_data[i] -= carry + (i < (int)other._data.size() ? other._data[i] : 0);
 
 				carry = _data[i] < 0;
@@ -245,6 +237,34 @@ BigInt BigInt::operator- () const
 	BigInt result = *this;
 	result._sign = !_sign;
 	return result;
+}
+
+
+BigInt& BigInt::operator++()
+{
+	*this += 1;
+	return *this;
+}
+
+
+BigInt BigInt::operator++(int)
+{
+	*this += 1;
+	return *this;
+}
+
+
+BigInt& BigInt::operator--()
+{
+	*this -= 1;
+	return *this;
+}
+
+
+BigInt BigInt::operator--(int)
+{
+	*this -= 1;
+	return *this;
 }
 
 
