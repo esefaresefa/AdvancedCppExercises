@@ -142,7 +142,11 @@ inline BigInt pow(BigInt base, int exponent)
 
 inline BigInt pow(BigInt base, BigInt& exponent) 
 { 
-	/* TODO(luca) */
+	BigInt returnValue;
+	for (BigInt i = 0; i < exponent; i++)
+	{
+		returnValue += base * base;
+	}
 	return base;
 };
 
