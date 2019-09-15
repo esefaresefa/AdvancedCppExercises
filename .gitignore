@@ -36,3 +36,21 @@ x64/Debug/AdvancedC\+\+-Exercise1.exe
 x64/Debug/AdvancedC\+\+-Exercise1.ilk
 
 x64/Debug/AdvancedC\+\+-Exercise1.pdb
+
+*.db-shm
+
+*.db-wal
+
+*.enc
+
+*.lastbuildstate
+
+*.tlog
+
+*.log
+
+*.obj
+
+AdvancedC\+\+Exercise2/x64/Debug/
+
+x64/Debug/

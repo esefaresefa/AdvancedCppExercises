@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <cassert>
 #include "BigInt.h"
@@ -32,6 +32,11 @@ int main()
 					<< big_1.ToString() << std::endl << "=" << std::endl << big_3.ToString() << std::endl << std::endl;
 		assert(big_1.ToString() == big_3.ToString());
 
+
+		BigInt big_6 = BigInt("999999999999999999")*BigInt("999999999999999999");
+		std::cout << "* operator - " << big_6 << " = " << "999999999999999998000000000000000001" << std::endl;
+		std::string test3 = "999999999999999998000000000000000001";
+		assert(big_6.ToString() == test3);
 
 		BigInt big_4(1);
 		big_4 <<= 4;

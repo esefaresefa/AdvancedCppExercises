@@ -68,37 +68,34 @@ BigInt::BigInt(std::string literals)
 
 BigInt BigInt::operator* (const BigInt & other)
 {
-	int i = 0;
-	
-	if (_data.size() > other._data.size())
-	{
-		i = _data.size();
-	}
-	else 
-	{
-		i = other._data.size();
-	}
 
 	BigInt returnValue = BigInt();
 	returnValue._sign = _sign ^ other._sign;
-
-	unsigned long long int carry = 0;
-	for (; i > 0; i--)
+	returnValue._data.resize(_data.size()+other._data.size()-1,0);
+	for (int i = 0; i < _data.size(); i++)
 	{
-		unsigned long long int aux = _data[i] * other._data[i];
-		aux += carry;
-		if (aux <= MaxBlockValue())
-		{
-			returnValue._data.insert(_data.begin(), static_cast<unsigned long int>(aux));
-			carry = 0;
-		}
-		else
-		{
-			returnValue._data.insert(_data.begin(), aux%(MaxBlockValue()+1));
-			carry = aux/(MaxBlockValue() + 1);
+		for (int j = 0; j < other._data.size(); j++) {
+			unsigned long long int aux = static_cast<unsigned long long int>(_data[i]) * static_cast<unsigned long long int>(other._data[j]);
+			aux+=returnValue._data[i+j];
+			if (aux <= MaxBlockValue())
+			{
+				returnValue._data[i+j] = static_cast<unsigned long int>(aux);
+			}
+			else
+			{
+				returnValue._data[i+j] = aux % (MaxBlockValue() + 1);
+				if (returnValue._data.size() > i + j + 1)
+				{
+					returnValue._data[i + j +1] += aux / (MaxBlockValue() + 1); //carry
+				}
+				else
+				{
+					returnValue._data.push_back(aux / (MaxBlockValue() + 1)); //carry
+				}
+
+			}
 		}
 	}
-
 	return returnValue;
 }
 
@@ -423,7 +420,12 @@ std::string BigInt::ToString() const
 	std::string serialized;
 	for (auto it = _data.begin(); it != _data.end(); it++)
 	{
-		serialized.insert(0, std::to_string(*it));
+		std::string numberToInsert = std::to_string(*it);
+		while (numberToInsert.length() < MaxBlockDigits() && it!= _data.end()-1)
+		{
+			numberToInsert.insert(0,"0");
+		}
+		serialized.insert(0, numberToInsert);
 	}
 
 	// Add the sign in top of the number
