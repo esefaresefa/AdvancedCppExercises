@@ -133,22 +133,19 @@ BigInt& BigInt::operator+= (const BigInt& other)
 
 BigInt& BigInt::operator%= (const BigInt & other)
 {
-	if (*this >= other)
+	/*if (*this >= other)
 	{
-		while (*this >= other && *this != 0)
-		{
-			*this -= other;
-		}
+		for (; *this >= other; *this -= other);
+		{}
+		return *this;
 	}
 	else
 	{
-		BigInt aux = other;
-		while (aux >= *this && aux != 0)
-		{
-			aux -= *this;
-		}
-		*this = aux;
-	}
+		BigInt returnValue = other;
+		for (; returnValue>= *this;  returnValue -= *this);
+		{}
+		return returnValue; // TODO(mattia) BUG!
+	}*/
 	return *this;
 }
 
@@ -163,7 +160,7 @@ BigInt& BigInt::operator/= (const BigInt & other)
 	aux._sign = other._sign;
 	if (aux >= other)
 	{
-		while (aux >= other && aux!=0)
+		while (aux >= other && aux._data[0]!=0)
 		{
 			aux -= other;
 			operator+=(1);
@@ -172,15 +169,15 @@ BigInt& BigInt::operator/= (const BigInt & other)
 	else
 	{
 		BigInt aux2 = other;
-		while (aux2 >= aux && aux2 != 0)
+		while (aux2 >= aux)
 		{
 			aux2 -= aux;
-			operator+=(1);
+			*this+=1;
 		}
 	}
 
 	_sign = sign ^ other._sign;
-	return *this;
+	return *this; // TODO(mattia) BUG!
 }
 
 
@@ -281,12 +278,6 @@ BigInt& BigInt::operator>>= (int steps)
 bool BigInt::operator== (const BigInt & other) const
 {
 	return !(*this < other) && !(other < *this);
-}
-
-
-bool BigInt::operator!= (const BigInt & other) const
-{
-	return !(*this == other);
 }
 
 
