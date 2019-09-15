@@ -28,7 +28,7 @@ BigInt::BigInt(int integer)
 
 BigInt::BigInt(std::string literals)
 {
-	if (!IsOnlyDigits(literals.substr(1, literals.size())))
+	if (!IsOnlyDigits(literals) && literals.size()>1 && !IsOnlyDigits(literals.substr(1, literals.size())))
 	{
 		throw std::runtime_error("String is not a number");
 	}
@@ -158,10 +158,12 @@ BigInt& BigInt::operator% (const BigInt & other)
 
 BigInt& BigInt::operator/ (const BigInt & other)
 {
-	BigInt returnValue = BigInt();
-	if (_data.size() > other._data.size())
+	BigInt returnValue = BigInt("0");
+	if (_data.size() >= other._data.size())
 	{
-		for (returnValue = 0; *this >= other; *this -= other, returnValue++);
+		for (; *this >= other; *this -= other, returnValue++)
+		{
+		}
 	}
 	else
 	{
@@ -465,12 +467,12 @@ bool BigInt::IsOnlyDigits(const std::string& value) const
 
 void BigInt::Trim()
 {
-	while (!_data.empty() && !_data.back())
+	while (!_data.empty() && !_data.back()&& _data.size() >1)
 	{
 		_data.pop_back();
 	}
 
-	if (_data.empty())
+	if (_data.size()==1 && !_data.back())
 	{
 		_sign = false;
 	}

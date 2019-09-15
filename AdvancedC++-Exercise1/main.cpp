@@ -38,6 +38,20 @@ int main()
 		std::string test3 = "999999999999999998000000000000000001";
 		assert(big_6.ToString() == test3);
 
+		bool minor = big_2<= big_2;
+		std::cout << "<= operator - " << minor << " = " << "true" << std::endl;
+		assert(minor == true);
+
+		BigInt big_8 = big_2 - big_2;
+		std::cout << "- operator - " << big_8 << " = " << "0" << std::endl;
+		std::string test5 = "0";
+		assert(big_8.ToString() == test5);
+
+		BigInt big_7= big_2 / BigInt("-1234567890");
+		std::cout << "/ operator - " << big_7 << " = " << "1" << std::endl;
+		std::string test4 = "1";
+		assert(big_7.ToString() == test4);
+
 		BigInt big_4(1);
 		big_4 <<= 4;
 		std::cout << "Left shift operator - " << big_4 << " = " << 16 << std::endl;
