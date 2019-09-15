@@ -260,7 +260,7 @@ BigInt BigInt::operator<< (int steps) const
 
 BigInt& BigInt::operator<<= (int steps) 
 { 
-	operator* (pow(2, steps));
+	operator*= (pow(2, steps));
 	return *this;
 };
 
@@ -275,7 +275,7 @@ BigInt BigInt::operator>> (int steps) const
 
 BigInt& BigInt::operator>>= (int steps)
 {
-	operator/ (pow(2, steps));
+	operator/= (pow(2, steps));
 	return *this;
 };
 
