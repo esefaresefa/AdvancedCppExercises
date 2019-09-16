@@ -323,6 +323,7 @@ BigInt& BigInt::operator/= (const BigInt & other)
 	return *this;
 }
 
+
 BigInt BigInt::operator- () const 
 {
 	BigInt result = *this;
