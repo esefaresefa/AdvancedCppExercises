@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-
+#include <utility> 
 
 class BigInt
 {
@@ -29,6 +29,8 @@ public:
 	BigInt operator-- (int);
 
 	BigInt& operator*= (const BigInt& other);
+
+	std::pair<BigInt,BigInt> DivMod (BigInt Dividend,BigInt Divisor);
 
 	BigInt& operator%= (const BigInt& other);
 

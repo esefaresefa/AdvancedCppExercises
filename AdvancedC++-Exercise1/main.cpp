@@ -79,14 +79,32 @@ int main()
 
 		BigInt big_14 = big_2 % BigInt("-1234567860");
 		std::cout << "% operator - " << big_14 << " = " << "30" << std::endl;
-		std::string test15 = "30";
-		assert(big_14.ToString() == test15);
+		std::string test14 = "30";
+		assert(big_14.ToString() == test14);
+
+
+		/*BigInt big_15 = big_2 & BigInt("5555555555");
+		std::cout << "& operator - " << big_15 << " = " << "1224868034" << std::endl;
+		std::string test15 = "1224868034";
+		assert(big_15.ToString() == test15);
+
+
+		BigInt big_16 = big_2 | BigInt("5555555555");
+		std::cout << "! operator - " << big_16 << " = " << "5565255411" << std::endl;
+		std::string test16 = "5565255411";
+		assert(big_16.ToString() == test16);
+
+
+		BigInt big_17 = big_2 ^ BigInt("5555555555");
+		std::cout << "^ operator - " << big_17 << " = " << "1753946161" << std::endl;
+		std::string test17 = "1753946161";
+		assert(big_17.ToString() == test17);
 
 
 		BigInt big_4(1);
 		big_4 <<= 4;
 		std::cout << "Left shift operator - " << big_4 << " = " << 16 << std::endl;
-		assert(big_4 == 16);
+		assert(big_4 == 16);*/
 	}
 	catch (std::runtime_error e)
 	{

@@ -41,6 +41,10 @@ BigInt::BigInt(std::string literals)
 		_sign = true;
 		last = 1;
 	}
+	else
+	{
+		_sign = false;
+	}
 	if (literals[0] == '+')
 	{
 		last = 1;
@@ -132,7 +136,7 @@ BigInt& BigInt::operator+= (const BigInt& other)
 	}
 	else 
 	{
-		*this - (-other);
+		*this -= (-other);
 	}
 	return *this;
 }
@@ -199,59 +203,126 @@ BigInt& BigInt::operator-= (const BigInt& other)
 }
 
 
-
-BigInt& BigInt::operator%= (const BigInt & other)
+std::pair<BigInt, BigInt> BigInt::DivMod(const BigInt Dividend, const BigInt Divisor)
 {
-	_sign = false;
-	if (*this >= other.Abs())
+	BigInt dividend= Dividend.Abs();
+	BigInt divisor = Divisor.Abs();
+	BigInt quotient;
+	BigInt remainder;
+	bool first = true;
+	if (dividend >= divisor)
 	{
-		while ( *this >= other.Abs() && *this != 0)
+		if (divisor == 0) {
+
+		}
+		remainder._data.resize(divisor._data.size());
+		for (int i = dividend._data.size() - divisor._data.size(); i < dividend._data.size(); i++)
 		{
-			*this -= other.Abs();
+			remainder._data[i - (dividend._data.size() - divisor._data.size())] = dividend._data[i];
+		}
+		for (int i = dividend._data.size() - divisor._data.size(); i >= 0; i--)
+		{
+			if (remainder < divisor)
+			{
+				quotient._data.insert(quotient._data.begin(), 0);
+			}
+			else
+			{
+				if (remainder == divisor)
+				{
+					quotient._data.insert(quotient._data.begin(), 1);
+					remainder -= divisor;
+				}
+				else
+				{
+					unsigned long long remainder2H;
+
+					if (remainder._data.size() > 1 && !first)
+					{
+						remainder2H = remainder._data[remainder._data.size() - 1] * (MaxBlockValue() + 1) + remainder._data[remainder._data.size() - 2];
+					}
+					else
+					{
+						remainder2H = remainder._data[remainder._data.size() - 1];
+						first = false;
+					}
+					unsigned long long divisor1H = divisor._data[divisor._data.size() - 1];
+
+
+					unsigned long long minQuotient = remainder2H / (divisor1H + 1);
+					unsigned long long maxQuotient = fmin(remainder2H / divisor1H , pow(2,32)-1);
+					unsigned long long triedQuotient = (minQuotient + maxQuotient) / 2;
+					while (!(remainder <= divisor * (triedQuotient + 1) && remainder >= divisor * triedQuotient))
+					{
+						if (remainder < divisor * (triedQuotient + 1))
+						{
+							maxQuotient = triedQuotient;
+							if (triedQuotient != (minQuotient + maxQuotient) / 2)
+							{
+								triedQuotient = (minQuotient + maxQuotient) / 2;
+							}
+							else
+							{
+								triedQuotient--;
+							}
+						}
+						else
+						{
+							minQuotient = triedQuotient;
+							if (triedQuotient != (minQuotient + maxQuotient) / 2)
+							{
+								triedQuotient = (minQuotient + maxQuotient) / 2;
+							}
+							else
+							{
+								triedQuotient++;
+							}
+						}
+					}
+					if (remainder >= divisor * (triedQuotient + 1))
+					{
+						triedQuotient++;
+					}
+					quotient._data.insert(quotient._data.begin(), triedQuotient);
+					remainder -= triedQuotient * divisor;
+				}
+			}
+			if (i - 1 >= 0)
+			{
+				remainder._data.insert(remainder._data.begin(), dividend._data[i - 1]);
+				if (remainder._data[remainder._data.size() - 1] == 0)
+				{
+					remainder._data.pop_back();
+				}
+			}
 		}
 	}
 	else
 	{
-		BigInt aux = other;
-		aux._sign = false;
-		while (aux >= *this && aux != 0)
-		{
-			aux -= *this;
-		}
-		*this = aux;
+		quotient = 0;
+		remainder = dividend;
 	}
+	quotient._sign = Dividend._sign ^ Divisor._sign;
+	return std::pair<BigInt, BigInt>(quotient, remainder);
+}
+
+BigInt& BigInt::operator%= (const BigInt & other)
+{
+	std::pair<BigInt,BigInt> result = DivMod(*this, other);
+	*this = result.second;
 	return *this;
 }
+
+
 
 
 BigInt& BigInt::operator/= (const BigInt & other)
 {
-	bool sign = _sign;
-	_sign = false;
-	BigInt aux = *this;
-	_data.clear();
-	_data.push_back(0);
-	if (aux >= other.Abs())
-	{
-		while (aux >= other.Abs() && aux!=0)
-		{
-			aux -= other.Abs();
-			operator+=(1);
-		}
-	}
-	else
-	{
-		BigInt aux2 = other.Abs();
-		while (aux2 >= aux && aux2 != 0)
-		{
-			aux2 -= aux;
-			operator+=(1);
-		}
-	}
-
-	_sign = sign ^ other._sign;
+	std::pair<BigInt, BigInt> result = DivMod(*this, other);
+	*this = result.first;
 	return *this;
 }
+
 BigInt BigInt::operator- () const 
 {
 	BigInt result = *this;
