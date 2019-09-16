@@ -199,7 +199,6 @@ BigInt& BigInt::operator-= (const BigInt& other)
 }
 
 
-
 BigInt& BigInt::operator%= (const BigInt & other)
 {
 	_sign = false;
@@ -252,6 +251,8 @@ BigInt& BigInt::operator/= (const BigInt & other)
 	_sign = sign ^ other._sign;
 	return *this;
 }
+
+
 BigInt BigInt::operator- () const 
 {
 	BigInt result = *this;
