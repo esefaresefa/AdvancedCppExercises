@@ -23,7 +23,8 @@ crbegin Return const_reverse_iterator to reverse beginning (public member functi
 crend Return const_reverse_iterator to reverse end (public member function )
 
 Capacity:
-Mattia: empty Test whether container is empty (public member function )
+Mattia: 
+empty Test whether container is empty (public member function )
 size Return size (public member function )
 max_size Return maximum size (public member function )
 
