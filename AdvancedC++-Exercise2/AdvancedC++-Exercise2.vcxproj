@@ -117,9 +117,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SList.cpp" />
+    <ClCompile Include="SListArray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SList.h" />
+    <ClInclude Include="SListArray.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

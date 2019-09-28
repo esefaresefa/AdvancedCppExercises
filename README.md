@@ -26,6 +26,7 @@ Capacity:
 Mattia: 
 empty Test whether container is empty (public member function )
 size Return size (public member function )
+FORSE:
 max_size Return maximum size (public member function )
 
 Element access:
