@@ -1,41 +1,85 @@
 #pragma once
 
-#include <vector>
-#include <utility> 
+#include <deque>
+#include <string>
+#include <utility>
 
 class BigInt
 {
 
 public:
 
+	// Constructors
 	BigInt();
+	
+	BigInt(const BigInt& other);
+	
+	BigInt(const int& integer);
 
-	BigInt(int integer);
+	BigInt(const uint32_t& integer);
 
-	BigInt(std::string value);
+	BigInt(const long& value);
 
+	BigInt(const unsigned long& value);
+
+	BigInt(const long long& value);
+
+	BigInt(const uint64_t& integer);
+
+	BigInt(const char* literals);
+
+	BigInt(const std::string& literals);
+
+
+	// Copy operators
+	BigInt& operator=(const BigInt& other);
+	BigInt& operator=(const int& integer);
+	BigInt& operator=(const uint32_t& integer);
+	BigInt& operator=(const long& value);
+	BigInt& operator=(const unsigned long& value);
+	BigInt& operator=(const long long& value);
+	BigInt& operator=(const uint64_t& value);
+	BigInt& operator=(const std::string& literals);
+
+
+	// Sum
 	BigInt& operator+= (const BigInt& other);
 
+
+	// Subtraction
 	BigInt& operator-= (const BigInt& other);
 
-	BigInt operator- () const;
 
-	BigInt& operator++ ();
-
-	BigInt operator++ (int);
-
-	BigInt& operator-- ();
-
-	BigInt operator-- (int);
-
+	// Multiplication
 	BigInt& operator*= (const BigInt& other);
+	BigInt& operator*=(const long long& value);
 
-	std::pair<BigInt,BigInt> DivMod (BigInt Dividend,BigInt Divisor);
 
-	BigInt& operator%= (const BigInt& other);
+	// Division
+	std::pair<BigInt,BigInt> DivMod(const BigInt Dividend, const BigInt Divisor);
+	BigInt& operator/=(const BigInt& other);
+	BigInt& operator%=(const BigInt& other);
+	BigInt& operator/=(const long long& value);
 
-	BigInt& operator/= (const BigInt& other);
 
+	// Unary operators
+	BigInt operator- () const;							// minus operator
+	BigInt& operator-- ();								// prefix op --
+	BigInt operator-- (const int);						// postfix op --
+	BigInt& operator++();								// prefix op ++
+	BigInt operator++(const int);						// postfix op ++
+
+	// Compare
+	int compare(BigInt const& other) const; //0 a == b, -1 a < b, 1 a > b
+
+	bool operator==(const BigInt& other) const;
+	bool operator!=(const BigInt& other) const;
+	bool operator>(const BigInt& other) const;
+	bool operator>=(const BigInt& other) const;
+	bool operator<(const BigInt& other) const;
+	bool operator<=(const BigInt& other) const;
+
+	// Bitwise operators
 	BigInt& operator&= (const BigInt& other);
 
 	BigInt& operator|= (const BigInt& other);
@@ -50,24 +94,14 @@ public:
 
 	BigInt& operator>>= (int steps);
 
+
+// Utils
+
+	// Absolute value of BigInt
 	BigInt Abs() const;
-
-	bool operator== (const BigInt& other) const;
-
-	bool operator!= (const BigInt& other) const;
-
-	bool operator> (const BigInt& other) const;
-
-	bool operator>= (const BigInt& other) const;
-
-	bool operator< (const BigInt& other) const;
-
-	bool operator<= (const BigInt& other) const;
 
 	// BigInt to string
 	std::string ToString() const;
-
-	// operator std::string() const; // TODO
 
 	// The maximum number of digits of a single block
 	static size_t MaxBlockDigits();
@@ -78,6 +112,9 @@ public:
 	// The number of bits needed for rapresenting the MaxBlockValue
 	static size_t MaxBitPerBlock();
 
+	// Utilities
+	void clear();
+
 	virtual ~BigInt();
 
 protected:
@@ -85,7 +122,7 @@ protected:
 	//true == -
 	bool _sign;
 
-	std::vector<unsigned long int> _data;
+	std::deque<uint32_t> _data;
 
 	int GetSign() const;
 
@@ -97,6 +134,7 @@ protected:
 
 // Binary operators are typically implemented as non-members to maintain symmetry
 // No need to access internal data so it's not friend function of BigInt
+//BigInt
 inline BigInt operator+ (BigInt lhs, const BigInt& rhs)
 {
 	lhs += rhs;
@@ -132,6 +170,7 @@ inline BigInt operator/ (BigInt lhs, const BigInt& rhs)
 }
 
 
+// Bitwise op
 inline BigInt operator& (BigInt lhs, const BigInt& rhs)
 {
 	lhs &= rhs;
@@ -158,38 +197,51 @@ inline std::ostream& operator<< (std::ostream& stream, const BigInt& big)
 }
 
 
-inline BigInt pow(BigInt base, int exponent)
+// Power
+inline BigInt pow(BigInt& base, int exponent)
 {
-	BigInt returnValue;
-	for (int i = 0; i < exponent; i++)
+	BigInt returnValue = base;
+
+	if (exponent == 0)
+		return 1;
+
+	if (exponent == 1)
+		return returnValue;
+
+	else
 	{
-		returnValue += base * base;
+		return returnValue * pow(base, --exponent);
 	}
-	return returnValue;
 }
 
 
-inline BigInt pow(BigInt base, BigInt& exponent) 
-{ 
-	BigInt returnValue;
-	for (BigInt i = 0; i < exponent; i++)
+inline BigInt pow(BigInt& base, BigInt& exponent)
+{
+	BigInt returnValue = base;
+
+	if (exponent == 0)
+		return 1;
+
+	if (exponent == 1)
+		return returnValue;
+
+	else
 	{
-		returnValue += base * base;
+		return returnValue * pow(base, --exponent);
 	}
-	return base;
 };
 
 
 inline unsigned long BigInt::MaxBlockValue()
 {
-	double value = pow(10, std::numeric_limits<unsigned long int>::digits10);
-	return (static_cast<unsigned long int>(value) - 1);
+	double value = pow(10, std::numeric_limits<uint32_t>::digits10);
+	return (static_cast<uint32_t>(value) - 1);
 }
 
 
 inline size_t BigInt::MaxBlockDigits()
 {
-	return std::numeric_limits<unsigned long int>::digits10;
+	return std::numeric_limits<uint32_t>::digits10;
 }
 
 
