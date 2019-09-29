@@ -40,66 +40,55 @@ public:
 	{
 		m_data = new std::vector<SListArrayNode>(n);
 		_Size = n;
-		SListArrayNode* AuxNode = nullptr;
-		for (; n > 0; --n)
+		if (n > 0)
 		{
-			if (n == _Size)
-			{
-				_Root = new SListArrayNode();
-				_Root->value = val;
-				_Root->next = AuxNode;
-			}
-			else
-			{
-				AuxNode = new SListArrayNode();
-				AuxNode->value = val;
-				AuxNode->Next = nullptr;
-				AuxNode = AuxNode->next;
-			}
+			m_data[0].value=val;
+			m_data[0].next = nullptr;
+			_Root = &m_data[0];
+		}
+		for (size_t i=1; i < n; ++i)
+		{
+			m_data[i-1].next = &m_data[i];
+			m_data[i].value = val;
+			m_data[i].next = nullptr;
 		}
 	};
 
 	SListArray(SListArrayIterator first, SListArrayIterator last)
 	{
-		_Root = new SListArrayNode();
-		_Root->value = *first;
-		_Root->next = nullptr;
-		_Size = 0;
-		SListArrayNode* AuxNode = _Root->next;
-		first++;
-		for (; first != last; ++first)
+		m_data = new std::vector<SListArrayNode>(last - first);
+		if (first != last)
 		{
-			AuxNode = new SListArrayNode();
-			AuxNode->value = *first;
-			AuxNode->Next = nullptr;
-			AuxNode = AuxNode->next;
-			++_Size;
+			m_data[0].value = *first;
+			m_data[0].next = nullptr;
+			_Root = &m_data[0];
+			_Size = 1;
+			first++;
+		}
+		for (; first != last; ++first,++_Size)
+		{
+			m_data[_Size-1].next = &m_data[_Size];
+			m_data[_Size].value = *first;
+			m_data[_Size].next = nullptr;
 		}
 	};
 
 	SListArray(const SListArray& x)
 	{
-		_Root = nullptr;
-		SListArrayNode* AuxNode = _Root;
+		_Root = x._Root;
+		_Size = x._Size;
+		m_data = new std::vector<SListArrayNode>(_Size);
 		SListArrayIterator it = x.begin();
-		_Size = 0;
-		for (int i = 0; i < x._Size; ++i, ++it)
+		if (_Size > 0)
 		{
-			if (i == 0)
-			{
-				_Root = new SListArrayNode();
-				_Root->value = *it;
-				_Root->next = nullptr;
-				AuxNode = _Root->next;
-			}
-			else
-			{
-				AuxNode = new SListArrayNode();
-				AuxNode->value = *it;
-				AuxNode->Next = nullptr;
-				AuxNode = AuxNode->next;
-			}
-			++_Size;
+			m_data[0].value = x.m_data[0];
+			m_data[0].next = nullptr;
+		}
+		for (int i = 1; i < x._Size; ++i, ++it)
+		{
+			m_data[i - 1].next = &m_data[i];
+			m_data[i].value = x.m_data[i];
+			m_data[i].next = nullptr;
 		}
 	};
 
@@ -107,6 +96,8 @@ public:
 	{
 		_Root = x._Root;
 		_Size = x._Size;
+		m_data = x.m_data;
+		x.m_data = new std::vector<SListArrayNode>();
 		x._Root = nullptr;
 		x._Size = 0;
 	};
@@ -114,81 +105,55 @@ public:
 	SListArray(std::initializer_list<value_type> il)
 	{
 		_Root = nullptr;
-		SListArrayNode* AuxNode = _Root;
-		const value_type* it; //equivalent of std::initializer_list<value_type>::iterator
-		_Size = 0;
-		for (it = il.begin(); it != il.end(); ++it)
+		const value_type* it = il.begin(); //equivalent of std::initializer_list<value_type>::iterator
+		_Size = il.size();
+		m_data = new std::vector<SListArrayNode>(il.size());
+		if (_Size > 0)
 		{
-			if (it == il.begin())
-			{
-				_Root = new SListArrayNode();
-				_Root->value = *it;
-				_Root->next = nullptr;
-				AuxNode = _Root->next;
-			}
-			else
-			{
-				AuxNode = new SListArrayNode();
-				AuxNode->value = *it;
-				AuxNode->Next = nullptr;
-				AuxNode = AuxNode->next;
-			}
-			++_Size;
-		};
+			m_data[0].value = *it;
+			m_data[0].next = nullptr;
+			_Root = &m_data[0]; 
+			++it;
+		}
+		for (size_t i=1; it != il.end(); ++it,++i)
+		{
+			m_data[i-1].next = &m_data[i - 1];
+			m_data[i].value = *it;
+			m_data[i].next = nullptr;
+		}
 	};
 
 	virtual ~SListArray()
 	{
-		SListArrayNode* AuxNode = nullptr;
-		for (; _Size > 0; _Size--)
-		{
-			AuxNode = _Root;
-			_Root = _Root->next;
-			AuxNode->value.~value_type();
-			delete AuxNode;
-		}
-		delete _Root;
+		_Size = 0;
+		_Root = nullptr;
+		delete[] m_data;
 	};
 
 	SListArray& operator= (const SListArray& x)
 	{
-		SListArrayNode* AuxNode = nullptr;
-		for (; _Size > 0; _Size--)
-		{
-			AuxNode = _Root;
-			_Root = _Root->next;
-			AuxNode->value.~value_type();
-			delete AuxNode;
-		}
-		delete _Root;
+		_Size = 0;
+		_Root = nullptr;
+		delete[] m_data;
+
 		this = SList(x);
 	};
 
 	SListArray& operator= (SListArray&& x)
 	{
-		SListArrayNode* AuxNode = nullptr;
-		for (; _Size > 0; _Size--)
-		{
-			AuxNode = _Root;
-			_Root = _Root->next;
-			AuxNode->value.~value_type();
-			delete AuxNode;
-		}
-		delete _Root;
+		_Size = 0;
+		_Root = nullptr;
+		delete[] m_data;
+
 		this = SList(std::move(x));
 	};
 
 	SListArray& operator= (std::initializer_list<value_type> il)
 	{
-		SListArrayNode* AuxNode = nullptr;
-		for (; _Size > 0; _Size--)
-		{
-			AuxNode = _Root;
-			_Root = _Root->next;
-			AuxNode->value.~value_type();
-			delete AuxNode;
-		}
-		delete _Root;
+		_Size = 0;
+		_Root = nullptr;
+		delete[] m_data;
+
 		this = SList(il);
 	};
 
@@ -204,61 +169,51 @@ public:
 
 	void push_front(const value_type& val)
 	{
-		SListArrayNode* NewElement = new SListArrayNode();
-		NewElement->value = val;
-		NewElement->next = _Root;
-		_Root = NewElement;
+		m_data.insert(0, { val,_Root });
+		_Root = &m_data[0];
 		++_Size;
 	};
 
 	void push_front(value_type&& val)
 	{
-		SListArrayNode* NewElement = new SListArrayNode();
-		std::swap(NewElement->value, val);
-		NewElement->next = _Root;
-		_Root = NewElement;
+		SListArrayNode newNode{ val,_Root };
+		//std::swap(newNode.val, val);
+		m_data.insert(0, newNode);
+		_Root = &m_data[0];
 		++_Size;
 	};
 
 	void pop_front()
 	{
-		SListArrayNode* AuxNode = _Root;
-		_Root = _Root->next;
-		--_Size;
-		AuxNode->value.~value_type();
-		delete AuxNode;
+		if (_Size > 0)
+		{
+			m_data[0].value.~value_type();
+			m_data.erase(m_data.begin());
+			_Root = &m_data[0];
+			--_Size;
+		}
 	};
 
 	void push_back(const value_type& val)
 	{
-		SListArrayNode* NewElement = _Root;
-
-		for (size_t i = 0; i < _Size; ++i)
-		{
-			NewElement = NewElement->next;
-		}
-
-		NewElement->next = new SListArrayNode();
-		NewElement = NewElement->next;
-		NewElement->value = val;
-		NewElement->next = nullptr;
+		m_data.push_back({ val,nullptr });
 		++_Size;
+		if (_Size > 1)
+		{
+			m_data[_Size - 2].next = m_data[_Size - 1];
+		}
 	};
 
 	void push_back(value_type&& val)
 	{
-		SListArrayNode* NewElement = _Root;
-
-		for (size_t i = 0; i < _Size; ++i)
-		{
-			NewElement = NewElement->next;
-		}
-
-		NewElement->next = new SListArrayNode();
-		NewElement = NewElement->next;
-		std::swap(NewElement->value, val);
-		NewElement->next = nullptr;
+		SListArrayNode newNode{ val,nullptr };
+		//std::swap(newNode.val, val);
+		m_data.push_back({ newNode });
 		++_Size;
+		if (_Size > 1)
+		{
+			m_data[_Size - 2].next = m_data[_Size - 1];
+		}
 	};
 
 	iterator begin() { return iterator(&_Root); };

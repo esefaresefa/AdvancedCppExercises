@@ -50,11 +50,11 @@ public:
 		}
 		for (; n > 0; --n)
 		{
-			AuxNode->Next = new SlistNode();
+			AuxNode->next = new SlistNode();
 			AuxNode = AuxNode->next;
 			AuxNode->value = val;
 		}
-		AuxNode->Next = nullptr;
+		AuxNode->next = nullptr;
 	};
 
 	SList(SListIterator first, SListIterator last)
@@ -67,12 +67,12 @@ public:
 		first++;
 		for (;first!=last;++first)
 		{
-			AuxNode->Next = new SlistNode();
+			AuxNode->next = new SlistNode();
 			AuxNode = AuxNode->next;
 			AuxNode->value = *first;
 			++_Size;
 		}
-		AuxNode->Next = nullptr;
+		AuxNode->next = nullptr;
 	};
 
 	SList(const SList& x)
@@ -81,7 +81,7 @@ public:
 		SlistNode* AuxNode = _Root;
 		SListIterator it = x.begin();
 		_Size = x._Size;
-		if (x._Size > 0)
+		if (_Size > 0)
 		{
 			_Root = new SlistNode();
 			_Root->value = *it;
@@ -90,11 +90,11 @@ public:
 		}
 		for (int i=1; i < x._Size; ++i, ++it)
 		{
-			AuxNode->Next = new SlistNode();
+			AuxNode->next = new SlistNode();
 			AuxNode = AuxNode->next;
 			AuxNode->value = *it;
 		}
-		AuxNode->Next = nullptr;
+		AuxNode->next = nullptr;
 	};
 
 	SList(SList&& x)
@@ -109,23 +109,23 @@ public:
 	{
 		_Root = nullptr;
 		SlistNode* AuxNode = _Root;
-		const value_type* it; //equivalent of std::initializer_list<value_type>::iterator
-		_Size = 0;
+		const value_type* it = il.begin(); //equivalent of std::initializer_list<value_type>::iterator
+		_Size = il.size();
 		if (il.size()>0)
 		{
 			_Root = new SlistNode();
 			_Root->value = *it;
 			_Root->next = nullptr;
-			AuxNode = _Root;
-			++_Size;
+			AuxNode = _Root; 
+			++it;
 		}
-		for (it = il.begin(); it != il.end(); ++it, ++_Size)
+		for (; it != il.end(); ++it)
 		{
-			AuxNode->Next = new SlistNode();
+			AuxNode->next = new SlistNode();
 			AuxNode = AuxNode->next;
 			AuxNode->value = *it;
 		}
-		AuxNode->Next = nullptr;
+		AuxNode->next = nullptr;
 	};
 
 	virtual ~SList() 
