@@ -11,17 +11,17 @@ class SListArray
 {
 public:
 	// Forward declaration
-	class SListArrayIterator;
+	class FixedSListIterator;
 	class SListArrayNode;
 
 	typedef T value_type;
 	typedef T& reference_type;
 	typedef const T& const_reference_type;
 
-	typedef SListArrayIterator iterator;
-	typedef SListArrayIterator const_iterator;
-	typedef std::reverse_iterator<SListArrayIterator> reverse_iterator;
-	typedef std::reverse_iterator<SListArrayIterator> const_reverse_iterator;
+	typedef FixedSListIterator iterator;
+	typedef FixedSListIterator const_iterator;
+	typedef std::reverse_iterator<FixedSListIterator> reverse_iterator;
+	typedef std::reverse_iterator<FixedSListIterator> const_reverse_iterator;
 
 	explicit SListArray()
 	{
@@ -54,7 +54,7 @@ public:
 		}
 	};
 
-	SListArray(SListArrayIterator first, SListArrayIterator last)
+	SListArray(FixedSListIterator first, FixedSListIterator last)
 	{
 		m_data = new std::vector<SListArrayNode>(last - first);
 		if (first != last)
@@ -75,14 +75,14 @@ public:
 
 	SListArray(const SListArray& x)
 	{
-		_Root = x._Root;
 		_Size = x._Size;
 		m_data = new std::vector<SListArrayNode>(_Size);
-		SListArrayIterator it = x.begin();
+		FixedSListIterator it = x.begin();
 		if (_Size > 0)
 		{
 			m_data[0].value = x.m_data[0];
 			m_data[0].next = nullptr;
+			_Root = &m_data[0];
 		}
 		for (int i = 1; i < x._Size; ++i, ++it)
 		{
@@ -136,7 +136,11 @@ public:
 		_Root = nullptr;
 		delete[] m_data;
 
-		this = SList(x);
+		SListArray aux(x);
+		std::swap(_Root, aux._Root);
+		std::swap(_Size, aux._Size);
+		std::swap(m_data, aux.m_data);
+		return *this;
 	};
 
 	SListArray& operator= (SListArray&& x)
@@ -145,7 +149,10 @@ public:
 		_Root = nullptr;
 		delete[] m_data;
 
-		this = SList(std::move(x));
+		std::swap(_Root, x);
+		std::swap(_Size, x);
+		std::swap(m_data, x.m_data);
+		return *this;
 	};
 
 	SListArray& operator= (std::initializer_list<value_type> il)
@@ -154,7 +161,11 @@ public:
 		_Root = nullptr;
 		delete[] m_data;
 
-		this = SList(il);
+		SListArray aux(il);
+		std::swap(_Root, aux._Root);
+		std::swap(_Size, aux._Size);
+		std::swap(m_data, aux.m_data);
+		return *this;
 	};
 
 	bool empty() const
@@ -221,7 +232,7 @@ public:
 	const_iterator cbegin() { return const_iterator(&_Root); };
 	const_iterator cend() { return const_iterator(&_Root); };
 
-	class SListArrayIterator;
+	class FixedSListIterator;
 
 	class SListArrayNode {
 	public:
@@ -241,23 +252,23 @@ private:
 
 ////////////////////////////////// SListArrayIterator //////////////////////////////////
 template<class T>
-class SListArray<T>::SListArrayIterator {
+class SListArray<T>::FixedSListIterator {
 
 public:
 
-	SListArrayIterator();
+	FixedSListIterator();
 
-	SListArrayIterator(const SListArrayNode* pNode);
+	FixedSListIterator(const SListArrayNode* pNode);
 
-	SListArrayIterator& operator= (SListArrayNode* pNode);
+	FixedSListIterator& operator= (SListArrayNode* pNode);
 
 	// Prefix ++ overload 
-	SListArrayIterator& operator++();
+	FixedSListIterator& operator++();
 
 	// Postfix ++ overload 
-	SListArrayIterator operator++(int);
+	FixedSListIterator operator++(int);
 
-	bool operator!=(const SListArrayIterator& iterator);
+	bool operator!=(const FixedSListIterator& iterator);
 
 	T operator*();
 
@@ -267,17 +278,17 @@ private:
 
 
 template<class T>
-SListArray<T>::SListArrayIterator::SListArrayIterator() : _CurrentNode(_Root)
+SListArray<T>::FixedSListIterator::FixedSListIterator() : _CurrentNode(_Root)
 { }
 
 
 template<class T>
-SListArray<T>::SListArrayIterator::SListArrayIterator(const SListArrayNode* node) : _CurrentNode(node)
+SListArray<T>::FixedSListIterator::FixedSListIterator(const SListArrayNode* node) : _CurrentNode(node)
 { }
 
 
 template<class T>
-typename SListArray<T>::SListArrayIterator& SListArray<T>::SListArrayIterator::operator= (SListArrayNode* node)
+typename SListArray<T>::FixedSListIterator& SListArray<T>::FixedSListIterator::operator= (SListArrayNode* node)
 {
 	this->_CurrentNode = node;
 	return *this;
@@ -285,7 +296,7 @@ typename SListArray<T>::SListArrayIterator& SListArray<T>::SListArrayIterator::o
 
 
 template<class T>
-typename SListArray<T>::SListArrayIterator& SListArray<T>::SListArrayIterator::operator++ ()
+typename SListArray<T>::FixedSListIterator& SListArray<T>::FixedSListIterator::operator++ ()
 {
 	if (_CurrentNode)
 		_CurrentNode = _CurrentNode->next;
@@ -294,23 +305,23 @@ typename SListArray<T>::SListArrayIterator& SListArray<T>::SListArrayIterator::o
 
 
 template<class T>
-typename SListArray<T>::SListArrayIterator SListArray<T>::SListArrayIterator::operator++ (int)
+typename SListArray<T>::FixedSListIterator SListArray<T>::FixedSListIterator::operator++ (int)
 {
-	SListArrayIterator iterator = *this;
+	FixedSListIterator iterator = *this;
 	++*this;
 	return iterator;
 }
 
 
 template<class T>
-bool SListArray<T>::SListArrayIterator::operator!= (const SListArray<T>::SListArrayIterator& iterator)
+bool SListArray<T>::FixedSListIterator::operator!= (const SListArray<T>::FixedSListIterator& iterator)
 {
 	return _CurrentNode != iterator._CurrentNode;
 }
 
 
 template<class T>
-T SListArray<T>::SListArrayIterator::operator* ()
+T SListArray<T>::FixedSListIterator::operator* ()
 {
 	return _CurrentNode->value;
 }
