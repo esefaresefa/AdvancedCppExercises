@@ -245,18 +245,29 @@ public:
 			_Root = new SListNode();
 			_Root->value = val;
 			_Root->next = nullptr;
+			++_Size;
 		}
 	};
 
 	void push_back(value_type&& val) 
 	{
-		SListNode<T>* NewElement = GetLast();
+		if (_Size > 0)
+		{
+			SListNode<T>* NewElement = GetLast();
 
-		NewElement->next = new SListNode<T>();
-		NewElement = NewElement->next;
-		std::swap(NewElement->value,val);
-		NewElement->next = nullptr;
-		++_Size;
+			NewElement->next = new SListNode<T>();
+			NewElement = NewElement->next;
+			std::swap(NewElement->value, val);
+			NewElement->next = nullptr;
+			++_Size;
+		}
+		else
+		{
+			_Root = new SListNode();
+			_Root->value = val;
+			_Root->next = nullptr;
+			++_Size;
+		}
 	};
 
 	iterator begin() 

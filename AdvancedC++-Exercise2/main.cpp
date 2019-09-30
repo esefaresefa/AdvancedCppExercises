@@ -17,6 +17,16 @@ int main()
 	assert(*biterator++ == 333);
 	std::cout << "OK!" << std::endl;
 
+	SList<int>list2(12);
+	assert(list2.size()==12);
+
+	SList<int>list3(12,5);
+	assert(list3.size() == 12);
+	for (SList<int>::iterator i = list3.begin(); i != list3.end(); ++i)
+	{
+		assert(*biterator == 5);
+	}
+
 	std::cout << std::endl;
 
 	return 0;
