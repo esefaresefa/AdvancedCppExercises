@@ -33,7 +33,9 @@ public:
 	{
 		value_type val = {};
 		SListArray aux(n, val);
-		std::swap(*this, aux);
+		std::swap(_Data, aux._Data);
+		std::swap(_Root, aux._Root);
+		std::swap(_Size, aux._Size);
 	};
 
 	FixedSList(size_t n, const value_type& val)//n should be minor of N

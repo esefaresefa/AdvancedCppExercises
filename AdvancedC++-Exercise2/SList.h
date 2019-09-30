@@ -33,7 +33,8 @@ public:
 	{
 		value_type val = {};
 		SList aux(n, val);
-		std::swap(*this, aux);
+		std::swap(_Size, aux._Size);
+		std::swap(_Root, aux._Root);
 	};
 
 	SList(size_t n, const value_type& val)
