@@ -41,7 +41,7 @@ public:
 
 	SListArray(size_t n, const value_type& val)
 	{
-		_Data = new std::vector<ListNode<T>>(n);
+		_Data.resize(n);
 		_Size = n;
 		if (n > 0)
 		{
@@ -59,7 +59,7 @@ public:
 
 	SListArray(iterator first, iterator last)
 	{
-		_Data = new std::vector<ListNode<T>>(last - first);
+		_Data.resize(last - first);
 		if (first != last)
 		{
 			_Data[0].value = *first;
@@ -79,7 +79,7 @@ public:
 	SListArray(const SListArray& x)
 	{
 		_Size = x._Size;
-		_Data = new std::vector<ListNode<T>>(_Size);
+		_Data.resize(_Size);
 		const_iterator it = x.begin();
 		if (_Size > 0)
 		{
@@ -97,20 +97,17 @@ public:
 
 	SListArray(SListArray&& x)
 	{
-		_Root = x._Root;
-		_Size = x._Size;
-		_Data = x._Data;
-		x._Data = new std::vector<ListNode<T>>();
-		x._Root = nullptr;
-		x._Size = 0;
+		swap(_Root, x._Root);
+		swap(_Size, x._Size);
+		swap(_Data, x._Data);
 	};
 
 	SListArray(std::initializer_list<value_type> il)
 	{
 		_Root = nullptr;
-		const value_type* it = il.begin(); //equivalent of std::initializer_list<value_type>::iterator
+		const_iterator* it = il.cbegin(); //equivalent of std::initializer_list<value_type>::iterator
 		_Size = il.size();
-		_Data = new std::vector<ListNode<T>>(il.size());
+		_Data.resize(il.size());
 		if (_Size > 0)
 		{
 			_Data[0].value = *it;
