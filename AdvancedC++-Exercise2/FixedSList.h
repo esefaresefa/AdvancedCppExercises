@@ -84,9 +84,10 @@ public:
 		}
 		for (rootIndex; rootIndex < x._Size; ++rootIndex, ++it)
 		{
-			m_data[i - 1].next = &m_data[i];
-			m_data[i].value = x.m_data[i];
-			m_data[i].next = nullptr;
+			// TODO
+			// m_data[i - 1].next = &m_data[i];
+			// m_data[i].value = x.m_data[i];
+			// m_data[i].next = nullptr;
 		}
 	};
 

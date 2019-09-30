@@ -230,17 +230,11 @@ public:
 
 	void push_back(const value_type& val)
 	{
-		SListNode<T>* NewElement = GetLast();
 		if (_Size > 0)
 		{
-			SListNode* NewElement = GetLast();
+			SListNode<T>* NewElement = GetLast();
 
-		NewElement->next = new SListNode<T>();
-		NewElement = NewElement->next;
-		NewElement->value = val;
-		NewElement->next = nullptr;
-		++_Size;
-			NewElement->next = new SListNode();
+			NewElement->next = new SListNode<T>();
 			NewElement = NewElement->next;
 			NewElement->value = val;
 			NewElement->next = nullptr;
