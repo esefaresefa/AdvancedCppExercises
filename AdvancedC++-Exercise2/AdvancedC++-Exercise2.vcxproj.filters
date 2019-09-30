@@ -32,7 +32,13 @@
     <ClInclude Include="SListIterator.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="SListNode.h">
+    <ClInclude Include="SListArrayIterator.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedSListIterator.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="ListNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

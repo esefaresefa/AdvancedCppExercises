@@ -1,11 +1,11 @@
 #pragma once
 
 #include "SListIterator.h"
-#include "SListNode.h"
+#include "ListNode.h"
 #include <iterator>
 
 
-namespace slist {
+namespace list {
 
 	   	  
 template<typename T>
@@ -18,8 +18,8 @@ public:
 	typedef T& reference_type;
 	typedef const T& const_reference_type;
 
-	typedef SListIterator<SListNode<T>> iterator;
-	typedef SListIterator<const SListNode<T>> const_iterator;
+	typedef SListIterator<ListNode<T>> iterator;
+	typedef SListIterator<const ListNode<T>> const_iterator;
 	typedef std::reverse_iterator<SListIterator<T>> reverse_iterator;
 	typedef std::reverse_iterator<const SListIterator<T>> const_reverse_iterator;
 	
@@ -38,11 +38,11 @@ public:
 	SList(size_t n, const value_type& val)
 	{
 		_Root = nullptr;
-		SListNode<T>* AuxNode = nullptr;
+		ListNode<T>* AuxNode = nullptr;
 		_Size = n;
 		if (n > 0)
 		{
-			_Root = new SListNode<T>();
+			_Root = new ListNode<T>();
 			_Root->value = val;
 			_Root->next = nullptr;
 			AuxNode = _Root;
@@ -50,7 +50,7 @@ public:
 		}
 		for (; n > 0; --n)
 		{
-			AuxNode->next = new SListNode<T>();
+			AuxNode->next = new ListNode<T>();
 			AuxNode = AuxNode->next;
 			AuxNode->value = val;
 		}
@@ -59,15 +59,15 @@ public:
 
 	SList(iterator first, iterator last)
 	{
-		_Root = new SListNode();
+		_Root = new ListNode<T>();
 		_Root->value = *first;
 		_Root->next = nullptr;
 		_Size = 1;
-		SListNode* AuxNode = _Root;
+		ListNode<T>* AuxNode = _Root;
 		first++;
 		for (;first!=last;++first)
 		{
-			AuxNode->next = new SListNode();
+			AuxNode->next = new ListNode<T>();
 			AuxNode = AuxNode->next;
 			AuxNode->value = *first;
 			++_Size;
@@ -78,19 +78,19 @@ public:
 	SList(const SList& x)
 	{
 		_Root = nullptr;
-		SListNode* AuxNode = _Root;
+		ListNode<T>* AuxNode = _Root;
 		iterator it = x.begin();
 		_Size = x._Size;
 		if (_Size > 0)
 		{
-			_Root = new SListNode();
+			_Root = new ListNode<T>();
 			_Root->value = *it;
 			_Root->next = nullptr;
 			AuxNode = _Root;
 		}
 		for (int i=1; i < x._Size; ++i, ++it)
 		{
-			AuxNode->next = new SListNode();
+			AuxNode->next = new ListNode<T>();
 			AuxNode = AuxNode->next;
 			AuxNode->value = *it;
 		}
@@ -108,12 +108,12 @@ public:
 	SList(std::initializer_list<value_type> il)
 	{
 		_Root = nullptr;
-		SListNode* AuxNode = _Root;
+		ListNode<T>* AuxNode = _Root;
 		const value_type* it = il.begin(); //equivalent of std::initializer_list<value_type>::iterator
 		_Size = il.size();
 		if (il.size()>0)
 		{
-			_Root = new SListNode();
+			_Root = new ListNode<T>();
 			_Root->value = *it;
 			_Root->next = nullptr;
 			AuxNode = _Root; 
@@ -121,7 +121,7 @@ public:
 		}
 		for (; it != il.end(); ++it)
 		{
-			AuxNode->next = new SListNode();
+			AuxNode->next = new ListNode<T>();
 			AuxNode = AuxNode->next;
 			AuxNode->value = *it;
 		}
@@ -130,7 +130,7 @@ public:
 
 	virtual ~SList() 
 	{
-		SListNode<T>* AuxNode = nullptr;
+		ListNode<T>* AuxNode = nullptr;
 		for (; _Size > 0; _Size--)
 		{
 			AuxNode = _Root;
@@ -143,7 +143,7 @@ public:
 
 	SList& operator= (const SList& x)
 	{
-		SListNode* AuxNode = nullptr;
+		ListNode<T>* AuxNode = nullptr;
 		for (; _Size > 0; _Size--)
 		{
 			AuxNode = _Root;
@@ -159,7 +159,7 @@ public:
 
 	SList& operator= (SList&& x) 
 	{
-		SListNode* AuxNode=nullptr;
+		ListNode<T>* AuxNode=nullptr;
 		for (; _Size > 0; _Size--)
 		{
 			AuxNode = _Root;
@@ -174,7 +174,7 @@ public:
 
 	SList& operator= (std::initializer_list<value_type> il)
 	{
-		SListNode* AuxNode = nullptr;
+		ListNode<T>* AuxNode = nullptr;
 		for (; _Size > 0; _Size--)
 		{
 			AuxNode = _Root;
@@ -200,7 +200,7 @@ public:
 
 	void push_front(const value_type& val)
 	{
-		SListNode* NewElement = new SListNode<T>();
+		ListNode<T>* NewElement = new ListNode<T>();
 		NewElement->value = val;
 		NewElement->next = _Root;
 		_Root = NewElement;
@@ -209,7 +209,7 @@ public:
 
 	void push_front(value_type&& val) 
 	{
-		SListNode* NewElement = new SListNode<T>();
+		ListNode<T>* NewElement = new ListNode<T>();
 		std::swap(NewElement->value, val);
 		NewElement->next = _Root;
 		_Root = NewElement;
@@ -220,7 +220,7 @@ public:
 	{
 		if (_Size > 0)
 		{
-			SListNode<T>* AuxNode = _Root;
+			ListNode<T>* AuxNode = _Root;
 			_Root = _Root->next;
 			--_Size;
 			AuxNode->value.~value_type();
@@ -232,9 +232,9 @@ public:
 	{
 		if (_Size > 0)
 		{
-			SListNode<T>* NewElement = GetLast();
+			ListNode<T>* NewElement = GetLast();
 
-			NewElement->next = new SListNode<T>();
+			NewElement->next = new ListNode<T>();
 			NewElement = NewElement->next;
 			NewElement->value = val;
 			NewElement->next = nullptr;
@@ -242,7 +242,7 @@ public:
 		}
 		else
 		{
-			_Root = new SListNode<T>();
+			_Root = new ListNode<T>();
 			_Root->value = val;
 			_Root->next = nullptr;
 			++_Size;
@@ -253,9 +253,9 @@ public:
 	{
 		if (_Size > 0)
 		{
-			SListNode<T>* NewElement = GetLast();
+			ListNode<T>* NewElement = GetLast();
 
-			NewElement->next = new SListNode<T>();
+			NewElement->next = new ListNode<T>();
 			NewElement = NewElement->next;
 			std::swap(NewElement->value, val);
 			NewElement->next = nullptr;
@@ -263,7 +263,7 @@ public:
 		}
 		else
 		{
-			_Root = new SListNode<T>();
+			_Root = new ListNode<T>();
 			std::swap(_Root->value , val);
 			_Root->next = nullptr;
 			++_Size;
@@ -302,9 +302,9 @@ public:
 
 protected:
 
-	SListNode<T>* GetLast() 
+	ListNode<T>* GetLast() 
 	{
-		SListNode<T>* Element = _Root;
+		ListNode<T>* Element = _Root;
 		while (Element->next)
 		{
 			Element = Element->next;
@@ -314,11 +314,11 @@ protected:
 
 private:
 
-	SListNode<T>* _Root;
+	ListNode<T>* _Root;
 	size_t _Size;
 
 };
 
 
 
-} // namespace slist
+} // namespace list
