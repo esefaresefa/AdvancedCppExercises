@@ -33,8 +33,7 @@ public:
 	{
 		value_type val = {};
 		SList aux(n, val);
-		std::swap(_Root, aux._Root);
-		std::swap(_Size, aux._Size);
+		std::swap(*this, aux);
 	};
 
 	SList(size_t n, const value_type& val)
@@ -153,8 +152,7 @@ public:
 			delete AuxNode;
 		}
 		SList aux(x);
-		std::swap(_Root,aux._Root);
-		std::swap(_Size,aux._Size);
+		std::swap(*this, aux);
 		return *this;
 	};
 
@@ -168,8 +166,7 @@ public:
 			AuxNode->value.~value_type();
 			delete AuxNode;
 		}
-		std::swap(_Root, x);
-		std::swap(_Size, x);
+		std::swap(*this, x);
 		return *this;
 	};
 
@@ -184,8 +181,7 @@ public:
 			delete AuxNode;
 		}
 		SList aux(il);
-		std::swap(_Root, aux._Root);
-		std::swap(_Size, aux._Size);
+		std::swap(*this, aux);
 		return *this;
 	};
 
