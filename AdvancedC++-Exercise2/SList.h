@@ -23,6 +23,7 @@ public:
 	typedef std::reverse_iterator<SListIterator> reverse_iterator;
 	typedef std::reverse_iterator<SListIterator> const_reverse_iterator;
 	
+	// Constructors
 	explicit SList() 
 	{
 		_Root = nullptr;
@@ -128,6 +129,8 @@ public:
 		AuxNode->next = nullptr;
 	};
 
+
+	// Destructor
 	virtual ~SList() 
 	{
 		SlistNode* AuxNode = nullptr;
@@ -141,6 +144,8 @@ public:
 		delete _Root;
 	};
 
+
+	// Asignment operators
 	SList& operator= (const SList& x)
 	{
 		SlistNode* AuxNode = nullptr;
@@ -183,6 +188,7 @@ public:
 		this = SList(il);
 	};
 
+	// Utilities
 	bool empty() const 
 	{
 		return _Size < 0;
@@ -193,6 +199,30 @@ public:
 		return _Size;
 	};
 
+
+	// Access operators
+	SlistNode& front()
+	{
+		return _Root;
+	}
+
+	SlistNode& back()
+	{
+		if (_Root == nullptr)
+			return _Root;
+
+		SlistNode* AuxNode = _Root;
+
+		while (AuxNode->next != nullptr)
+		{
+			AuxNode = AuxNode->next;
+		}
+
+		return AuxNode;
+	}
+
+
+	// Modifiers
 	void push_front(const value_type& val)
 	{
 		SlistNode* NewElement = new SlistNode();
@@ -254,6 +284,58 @@ public:
 		NewElement->next = nullptr;
 		++_Size;
 	};
+
+	void pop_back()
+	{
+		if (_Size > 0)
+		{
+			// if last node in list
+			if (_Root->next == nullptr)
+			{
+				--_Size;
+				_Root->value.~value_type();
+				_Root->value = nullptr;
+				delete _Root;
+			}
+			// if there is more than one node
+			else
+			{
+				SlistNode* AuxNode = _Root;
+
+				while ((AuxNode->next)->next != nullptr)
+				{
+					AuxNode = AuxNode->next;
+				}
+
+				--_Size;
+				(AuxNode->next)->value.~value_type();
+				delete AuxNode->next;
+				AuxNode->next = nullptr;
+			}
+
+		}
+	}
+
+	//emplace Construct and insert element(public member function)
+	//insert Insert elements(public member function)
+	//erase Erase elements(public member function)
+
+
+	void swap()
+	{
+
+	}
+
+	void resize()
+	{
+
+	}
+
+	void clear()
+	{
+
+	}
+
 
 	iterator begin() { return iterator(&_Root); };
 	iterator end() { return iterator(&_Root); };
