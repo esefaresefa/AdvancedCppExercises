@@ -33,7 +33,10 @@ public:
 	explicit SListArray(size_t n)
 	{
 		value_type val = {};
-		SListArray(n, val);
+		SListArray aux(n, val);
+		std::swap(m_data, aux.m_data);
+		std::swap(_Root, aux._Root);
+		std::swap(_Size, aux._Size);
 	};
 
 	SListArray(size_t n, const value_type& val)
@@ -76,8 +79,8 @@ public:
 	SListArray(const SListArray& x)
 	{
 		_Size = x._Size;
-		_Data = new std::vector<ListNode<T>>(_Size);
-		iterator it = x.begin();
+		m_data = new std::vector<SListArrayNode>(_Size);
+		const_iterator it = x.begin();
 		if (_Size > 0)
 		{
 			_Data[0].value = x._Data[0];
@@ -160,7 +163,7 @@ public:
 
 	bool empty() const
 	{
-		return _Size < 0;
+		return _Size <= 0;
 	};
 
 	size_t size() const

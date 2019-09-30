@@ -32,7 +32,8 @@ public:
 	explicit SList(size_t n)
 	{
 		value_type val = {};
-		SList(n, val);
+		SList aux(n, val);
+		std::swap(*this, aux);
 	};
 
 	SList(size_t n, const value_type& val)
@@ -65,12 +66,11 @@ public:
 		_Size = 1;
 		ListNode<T>* AuxNode = _Root;
 		first++;
-		for (;first!=last;++first)
+		for (;first!=last;++first,++_Size)
 		{
 			AuxNode->next = new ListNode<T>();
 			AuxNode = AuxNode->next;
 			AuxNode->value = *first;
-			++_Size;
 		}
 		AuxNode->next = nullptr;
 	};
@@ -79,7 +79,7 @@ public:
 	{
 		_Root = nullptr;
 		ListNode<T>* AuxNode = _Root;
-		iterator it = x.begin();
+		const iterator it = x.cbegin();
 		_Size = x._Size;
 		if (_Size > 0)
 		{
@@ -152,14 +152,13 @@ public:
 			delete AuxNode;
 		}
 		SList aux(x);
-		std::swap(_Root,aux._Root);
-		std::swap(_Size,aux._Size);
+		std::swap(*this, aux);
 		return *this;
 	};
 
 	SList& operator= (SList&& x) 
 	{
-		ListNode<T>* AuxNode=nullptr;
+		ListNode<T>* AuxNode = nullptr;
 		for (; _Size > 0; _Size--)
 		{
 			AuxNode = _Root;
@@ -167,8 +166,7 @@ public:
 			AuxNode->value.~value_type();
 			delete AuxNode;
 		}
-		std::swap(_Root, x);
-		std::swap(_Size, x);
+		std::swap(*this, x);
 		return *this;
 	};
 
@@ -183,14 +181,13 @@ public:
 			delete AuxNode;
 		}
 		SList aux(il);
-		std::swap(_Root, aux._Root);
-		std::swap(_Size, aux._Size);
+		std::swap(*this, aux);
 		return *this;
 	};
 
 	bool empty() const 
 	{
-		return _Size < 0;
+		return _Size <= 0;
 	};
 
 	size_t size() const
@@ -280,12 +277,12 @@ public:
 		return iterator(nullptr); 
 	};
 
-	const_iterator cbegin() 
+	const_iterator cbegin() const
 	{ 
 		return const_iterator(_Root); 
 	};
 
-	const_iterator cend() 
+	const_iterator cend() const
 	{ 
 		return const_iterator(nullptr); 
 	};
@@ -295,7 +292,7 @@ public:
 		return reverse_iterator(_Root);
 	};
 
-	const_reverse_iterator rend()
+	const_reverse_iterator rend() const
 	{
 		return const_reverse_iterator(nullptr);
 	};

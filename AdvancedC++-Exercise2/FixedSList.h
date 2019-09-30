@@ -32,7 +32,8 @@ public:
 	explicit FixedSList(size_t n)//n should be minor of N
 	{
 		value_type val = {};
-		FixedSList(n, val);
+		SListArray aux(n, val);
+		std::swap(*this, aux);
 	};
 
 	FixedSList(size_t n, const value_type& val)//n should be minor of N
@@ -73,7 +74,7 @@ public:
 	FixedSList(const FixedSList& x)
 	{
 		_Size = x._Size;
-		FixedSListIterator it = x.begin();
+		const_iterator it = x.begin();
 		size_t rootIndex = x._Root - &_Data[0];
 		if (_Size > 0)
 		{
@@ -142,9 +143,7 @@ public:
 		_Root = nullptr;
 
 		FixedSList aux(x);
-		std::swap(_Root, aux._Root);
-		std::swap(_Size, aux._Size);
-		std::swap(_Data, aux._Data);
+		std::swap(*this, aux);
 		return *this;
 	};
 
@@ -158,9 +157,7 @@ public:
 		_Size = 0;
 		_Root = nullptr;
 
-		std::swap(_Root, x);
-		std::swap(_Size, x);
-		std::swap(_Data, x._Data);
+		std::swap(*this, x);
 		return *this;
 	};
 
@@ -175,15 +172,13 @@ public:
 		_Root = nullptr;
 
 		FixedSList aux(il);
-		std::swap(_Root, aux._Root);
-		std::swap(_Size, aux._Size);
-		std::swap(_Data, aux._Data);
+		std::swap(*this, aux);
 		return *this;
 	};
 
 	bool empty() const
 	{
-		return _Size < 0;
+		return _Size <= 0;
 	};
 
 	size_t size() const
@@ -270,8 +265,7 @@ public:
 
 	void push_back(value_type&& val)
 	{
-		ListNode<T> newNode{ val,nullptr };
-		//std::swap(newNode.val, val);
+		FixedSListNode newNode{ std::move(val),nullptr };
 		_Data[_Size] = newNode;
 		++_Size;
 		if (_Size > 1)
