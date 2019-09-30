@@ -6,7 +6,6 @@ using namespace slist;
 int main()
 {
 	SList<int> list;
-	// Add few items to the end of LinkedList 
 	list.push_back(111);
 	list.push_back(222);
 	list.push_back(333);

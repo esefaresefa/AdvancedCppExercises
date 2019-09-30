@@ -15,13 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SList.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="SListArray.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="FixedSList.cpp">
@@ -36,6 +30,12 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="FixedSList.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="SListIterator.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="SListNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

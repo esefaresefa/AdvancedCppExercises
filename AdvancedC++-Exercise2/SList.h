@@ -1,27 +1,27 @@
 #pragma once
 
+#include "SListIterator.h"
+#include "SListNode.h"
 #include <iterator>
+
 
 namespace slist {
 
-
+	   	  
 template<typename T>
 class SList
 {
 
 public:
-	// Forward declaration
-	class SListNode;
-	class SListIterator;
-	
+
 	typedef T value_type;
 	typedef T& reference_type;
 	typedef const T& const_reference_type;
 
-	typedef SListIterator iterator;
-	// typedef std::reverse_iterator<SListIterator> reverse_iterator;
-	// typedef SListConstIterator const_iterator;
-	// typedef std::reverse_iterator<SListConstIterator> const_reverse_iterator;
+	typedef SListIterator<SListNode<T>> iterator;
+	typedef SListIterator<const SListNode<T>> const_iterator;
+	typedef std::reverse_iterator<SListIterator<T>> reverse_iterator;
+	typedef std::reverse_iterator<const SListIterator<T>> const_reverse_iterator;
 	
 	explicit SList() 
 	{
@@ -57,7 +57,7 @@ public:
 		AuxNode->next = nullptr;
 	};
 
-	SList(SListIterator first, SListIterator last)
+	SList(iterator first, iterator last)
 	{
 		_Root = new SListNode();
 		_Root->value = *first;
@@ -79,7 +79,7 @@ public:
 	{
 		_Root = nullptr;
 		SListNode* AuxNode = _Root;
-		SListIterator it = x.begin();
+		iterator it = x.begin();
 		_Size = x._Size;
 		if (_Size > 0)
 		{
@@ -130,7 +130,7 @@ public:
 
 	virtual ~SList() 
 	{
-		SListNode* AuxNode = nullptr;
+		SListNode<T>* AuxNode = nullptr;
 		for (; _Size > 0; _Size--)
 		{
 			AuxNode = _Root;
@@ -230,9 +230,9 @@ public:
 
 	void push_back(const value_type& val)
 	{
-		SListNode* NewElement = GetLast();
+		SListNode<T>* NewElement = GetLast();
 
-		NewElement->next = new SListNode();
+		NewElement->next = new SListNode<T>();
 		NewElement = NewElement->next;
 		NewElement->value = val;
 		NewElement->next = nullptr;
@@ -241,9 +241,9 @@ public:
 
 	void push_back(value_type&& val) 
 	{
-		SListNode* NewElement = GetLast();
+		SListNode<T>* NewElement = GetLast();
 
-		NewElement->next = new SListNode();
+		NewElement->next = new SListNode<T>();
 		NewElement = NewElement->next;
 		std::swap(NewElement->value,val);
 		NewElement->next = nullptr;
@@ -257,23 +257,34 @@ public:
 
 	iterator end() 
 	{ 
-		return iterator(GetLast()); 
-	};
-	// const_iterator cbegin() { return const_iterator(&_Root); };
-	// const_iterator cend() { return const_iterator(&_Root); };
-
-	class SListNode {
-	public:
-		T value;
-		SListNode* next;
+		return iterator(nullptr); 
 	};
 
+	const_iterator cbegin() 
+	{ 
+		return const_iterator(_Root); 
+	};
+
+	const_iterator cend() 
+	{ 
+		return const_iterator(nullptr); 
+	};
+
+	reverse_iterator rbegin()
+	{
+		return reverse_iterator(_Root);
+	};
+
+	const_reverse_iterator rend()
+	{
+		return const_reverse_iterator(nullptr);
+	};
 
 protected:
 
-	SListNode* GetLast() 
+	SListNode<T>* GetLast() 
 	{
-		SListNode* Element = _Root;
+		SListNode<T>* Element = _Root;
 		for (size_t i = 0; i < _Size; ++i)
 		{
 			Element = Element->next;
@@ -283,89 +294,10 @@ protected:
 
 private:
 
-	SListNode* _Root;
+	SListNode<T>* _Root;
 	size_t _Size;
 
 };
-
-
-
-
-////////////////////////////////// SListIterator //////////////////////////////////
-template<typename T>
-class SList<T>::SListIterator {
-	
-public:
-
-	SListIterator();
-
-	SListIterator(SListNode* pNode);
-
-	SListIterator& operator= (SListNode* pNode);
-
-	// Prefix ++ overload 
-	SListIterator& operator++();
-
-	// Postfix ++ overload 
-	SListIterator operator++(int);
-
-	bool operator!=(const SListIterator& iterator);
-
-	T operator*();
-
-private:
-	SListNode* _CurrentNode;
-};
-
-
-template<typename T>
-SList<T>::SListIterator::SListIterator() : _CurrentNode(_Root)
-{ }
-
-
-template<typename T>
-SList<T>::SListIterator::SListIterator(SListNode* node) : _CurrentNode(node)
-{ }
-
-
-template<typename T>
-typename SList<T>::SListIterator& SList<T>::SListIterator::operator= (SListNode* node)
-{
-	this->_CurrentNode = node;
-	return *this;
-}
-
-
-template<typename T>
-typename SList<T>::SListIterator& SList<T>::SListIterator::operator++ ()
-{
-	if (_CurrentNode)
-		_CurrentNode = _CurrentNode->next;
-	return *this;
-}
-
-
-template<typename T>
-typename SList<T>::SListIterator SList<T>::SListIterator::operator++ (int)
-{
-	SListIterator iterator = *this;
-	++*this;
-	return iterator;
-}
-
-
-template<typename T>
-bool SList<T>::SListIterator::operator!= (const SList<T>::SListIterator& iterator)
-{
-	return _CurrentNode != iterator._CurrentNode;
-}
-
-
-template<typename T>
-T SList<T>::SListIterator::operator* ()
-{
-	return _CurrentNode->value;
-}
 
 
 
