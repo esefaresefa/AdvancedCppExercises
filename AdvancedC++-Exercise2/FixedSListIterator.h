@@ -25,6 +25,9 @@ public:
 
 	typename U::value_type operator*();
 
+	template<typename U>
+	friend size_t operator-(const FixedSListIterator<U>& lhs, const FixedSListIterator<U>& rhs);
+
 private:
 
 	U* _CurrentNode;
@@ -80,6 +83,14 @@ template<typename U>
 typename U::value_type FixedSListIterator<U>::operator* ()
 {
 	return _CurrentNode->value;
+}
+
+
+template<typename U>
+size_t operator-(const FixedSListIterator<U>& lhs, const FixedSListIterator<U>& rhs)
+{
+	size_t count = std::distance(rhs._CurrentNode, lhs._CurrentNode);
+	return count;
 }
 
 

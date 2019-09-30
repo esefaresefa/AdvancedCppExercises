@@ -59,6 +59,7 @@ public:
 
 	SListArray(iterator first, iterator last)
 	{
+		size_t a = last - first;
 		_Data.resize(last - first);
 		if (first != last)
 		{
@@ -224,7 +225,7 @@ public:
 
 	iterator end() 
 	{ 
-		return iterator(_Data[_Size]); 
+		return iterator(&_Data[_Size]); 
 	};
 
 	const_iterator cbegin() const 
@@ -234,7 +235,7 @@ public:
 
 	const_iterator cend() const 
 	{ 
-		return const_iterator(_Data[_Size]);
+		return const_iterator(&_Data[_Size]);
 	};
 
 	reverse_iterator rbegin()
@@ -244,7 +245,7 @@ public:
 
 	const_reverse_iterator rend()
 	{
-		return const_reverse_iterator(_Data[_Size]);
+		return const_reverse_iterator(&_Data[_Size]);
 	};
 
 private:
