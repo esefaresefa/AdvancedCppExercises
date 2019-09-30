@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace slist {
+namespace list {
 
 
 template<typename U>
@@ -26,6 +26,7 @@ public:
 	typename U::value_type operator*();
 
 private:
+
 	U* _CurrentNode;
 };
 
@@ -82,4 +83,4 @@ typename U::value_type SListIterator<U>::operator* ()
 }
 
 
-} // namespace slist
+} // namespace list

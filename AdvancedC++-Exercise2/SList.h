@@ -1,11 +1,11 @@
 #pragma once
 
 #include "SListIterator.h"
-#include "SListNode.h"
+#include "ListNode.h"
 #include <iterator>
 
 
-namespace slist {
+namespace list {
 
 	   	  
 template<typename T>
@@ -18,8 +18,8 @@ public:
 	typedef T& reference_type;
 	typedef const T& const_reference_type;
 
-	typedef SListIterator<SListNode<T>> iterator;
-	typedef SListIterator<const SListNode<T>> const_iterator;
+	typedef SListIterator<ListNode<T>> iterator;
+	typedef SListIterator<const ListNode<T>> const_iterator;
 	typedef std::reverse_iterator<SListIterator<T>> reverse_iterator;
 	typedef std::reverse_iterator<const SListIterator<T>> const_reverse_iterator;
 	
@@ -33,17 +33,18 @@ public:
 	explicit SList(size_t n)
 	{
 		value_type val = {};
-		SList(n, val);
+		SList aux(n, val);
+		std::swap(*this, aux);
 	};
 
 	SList(size_t n, const value_type& val)
 	{
 		_Root = nullptr;
-		SListNode<T>* AuxNode = nullptr;
+		ListNode<T>* AuxNode = nullptr;
 		_Size = n;
 		if (n > 0)
 		{
-			_Root = new SListNode<T>();
+			_Root = new ListNode<T>();
 			_Root->value = val;
 			_Root->next = nullptr;
 			AuxNode = _Root;
@@ -51,7 +52,7 @@ public:
 		}
 		for (; n > 0; --n)
 		{
-			AuxNode->next = new SListNode<T>();
+			AuxNode->next = new ListNode<T>();
 			AuxNode = AuxNode->next;
 			AuxNode->value = val;
 		}
@@ -60,18 +61,17 @@ public:
 
 	SList(iterator first, iterator last)
 	{
-		_Root = new SListNode();
+		_Root = new ListNode<T>();
 		_Root->value = *first;
 		_Root->next = nullptr;
 		_Size = 1;
-		SListNode* AuxNode = _Root;
+		ListNode<T>* AuxNode = _Root;
 		first++;
-		for (;first!=last;++first)
+		for (;first!=last;++first,++_Size)
 		{
-			AuxNode->next = new SListNode();
+			AuxNode->next = new ListNode<T>();
 			AuxNode = AuxNode->next;
 			AuxNode->value = *first;
-			++_Size;
 		}
 		AuxNode->next = nullptr;
 	};
@@ -79,19 +79,19 @@ public:
 	SList(const SList& x)
 	{
 		_Root = nullptr;
-		SListNode* AuxNode = _Root;
-		iterator it = x.begin();
+		ListNode<T>* AuxNode = _Root;
+		const_iterator it = x.cbegin();
 		_Size = x._Size;
 		if (_Size > 0)
 		{
-			_Root = new SListNode();
+			_Root = new ListNode<T>();
 			_Root->value = *it;
 			_Root->next = nullptr;
 			AuxNode = _Root;
 		}
 		for (int i=1; i < x._Size; ++i, ++it)
 		{
-			AuxNode->next = new SListNode();
+			AuxNode->next = new ListNode<T>();
 			AuxNode = AuxNode->next;
 			AuxNode->value = *it;
 		}
@@ -109,12 +109,12 @@ public:
 	SList(std::initializer_list<value_type> il)
 	{
 		_Root = nullptr;
-		SListNode* AuxNode = _Root;
+		ListNode<T>* AuxNode = _Root;
 		const value_type* it = il.begin(); //equivalent of std::initializer_list<value_type>::iterator
 		_Size = il.size();
 		if (il.size()>0)
 		{
-			_Root = new SListNode();
+			_Root = new ListNode<T>();
 			_Root->value = *it;
 			_Root->next = nullptr;
 			AuxNode = _Root; 
@@ -122,7 +122,7 @@ public:
 		}
 		for (; it != il.end(); ++it)
 		{
-			AuxNode->next = new SListNode();
+			AuxNode->next = new ListNode<T>();
 			AuxNode = AuxNode->next;
 			AuxNode->value = *it;
 		}
@@ -133,7 +133,7 @@ public:
 	// Destructor
 	virtual ~SList() 
 	{
-		SListNode<T>* AuxNode = nullptr;
+		ListNode<T>* AuxNode = nullptr;
 		for (; _Size > 0; _Size--)
 		{
 			AuxNode = _Root;
@@ -148,7 +148,7 @@ public:
 	// Asignment operators
 	SList& operator= (const SList& x)
 	{
-		SListNode* AuxNode = nullptr;
+		ListNode<T>* AuxNode = nullptr;
 		for (; _Size > 0; _Size--)
 		{
 			AuxNode = _Root;
@@ -157,14 +157,13 @@ public:
 			delete AuxNode;
 		}
 		SList aux(x);
-		std::swap(_Root,aux._Root);
-		std::swap(_Size,aux._Size);
+		std::swap(*this, aux);
 		return *this;
 	};
 
 	SList& operator= (SList&& x) 
 	{
-		SListNode* AuxNode=nullptr;
+		ListNode<T>* AuxNode = nullptr;
 		for (; _Size > 0; _Size--)
 		{
 			AuxNode = _Root;
@@ -172,14 +171,13 @@ public:
 			AuxNode->value.~value_type();
 			delete AuxNode;
 		}
-		std::swap(_Root, x);
-		std::swap(_Size, x);
+		std::swap(*this, x);
 		return *this;
 	};
 
 	SList& operator= (std::initializer_list<value_type> il)
 	{
-		SListNode* AuxNode = nullptr;
+		ListNode<T>* AuxNode = nullptr;
 		for (; _Size > 0; _Size--)
 		{
 			AuxNode = _Root;
@@ -188,8 +186,7 @@ public:
 			delete AuxNode;
 		}
 		SList aux(il);
-		std::swap(_Root, aux._Root);
-		std::swap(_Size, aux._Size);
+		std::swap(*this, aux);
 		return *this;
 	};
 
@@ -197,7 +194,7 @@ public:
 	// Capacity
 	bool empty() const 
 	{
-		return _Size < 0;
+		return _Size <= 0;
 	};
 
 	size_t size() const
@@ -207,17 +204,17 @@ public:
 
 
 	// Access operators
-	SlistNode& front()
+	ListNode<T>& front()
 	{
 		return _Root;
 	}
 
-	SlistNode& back()
+	ListNode<T>& back()
 	{
 		if (_Root == nullptr)
 			return _Root;
 
-		SlistNode* AuxNode = _Root;
+		ListNode* AuxNode = _Root;
 
 		while (AuxNode->next != nullptr)
 		{
@@ -231,7 +228,7 @@ public:
 	// Modifiers
 	void push_front(const value_type& val)
 	{
-		SListNode* NewElement = new SListNode<T>();
+		ListNode<T>* NewElement = new ListNode<T>();
 		NewElement->value = val;
 		NewElement->next = _Root;
 		_Root = NewElement;
@@ -240,7 +237,7 @@ public:
 
 	void push_front(value_type&& val) 
 	{
-		SListNode* NewElement = new SListNode<T>();
+		ListNode<T>* NewElement = new ListNode<T>();
 		std::swap(NewElement->value, val);
 		NewElement->next = _Root;
 		_Root = NewElement;
@@ -251,7 +248,7 @@ public:
 	{
 		if (_Size > 0)
 		{
-			SListNode<T>* AuxNode = _Root;
+			ListNode<T>* AuxNode = _Root;
 			_Root = _Root->next;
 			--_Size;
 			AuxNode->value.~value_type();
@@ -263,9 +260,9 @@ public:
 	{
 		if (_Size > 0)
 		{
-			SListNode<T>* NewElement = GetLast();
+			ListNode<T>* NewElement = GetLast();
 
-			NewElement->next = new SListNode<T>();
+			NewElement->next = new ListNode<T>();
 			NewElement = NewElement->next;
 			NewElement->value = val;
 			NewElement->next = nullptr;
@@ -273,7 +270,7 @@ public:
 		}
 		else
 		{
-			_Root = new SListNode<T>();
+			_Root = new ListNode<T>();
 			_Root->value = val;
 			_Root->next = nullptr;
 			++_Size;
@@ -284,9 +281,9 @@ public:
 	{
 		if (_Size > 0)
 		{
-			SListNode<T>* NewElement = GetLast();
+			ListNode<T>* NewElement = GetLast();
 
-			NewElement->next = new SListNode<T>();
+			NewElement->next = new ListNode<T>();
 			NewElement = NewElement->next;
 			std::swap(NewElement->value, val);
 			NewElement->next = nullptr;
@@ -294,7 +291,7 @@ public:
 		}
 		else
 		{
-			_Root = new SListNode<T>();
+			_Root = new ListNode<T>();
 			std::swap(_Root->value , val);
 			_Root->next = nullptr;
 			++_Size;
@@ -316,7 +313,7 @@ public:
 			// if there is more than one node
 			else
 			{
-				SlistNode* AuxNode = _Root;
+				ListNode<T>* AuxNode = _Root;
 
 				while ((AuxNode->next)->next != nullptr)
 				{
@@ -332,44 +329,117 @@ public:
 		}
 	}
 
-
-	//emplace Construct and insert element(public member function)
-	//insert Insert elements(public member function)
-	//erase Erase elements(public member function)
-
-
-	void swap(SList& other)
+	iterator insert(iterator pos, const T& value)
 	{
-		SList* AuxList = this;
-		this = other;
-		other = AuxList;
+		iterator PrecIt;
+		PrecIt._CurrentNode = _Root;
 
+		// maintain list order
+		while (PrecIt._CurrentNode->next != pos._CurrentNode)
+		{
+			PrecIt++;
+		}
+
+		ListNode<T>* NewElement = new ListNode<T>();
+		NewElement->value = value;
+		NewElement->next = pos._CurrentNode;
+
+		PrecIt._CurrentNode->next = NewElement;
+
+		return --pos;
 	}
+
+	iterator erase(iterator pos)
+	{
+		iterator PrecIt;
+		PrecIt._CurrentNode = _Root;
+
+		// maintain list order
+		while (PrecIt._CurrentNode->next != pos._CurrentNode)
+		{
+			PrecIt++;
+		}
+		PrecIt._CurrentNode->next = pos._CurrentNode->next;
+
+		// delete node in pos
+		pos._CurrentNode->value.~value_type();
+		delete pos._CurrentNode;
+
+		return ++PrecIt;
+	}
+
+	iterator erase(iterator first, iterator last)
+	{
+		iterator PrecIt;
+		PrecIt._CurrentNode = _Root;
+
+		// maintain list order
+		while (PrecIt._CurrentNode->next != first._CurrentNode)
+		{
+			PrecIt++;
+		}
+		PrecIt._CurrentNode->next = last._CurrentNode->next;
+
+		// delete first to last nodes
+		while (first != last)
+		{
+			first._CurrentNode->value.~value_type();
+			delete first._CurrentNode;
+			first++;
+		}
+		last._CurrentNode->value.~value_type();
+		delete last._CurrentNode;
+
+		return ++PrecIt;
+	}
+
 
 	void resize(size_type count, const value_type& value)
 	{
-		SListNode* AuxNode = _Root;
+		ListNode<T>* AuxNode = _Root;
+		ListNode<T>* LastNode = AuxNode;
 		int iter = 0;
 
+		// decrease list
 		if (_Size > count)
 		{
 			for (iter; iter < count; iter++)
-				AuxNode = AuxNode->next;
-		}
-		else if (_Size < count)
-		{
-			for (iter; iter < _Size; iter++)
-				AuxNode = AuxNode->next;
-
-			for (iter; iter < count; iter++)
 			{
-				AuxNode->value = value;
 				AuxNode = AuxNode->next;
 			}
 
+			LastNode = AuxNode;
+			
+			// delete extra nodes
+			for (iter; iter < _Size; iter++)
+			{
+				AuxNode->value~value_type();
+				delete AuxNode;
+				AuxNode = AuxNode->next;
+			}
+				
+		}
+		// increase list
+		else if (_Size < count)
+		{
+			for (iter; iter < _Size; iter++)
+			{
+				AuxNode = AuxNode->next;
+			}
+
+			// add extra nodes
+			for (iter; iter < count; iter++)
+			{
+				AuxNode->value = value;
+				AuxNode->next = new ListNode<T>();
+				AuxNode = AuxNode->next;
+			}
+
+			LastNode = AuxNode;
+
 		}
 
-		AuxNode->next = nullptr;
+		LastNode = nullptr;
 		_Size = count;
 	}
 
@@ -380,11 +450,12 @@ public:
 
 	void clear()
 	{
-		SListNode* AuxNode = _Root;
+		ListNode<T>* AuxNode = _Root;
 
 		while (AuxNode != nullptr)
 		{
 			AuxNode->value.~value_type();
+			delete AuxNode;
 			AuxNode = AuxNode->next;
 		}
 
@@ -405,12 +476,12 @@ public:
 		return iterator(nullptr); 
 	};
 
-	const_iterator cbegin() 
+	const_iterator cbegin() const
 	{ 
 		return const_iterator(_Root); 
 	};
 
-	const_iterator cend() 
+	const_iterator cend() const
 	{ 
 		return const_iterator(nullptr); 
 	};
@@ -420,16 +491,16 @@ public:
 		return reverse_iterator(_Root);
 	};
 
-	const_reverse_iterator rend()
+	const_reverse_iterator rend() const
 	{
 		return const_reverse_iterator(nullptr);
 	};
 
 protected:
 
-	SListNode<T>* GetLast() 
+	ListNode<T>* GetLast() 
 	{
-		SListNode<T>* Element = _Root;
+		ListNode<T>* Element = _Root;
 		while (Element->next)
 		{
 			Element = Element->next;
@@ -439,11 +510,11 @@ protected:
 
 private:
 
-	SListNode<T>* _Root;
+	ListNode<T>* _Root;
 	size_t _Size;
 
 };
 
 
 
-} // namespace slist
+} // namespace list

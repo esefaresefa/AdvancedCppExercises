@@ -1,11 +1,11 @@
 #pragma once
 
 
-namespace slist {
+namespace list {
 
 
 template<typename T>
-class SListNode {
+class ListNode {
 
 public:
 
@@ -14,8 +14,8 @@ public:
 	typedef const T& const_reference_type;
 
 	T value;
-	SListNode* next;
+	ListNode* next;
 };
 
 
-} // namespace slist
+} // namespace list

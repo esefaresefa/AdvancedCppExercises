@@ -119,10 +119,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FixedSList.h" />
+    <ClInclude Include="FixedSListIterator.h" />
     <ClInclude Include="SList.h" />
     <ClInclude Include="SListArray.h" />
+    <ClInclude Include="SListArrayIterator.h" />
     <ClInclude Include="SListIterator.h" />
-    <ClInclude Include="SListNode.h" />
+    <ClInclude Include="ListNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
