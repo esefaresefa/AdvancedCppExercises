@@ -74,13 +74,15 @@ public:
 	{
 		_Size = x._Size;
 		FixedSListIterator it = x.begin();
+		size_t rootIndex = x._Root - &m_data[0];
 		if (_Size > 0)
 		{
-			m_data[0].value = x.m_data[0];
-			m_data[0].next = nullptr;
-			_Root = &m_data[0];
+			m_data[rootIndex].value = x.m_data[0];
+			m_data[rootIndex].next = nullptr;
+			_Root = &m_data[rootIndex];
+			++rootIndex;
 		}
-		for (int i = 1; i < x._Size; ++i, ++it)
+		for (rootIndex; rootIndex < x._Size; ++rootIndex, ++it)
 		{
 			m_data[i - 1].next = &m_data[i];
 			m_data[i].value = x.m_data[i];
