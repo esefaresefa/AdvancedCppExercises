@@ -10,9 +10,22 @@ int main()
 {
 	// TESTING CONSTRUCTORS
 	{
+		// SList
 		std::cout << "SList default constructor... ";
 		SList<int> slist;
 		assert(&slist != nullptr);
+		std::cout << "OK!";
+
+		// SListArray
+		std::cout << "SListArray default constructor... ";
+		SListArray<int> alist;
+		assert(&alist != nullptr);
+		std::cout << "OK!";
+
+		// FixedSList
+		std::cout << "FixedSList default constructor... ";
+		SList<int> flist;
+		assert(&flist != nullptr);
 		std::cout << "OK!";
 	}
 

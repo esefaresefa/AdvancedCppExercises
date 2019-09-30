@@ -100,10 +100,8 @@ public:
 
 	SList(SList&& x)
 	{
-		_Root = x._Root;
-		_Size = x._Size;
-		x._Root = nullptr;
-		x._Size = 0;
+		std::swap(_Root, x._Root);
+		std::swap(_Size, x._Size);
 	};
 
 	SList(std::initializer_list<value_type> il)
