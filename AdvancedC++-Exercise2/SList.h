@@ -151,8 +151,10 @@ public:
 			AuxNode->value.~value_type();
 			delete AuxNode;
 		}
-		delete _Root;
-		this = SList(x);
+		SList aux(x);
+		std::swap(_Root,aux._Root);
+		std::swap(_Size,aux._Size);
+		return *this;
 	};
 
 	SList& operator= (SList&& x) 
@@ -165,8 +167,9 @@ public:
 			AuxNode->value.~value_type();
 			delete AuxNode;
 		}
-		delete _Root;
-		this = SList(std::move(x));
+		std::swap(_Root, x);
+		std::swap(_Size, x);
+		return *this;
 	};
 
 	SList& operator= (std::initializer_list<value_type> il)
@@ -179,8 +182,10 @@ public:
 			AuxNode->value.~value_type();
 			delete AuxNode;
 		}
-		delete _Root;
-		this = SList(il);
+		SList aux(il);
+		std::swap(_Root, aux._Root);
+		std::swap(_Size, aux._Size);
+		return *this;
 	};
 
 	bool empty() const 
