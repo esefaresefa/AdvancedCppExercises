@@ -32,7 +32,10 @@ public:
 	explicit FixedSList(size_t n)//n should be minor of N
 	{
 		value_type val = {};
-		SList(n, val);
+		SListArray aux(n, val);
+		std::swap(m_data, aux.m_data);
+		std::swap(_Root, aux._Root);
+		std::swap(_Size, aux._Size);
 	};
 
 	FixedSList(size_t n, const value_type& val)//n should be minor of N
@@ -73,7 +76,7 @@ public:
 	FixedSList(const FixedSList& x)
 	{
 		_Size = x._Size;
-		FixedSListIterator it = x.begin();
+		const_iterator it = x.begin();
 		size_t rootIndex = x._Root - &m_data[0];
 		if (_Size > 0)
 		{
@@ -183,7 +186,7 @@ public:
 
 	bool empty() const
 	{
-		return _Size < 0;
+		return _Size <= 0;
 	};
 
 	size_t size() const
