@@ -338,19 +338,59 @@ public:
 	//erase Erase elements(public member function)
 
 
-	void swap()
+	void swap(SList& other)
 	{
+		SList* AuxList = this;
+		this = other;
+		other = AuxList;
 
 	}
 
-	void resize()
+	void resize(size_type count, const value_type& value)
 	{
+		SListNode* AuxNode = _Root;
+		int iter = 0;
 
+		if (_Size > count)
+		{
+			for (iter; iter < count; iter++)
+				AuxNode = AuxNode->next;
+		}
+		else if (_Size < count)
+		{
+			for (iter; iter < _Size; iter++)
+				AuxNode = AuxNode->next;
+
+			for (iter; iter < count; iter++)
+			{
+				AuxNode->value = value;
+				AuxNode = AuxNode->next;
+			}
+
+		}
+
+		AuxNode->next = nullptr;
+		_Size = count;
+	}
+
+	void resize(size_t count)
+	{
+		resize(count, 0);
 	}
 
 	void clear()
 	{
+		SListNode* AuxNode = _Root;
 
+		while (AuxNode != nullptr)
+		{
+			AuxNode->value.~value_type();
+			AuxNode = AuxNode->next;
+		}
+
+		_Root = nullptr;
+		_Root->next = nullptr;
+		_Size = 0;
 	}
 
 
