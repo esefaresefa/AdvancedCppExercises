@@ -265,7 +265,7 @@ public:
 
 	void push_back(value_type&& val)
 	{
-		FixedSListNode newNode{ std::move(val),nullptr };
+		ListNode<T> newNode{val, nullptr};
 		_Data[_Size] = newNode;
 		++_Size;
 		if (_Size > 1)

@@ -1,4 +1,4 @@
-#include "SList.h"std::cout << std::endl << "push back ...";
+#include "SList.h"
 #include "SListArray.h"
 #include "FixedSList.h"
 #include <iostream>
@@ -8,12 +8,20 @@ using namespace list;
 
 int main()
 {
+	// TESTING CONSTRUCTORS
+	{
+		std::cout << "SList default constructor... ";
+		SList<int> slist;
+		assert(&slist != nullptr);
+		std::cout << "OK!";
+	}
+
 	// TESTING ITERATORS
 	{
 		// SList
 		std::cout << "SList::iterator operator++ test... ";
 
-std::cout << std::endl << "default constructor ...";
+		std::cout << std::endl << "default constructor ...";
 		SList<int> slist;
 
 		slist.push_back(111);

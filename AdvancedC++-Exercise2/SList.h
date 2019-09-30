@@ -79,7 +79,7 @@ public:
 	{
 		_Root = nullptr;
 		ListNode<T>* AuxNode = _Root;
-		const iterator it = x.cbegin();
+		const_iterator it = x.cbegin();
 		_Size = x._Size;
 		if (_Size > 0)
 		{
