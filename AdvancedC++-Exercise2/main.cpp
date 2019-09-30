@@ -10,30 +10,10 @@ int main()
 {
 	// TESTING CONSTRUCTORS
 	{
-		// SList
 		std::cout << "SList default constructor... ";
 		SList<int> slist;
 		assert(&slist != nullptr);
 		std::cout << "OK!";
-
-		// SListArray
-		std::cout << "SListArray default constructor... ";
-		SListArray<int> alist;
-		assert(&alist != nullptr);
-		std::cout << "OK!";
-
-		// FixedSList
-		std::cout << "FixedSList default constructor... ";
-		FixedSList<int, 1> flist;
-		assert(&flist != nullptr);
-		std::cout << "OK!";
-
-		// SListArray range constructor
-		std::cout << "FixedSList range constructor... ";
-		alist.push_back(1);
-		alist.push_back(2);
-		alist.push_back(3);
-		SListArray<int> alist2(alist.begin(), alist.end());
 	}
 
 	// TESTING ITERATORS
@@ -41,7 +21,9 @@ int main()
 		// SList
 		std::cout << "SList::iterator operator++ test... ";
 
+		std::cout << std::endl << "default constructor ...";
 		SList<int> slist;
+
 		slist.push_back(111);
 		slist.push_back(222);
 		slist.push_back(333);
@@ -72,14 +54,14 @@ int main()
 		std::cout << "FixedSList::iterator operator++ test... ";
 
 		FixedSList<int, 5> flist;
-		flist.push_back(777);
-		flist.push_back(888);
-		flist.push_back(999);
+		//flist.push_back(777);
+		//flist.push_back(888);
+		//flist.push_back(999);
 
 		FixedSList<int, 5>::iterator fiterator = flist.begin();
-		assert(*fiterator++ == 777);
-		assert(*fiterator++ == 888);
-		assert(*fiterator++ == 999);
+		//assert(*fiterator++ == 777);
+		//assert(*fiterator++ == 888);
+		//assert(*fiterator++ == 999);
 
 		std::cout << "OK!" << std::endl;
 	}

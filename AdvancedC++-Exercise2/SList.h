@@ -394,7 +394,7 @@ public:
 	}
 
 
-	void resize(size_type count, const value_type& value)
+	void resize(size_t count, const value_type& value)
 	{
 		ListNode<T>* AuxNode = _Root;
 		ListNode<T>* LastNode = AuxNode;
@@ -413,7 +413,7 @@ public:
 			// delete extra nodes
 			for (iter; iter < _Size; iter++)
 			{
-				AuxNode->value~value_type();
+				AuxNode->value.~value_type();
 				delete AuxNode;
 				AuxNode = AuxNode->next;
 			}

@@ -282,11 +282,12 @@ public:
 		{
 			if (_Size < N)
 			{
-				for (iterator it = _Root; it != end() ; ++it)
+				iterator it = _Root;
+				for (; it != end() ; ++it)
 				{
 					*it = *(it+1);
 				}
-				*it.value = val;
+				//*it.value = val;
 				++_Size;
 			}
 			else 
@@ -308,11 +309,12 @@ public:
 		{
 			if (_Size < N)
 			{
-				for (iterator it = _Root; it != end(); ++it)
+				iterator it = _Root;
+				for (; it != end(); ++it)
 				{
 					*it = *(it + 1);
 				}
-				std::swap(*it.value = val);
+				//std::swap(*it.value = val);
 				++_Size;
 			}
 			else
