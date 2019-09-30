@@ -38,11 +38,11 @@ public:
 	SList(size_t n, const value_type& val)
 	{
 		_Root = nullptr;
-		SListNode* AuxNode = nullptr;
+		SListNode<T>* AuxNode = nullptr;
 		_Size = n;
 		if (n > 0)
 		{
-			_Root = new SListNode();
+			_Root = new SListNode<T>();
 			_Root->value = val;
 			_Root->next = nullptr;
 			AuxNode = _Root;
@@ -50,7 +50,7 @@ public:
 		}
 		for (; n > 0; --n)
 		{
-			AuxNode->next = new SListNode();
+			AuxNode->next = new SListNode<T>();
 			AuxNode = AuxNode->next;
 			AuxNode->value = val;
 		}
@@ -200,7 +200,7 @@ public:
 
 	void push_front(const value_type& val)
 	{
-		SListNode* NewElement = new SListNode();
+		SListNode* NewElement = new SListNode<T>();
 		NewElement->value = val;
 		NewElement->next = _Root;
 		_Root = NewElement;
@@ -209,7 +209,7 @@ public:
 
 	void push_front(value_type&& val) 
 	{
-		SListNode* NewElement = new SListNode();
+		SListNode* NewElement = new SListNode<T>();
 		std::swap(NewElement->value, val);
 		NewElement->next = _Root;
 		_Root = NewElement;
@@ -220,7 +220,7 @@ public:
 	{
 		if (_Size > 0)
 		{
-			SListNode* AuxNode = _Root;
+			SListNode<T>* AuxNode = _Root;
 			_Root = _Root->next;
 			--_Size;
 			AuxNode->value.~value_type();
@@ -242,7 +242,7 @@ public:
 		}
 		else
 		{
-			_Root = new SListNode();
+			_Root = new SListNode<T>();
 			_Root->value = val;
 			_Root->next = nullptr;
 			++_Size;
@@ -263,7 +263,7 @@ public:
 		}
 		else
 		{
-			_Root = new SListNode();
+			_Root = new SListNode<T>();
 			_Root->value = val;
 			_Root->next = nullptr;
 			++_Size;
