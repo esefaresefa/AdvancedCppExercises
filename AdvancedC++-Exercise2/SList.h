@@ -264,7 +264,7 @@ public:
 		else
 		{
 			_Root = new SListNode<T>();
-			_Root->value = val;
+			std::swap(_Root->value , val);
 			_Root->next = nullptr;
 			++_Size;
 		}
@@ -305,7 +305,7 @@ protected:
 	SListNode<T>* GetLast() 
 	{
 		SListNode<T>* Element = _Root;
-		for (size_t i = 0; i < _Size; ++i)
+		while (Element->next)
 		{
 			Element = Element->next;
 		}
