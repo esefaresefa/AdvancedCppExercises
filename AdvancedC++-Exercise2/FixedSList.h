@@ -4,6 +4,7 @@
 #include "FixedSListIterator.h"
 #include <iterator>
 #include <vector>
+#include <stdexcept>
 
 namespace list {
 
@@ -33,7 +34,9 @@ public:
 	{
 		value_type val = {};
 		SListArray aux(n, val);
-		std::swap(*this, aux);
+		std::swap(_Data, aux._Data);
+		std::swap(_Root, aux._Root);
+		std::swap(_Size, aux._Size);
 	};
 
 	FixedSList(size_t n, const value_type& val)//n should be minor of N
@@ -198,21 +201,28 @@ public:
 		}
 		else
 		{
-			for (size_t i = _Size; i > 0; --i)
+			if (_Size < N)
 			{
-				_Data[i + 1] = _Data[i];
-			}
-			_Data[0].value = val;
-			++_Size;
-			if (_Size > 1)
-			{
-				_Data[0].next = &_Data[1];
+				for (size_t i = _Size; i > 0; --i)
+				{
+					_Data[i + 1] = _Data[i];
+				}
+				_Data[0].value = val;
+				++_Size;
+				if (_Size > 1)
+				{
+					_Data[0].next = &_Data[1];
+				}
+				else
+				{
+					_Data[0].next = nullptr;
+				}
+				_Root = &_Data[0];
 			}
 			else
 			{
-				_Data[0].next = nullptr;
+				throw std::out_of_range("index out of fixed list");
 			}
-			_Root = &_Data[0];
 		}
 	};
 
@@ -228,21 +238,28 @@ public:
 		}
 		else
 		{
-			for (size_t i = _Size; i > 0; --i)
+			if (_Size < N)
 			{
-				_Data[i + 1] = _Data[i];
-			}
-			std::swap(_Data[0].value , val);
-			++_Size;
-			if (_Size > 1)
-			{
-				_Data[0].next = &_Data[1];
+				for (size_t i = _Size; i > 0; --i)
+				{
+					_Data[i + 1] = _Data[i];
+				}
+				std::swap(_Data[0].value, val);
+				++_Size;
+				if (_Size > 1)
+				{
+					_Data[0].next = &_Data[1];
+				}
+				else
+				{
+					_Data[0].next = nullptr;
+				}
+				_Root = &_Data[0];
 			}
 			else
 			{
-				_Data[0].next = nullptr;
+				throw std::out_of_range("index out of fixed list");
 			}
-			_Root = &_Data[0];
 		}
 	};
 
@@ -255,22 +272,53 @@ public:
 
 	void push_back(const value_type& val)
 	{
-		_Data[_Size] = {val, nullptr};
-		++_Size;
-		if (_Size > 1)
+		int forwardData=_Root - &_Data[0];
+		if (forwardData + _Size < N)
 		{
-			_Data[_Size - 2].next = &_Data[_Size - 1];
+			_Data[_Size] = { val, nullptr };
+			++_Size;
+		}
+		else
+		{
+			if (_Size < N)
+			{
+				for (iterator it = _Root; it != end() ; ++it)
+				{
+					*it = *(it+1);
+				}
+				*it.value = val;
+				++_Size;
+			}
+			else 
+			{
+				throw std::out_of_range("index out of fixed list");
+			}
 		}
 	};
 
 	void push_back(value_type&& val)
 	{
-		ListNode<T> newNode{val, nullptr};
-		_Data[_Size] = newNode;
-		++_Size;
-		if (_Size > 1)
+		int forwardData = _Root - &_Data[0];
+		if (forwardData + _Size < N)
 		{
-			_Data[_Size - 2].next = &_Data[_Size - 1];
+			_Data[_Size] = { val, nullptr };
+			++_Size;
+		}
+		else
+		{
+			if (_Size < N)
+			{
+				for (iterator it = _Root; it != end(); ++it)
+				{
+					*it = *(it + 1);
+				}
+				std::swap(*it.value = val);
+				++_Size;
+			}
+			else
+			{
+				throw std::out_of_range("index out of fixed list");
+			}
 		}
 	};
 
