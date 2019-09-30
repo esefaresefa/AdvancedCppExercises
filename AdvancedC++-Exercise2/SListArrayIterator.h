@@ -7,6 +7,11 @@ namespace list {
 template<typename U>
 class SListArrayIterator {
 
+	typedef U value_type;
+	typedef U& reference_type;
+	typedef U* pointer_type;
+	typedef const U& const_reference_type;
+
 public:
 
 	SListArrayIterator();
@@ -24,6 +29,9 @@ public:
 	bool operator!=(const SListArrayIterator& iterator);
 
 	typename U::value_type operator*();
+
+	template<typename U>
+	friend size_t operator-(const SListArrayIterator<U>& lhs, const SListArrayIterator<U>& rhs);
 
 private:
 
@@ -80,6 +88,13 @@ template<typename U>
 typename U::value_type SListArrayIterator<U>::operator* ()
 {
 	return _CurrentNode->value;
+}
+
+template<typename U>
+size_t operator-(const SListArrayIterator<U>& lhs, const SListArrayIterator<U>& rhs)
+{
+	size_t count = std::distance(rhs._CurrentNode, lhs._CurrentNode);
+	return count;
 }
 
 

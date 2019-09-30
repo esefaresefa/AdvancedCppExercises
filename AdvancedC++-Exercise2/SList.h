@@ -34,7 +34,8 @@ public:
 	{
 		value_type val = {};
 		SList aux(n, val);
-		std::swap(*this, aux);
+		std::swap(_Size, aux._Size);
+		std::swap(_Root, aux._Root);
 	};
 
 	SList(size_t n, const value_type& val)
@@ -100,10 +101,8 @@ public:
 
 	SList(SList&& x)
 	{
-		_Root = x._Root;
-		_Size = x._Size;
-		x._Root = nullptr;
-		x._Size = 0;
+		std::swap(_Root, x._Root);
+		std::swap(_Size, x._Size);
 	};
 
 	SList(std::initializer_list<value_type> il)
@@ -340,6 +339,7 @@ public:
 			PrecIt++;
 		}
 
+		// insert element
 		ListNode<T>* NewElement = new ListNode<T>();
 		NewElement->value = value;
 		NewElement->next = pos._CurrentNode;
