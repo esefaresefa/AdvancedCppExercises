@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ListNode.h"
+#include "FixedSListIterator.h"
 #include <iterator>
 #include <vector>
 
@@ -9,21 +11,19 @@ namespace list {
 template<class T, unsigned int N>
 class FixedSList
 {
+
 public:
-	// Forward declaration
-	class FixedSListIterator;
-	class SListNode;
 
 	typedef T value_type;
 	typedef T& reference_type;
 	typedef const T& const_reference_type;
 
-	typedef FixedSListIterator iterator;
-	typedef FixedSListIterator const_iterator;
-	typedef std::reverse_iterator<FixedSListIterator> reverse_iterator;
-	typedef std::reverse_iterator<FixedSListIterator> const_reverse_iterator;
+	typedef FixedSListIterator<ListNode<T>> iterator;
+	typedef FixedSListIterator<const ListNode<T>> const_iterator;
+	typedef std::reverse_iterator<FixedSListIterator<ListNode<T>>> reverse_iterator;
+	typedef std::reverse_iterator<FixedSListIterator<const ListNode<T>>> const_reverse_iterator;
 
-	explicit FixedSList()
+	FixedSList()
 	{
 		_Root = &_Data[0];
 		_Size = 0;
@@ -52,7 +52,7 @@ public:
 		}
 	};
 
-	FixedSList(FixedSListIterator first, FixedSListIterator last)//last - first should be minor of N
+	FixedSList(iterator first, iterator last)//last - first should be minor of N
 	{
 		if (first != last)
 		{
@@ -126,7 +126,7 @@ public:
 		{
 			_Data[i].value.~value_type();
 		}
-		_Data = nullptr;
+
 		_Size = 0;
 		_Root = nullptr;
 	};
@@ -137,7 +137,7 @@ public:
 		{
 			_Data[i].value.~value_type();
 		}
-		_Data = nullptr;
+
 		_Size = 0;
 		_Root = nullptr;
 
@@ -154,7 +154,7 @@ public:
 		{
 			_Data[i].value.~value_type();
 		}
-		_Data = nullptr;
+
 		_Size = 0;
 		_Root = nullptr;
 
@@ -170,7 +170,7 @@ public:
 		{
 			_Data[i].value.~value_type();
 		}
-		_Data = nullptr;
+
 		_Size = 0;
 		_Root = nullptr;
 
@@ -196,7 +196,7 @@ public:
 		if (_Root != &_Data[0])
 		{
 
-			SListNode* oldRoot = _Root;
+			ListNode<T>* oldRoot = _Root;
 			--_Root;
 			_Root.value = val;
 			_Root.next = oldRoot;
@@ -226,7 +226,7 @@ public:
 		if (_Root != &_Data[0])
 		{
 
-			SListNode* oldRoot = _Root;
+			ListNode<T>* oldRoot = _Root;
 			--_Root;
 			std::swap(_Root[0].value, val);
 			_Root.next = oldRoot;
@@ -260,35 +260,63 @@ public:
 
 	void push_back(const value_type& val)
 	{
-		_Data[_Size]={ val,nullptr };
+		_Data[_Size] = {val, nullptr};
 		++_Size;
 		if (_Size > 1)
 		{
-			_Data[_Size - 2].next = _Data[_Size - 1];
+			_Data[_Size - 2].next = &_Data[_Size - 1];
 		}
 	};
 
 	void push_back(value_type&& val)
 	{
-		SListNode newNode{ val,nullptr };
+		ListNode<T> newNode{ val,nullptr };
 		//std::swap(newNode.val, val);
 		_Data[_Size] = newNode;
 		++_Size;
 		if (_Size > 1)
 		{
-			_Data[_Size - 2].next = _Data[_Size - 1];
+			_Data[_Size - 2].next = &_Data[_Size - 1];
 		}
 	};
 
-	iterator begin() { return iterator(&_Root); };
-	iterator end() { return iterator(&_Root); };
-	const_iterator cbegin() { return const_iterator(&_Root); };
-	const_iterator cend() { return const_iterator(&_Root); };
+	iterator begin()
+	{
+		return iterator(&_Data[0]);
+	};
+
+	iterator end()
+	{
+		return iterator(_Data[_Size]);
+	};
+
+	const_iterator cbegin() const
+	{
+		return const_iterator(&_Data[0]);
+	};
+
+	const_iterator cend() const
+	{
+		return const_iterator(_Data[_Size]);
+	};
+
+	reverse_iterator rbegin()
+	{
+		return reverse_iterator(&_Data[0]);
+	};
+
+	const_reverse_iterator rend()
+	{
+		return const_reverse_iterator(_Data[_Size]);
+	};
+
 
 private:
 
-	SListNode* _Root;
-	SListNode _Data[N];
+	ListNode<T>* _Root;
+
+	ListNode<T> _Data[N];
+
 	size_t _Size;
 
 };

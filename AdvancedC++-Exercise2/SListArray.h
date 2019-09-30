@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ListNode.h"
-#include "SListIterator.h"
+#include "SListArrayIterator.h"
 #include <iterator>
 #include <vector>
 
@@ -19,10 +19,10 @@ public:
 	typedef T& reference_type;
 	typedef const T& const_reference_type;
 
-	typedef SListIterator<ListNode<T>> iterator;
-	typedef SListIterator<const ListNode<T>> const_iterator;
-	typedef std::reverse_iterator<SListIterator<T>> reverse_iterator;
-	typedef std::reverse_iterator<const SListIterator<T>> const_reverse_iterator;
+	typedef SListArrayIterator<ListNode<T>> iterator;
+	typedef SListArrayIterator<const ListNode<T>> const_iterator;
+	typedef std::reverse_iterator<SListArrayIterator<T>> reverse_iterator;
+	typedef std::reverse_iterator<const SListArrayIterator<T>> const_reverse_iterator;
 
 	SListArray()
 	{
@@ -201,7 +201,7 @@ public:
 		++_Size;
 		if (_Size > 1)
 		{
-			_Data[_Size - 2].next = _Data[_Size - 1];
+			_Data[_Size - 2].next = &_Data[_Size - 1];
 		}
 	};
 
@@ -219,22 +219,32 @@ public:
 
 	iterator begin() 
 	{ 
-		return iterator(_Root); 
+		return iterator(&_Data[0]); 
 	};
 
 	iterator end() 
 	{ 
-		return iterator(nullptr); 
+		return iterator(_Data[_Size]); 
 	};
 
 	const_iterator cbegin() const 
 	{ 
-		return const_iterator(_Root); 
+		return const_iterator(&_Data[0]);
 	};
 
 	const_iterator cend() const 
 	{ 
-		return const_iterator(nullptr); 
+		return const_iterator(_Data[_Size]);
+	};
+
+	reverse_iterator rbegin()
+	{
+		return reverse_iterator(&_Data[0]);
+	};
+
+	const_reverse_iterator rend()
+	{
+		return const_reverse_iterator(_Data[_Size]);
 	};
 
 private:

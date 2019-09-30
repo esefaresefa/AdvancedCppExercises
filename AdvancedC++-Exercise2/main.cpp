@@ -29,33 +29,31 @@ int main()
 		std::cout << "SListArray::iterator operator++ test... ";
 
 		SListArray<int> alist;
-		alist.push_back(111);
-		alist.push_back(222);
-		alist.push_back(333);
+		alist.push_back(444);
+		alist.push_back(555);
+		alist.push_back(666);
 
 		SListArray<int>::iterator abiterator = alist.begin();
-		assert(*abiterator++ == 111);
-		assert(*abiterator++ == 222);
-		assert(*abiterator++ == 333);
+		assert(*abiterator++ == 444);
+		assert(*abiterator++ == 555);
+		assert(*abiterator++ == 666);
 
 		std::cout << "OK!" << std::endl;
 
 		// FixedSList
-		/*
 		std::cout << "FixedSList::iterator operator++ test... ";
 
-		FixedSList<int> alist;
-		alist.push_back(111);
-		alist.push_back(222);
-		alist.push_back(333);
+		FixedSList<int, 5> flist;
+		flist.push_back(777);
+		flist.push_back(888);
+		flist.push_back(999);
 
-		FixedSList<int>::iterator biterator = alist.begin();
-		assert(*biterator++ == 111);
-		assert(*biterator++ == 222);
-		assert(*biterator++ == 333);
+		FixedSList<int, 5>::iterator fiterator = flist.begin();
+		assert(*fiterator++ == 777);
+		assert(*fiterator++ == 888);
+		assert(*fiterator++ == 999);
 
 		std::cout << "OK!" << std::endl;
-		*/
 	}
 
 

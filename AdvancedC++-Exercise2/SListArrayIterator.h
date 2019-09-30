@@ -55,7 +55,7 @@ template<typename U>
 SListArrayIterator<U>& SListArrayIterator<U>::operator++ ()
 {
 	if (_CurrentNode)
-		_CurrentNode = _CurrentNode->next;
+		_CurrentNode++;
 	return *this;
 }
 
@@ -63,7 +63,7 @@ SListArrayIterator<U>& SListArrayIterator<U>::operator++ ()
 template<typename U>
 SListArrayIterator<U> SListArrayIterator<U>::operator++ (int)
 {
-	SListArrayIterator iterator = *this;
+	SListArrayIterator iterator(*this);
 	++*this;
 	return iterator;
 }

@@ -55,7 +55,7 @@ template<typename U>
 FixedSListIterator<U>& FixedSListIterator<U>::operator++ ()
 {
 	if (_CurrentNode)
-		_CurrentNode = _CurrentNode->next;
+		_CurrentNode++;
 	return *this;
 }
 
@@ -63,7 +63,7 @@ FixedSListIterator<U>& FixedSListIterator<U>::operator++ ()
 template<typename U>
 FixedSListIterator<U> FixedSListIterator<U>::operator++ (int)
 {
-	FixedSListIterator iterator = *this;
+	FixedSListIterator iterator(*this);
 	++*this;
 	return iterator;
 }
