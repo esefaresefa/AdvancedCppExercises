@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ListNode.h"
 #include "FixedSListIterator.h"
 #include <iterator>
 #include <vector>
@@ -19,10 +18,10 @@ public:
 	typedef T& reference_type;
 	typedef const T& const_reference_type;
 
-	typedef FixedSListIterator<ListNode<T>> iterator;
-	typedef FixedSListIterator<const ListNode<T>> const_iterator;
-	typedef std::reverse_iterator<FixedSListIterator<ListNode<T>>> reverse_iterator;
-	typedef std::reverse_iterator<FixedSListIterator<const ListNode<T>>> const_reverse_iterator;
+	typedef FixedSListIterator<T> iterator;
+	typedef FixedSListIterator<T> const_iterator;
+	typedef std::reverse_iterator<FixedSListIterator<T>> reverse_iterator;
+	typedef std::reverse_iterator<FixedSListIterator<const T>> const_reverse_iterator;
 
 	FixedSList()
 	{
@@ -44,15 +43,12 @@ public:
 		_Size = n;
 		if (n > 0)
 		{
-			_Data[0].value = val;
-			_Data[0].next = nullptr;
+			_Data[0] = val;
 			_Root = &_Data[0];
 		}
 		for (size_t i = 1; i < n; ++i)
 		{
-			_Data[i - 1].next = &_Data[i];
-			_Data[i].value = val;
-			_Data[i].next = nullptr;
+			_Data[i] = val;
 		}
 	};
 
@@ -60,17 +56,14 @@ public:
 	{
 		if (first != last)
 		{
-			_Data[0].value = *first;
-			_Data[0].next = nullptr;
+			_Data[0] = *first;
 			_Root = &_Data[0];
 			_Size = 1;
 			first++;
 		}
 		for (; first != last; ++first, ++_Size)
 		{
-			_Data[_Size - 1].next = &_Data[_Size];
-			_Data[_Size].value = *first;
-			_Data[_Size].next = nullptr;
+			_Data[_Size] = *first;
 		}
 	};
 
@@ -81,16 +74,13 @@ public:
 		size_t rootIndex = x._Root - &_Data[0];
 		if (_Size > 0)
 		{
-			_Data[rootIndex].value = x._Data[0];
-			_Data[rootIndex].next = nullptr;
+			_Data[rootIndex] = x._Data[0];
 			_Root = &_Data[rootIndex];
 			++rootIndex;
 		}
 		for (rootIndex; rootIndex < x._Size; ++rootIndex, ++it)
 		{
-			_Data[rootIndex - 1].next = &_Data[rootIndex];
-			_Data[rootIndex].value = x._Data[rootIndex];
-			_Data[rootIndex].next = nullptr;
+			_Data[rootIndex] = x._Data[rootIndex];
 		}
 	};
 
@@ -111,16 +101,13 @@ public:
 		_Size = il.size();
 		if (_Size > 0)
 		{
-			_Data[0].value = *it;
-			_Data[0].next = nullptr;
+			_Data[0] = *it;
 			_Root = &_Data[0];
 			++it;
 		}
 		for (size_t i = 1; it != il.end(); ++it, ++i)
 		{
-			_Data[i - 1].next = &_Data[i - 1];
-			_Data[i].value = *it;
-			_Data[i].next = nullptr;
+			_Data[i] = *it;
 		}
 	};
 
@@ -128,7 +115,7 @@ public:
 	{
 		for (size_t i=0;i<_Size;++i)
 		{
-			_Data[i].value.~value_type();
+			_Data[i].~value_type();
 		}
 
 		_Size = 0;
@@ -139,7 +126,7 @@ public:
 	{
 		for (size_t i = 0; i < _Size; ++i)
 		{
-			_Data[i].value.~value_type();
+			_Data[i].~value_type();
 		}
 
 		_Size = 0;
@@ -154,7 +141,7 @@ public:
 	{
 		for (size_t i = 0; i < _Size; ++i)
 		{
-			_Data[i].value.~value_type();
+			_Data[i].~value_type();
 		}
 
 		_Size = 0;
@@ -168,7 +155,7 @@ public:
 	{
 		for (size_t i = 0; i < _Size; ++i)
 		{
-			_Data[i].value.~value_type();
+			_Data[i].~value_type();
 		}
 
 		_Size = 0;
@@ -194,10 +181,9 @@ public:
 		if (_Root != &_Data[0])
 		{
 
-			ListNode<T>* oldRoot = _Root;
+			T* oldRoot = _Root;
 			--_Root;
-			_Root.value = val;
-			_Root.next = oldRoot;
+			*_Root = val;
 		}
 		else
 		{
@@ -207,16 +193,8 @@ public:
 				{
 					_Data[i + 1] = _Data[i];
 				}
-				_Data[0].value = val;
+				_Data[0] = val;
 				++_Size;
-				if (_Size > 1)
-				{
-					_Data[0].next = &_Data[1];
-				}
-				else
-				{
-					_Data[0].next = nullptr;
-				}
 				_Root = &_Data[0];
 			}
 			else
@@ -231,10 +209,9 @@ public:
 		if (_Root != &_Data[0])
 		{
 
-			ListNode<T>* oldRoot = _Root;
+			T* oldRoot = _Root;
 			--_Root;
-			std::swap(_Root[0].value, val);
-			_Root.next = oldRoot;
+			std::swap(*_Root, val);
 		}
 		else
 		{
@@ -244,16 +221,8 @@ public:
 				{
 					_Data[i + 1] = _Data[i];
 				}
-				std::swap(_Data[0].value, val);
+				std::swap(_Data[0], val);
 				++_Size;
-				if (_Size > 1)
-				{
-					_Data[0].next = &_Data[1];
-				}
-				else
-				{
-					_Data[0].next = nullptr;
-				}
 				_Root = &_Data[0];
 			}
 			else
@@ -265,8 +234,7 @@ public:
 
 	void pop_front()
 	{
-		_Root.value.~value_type();
-		_Root= _Root.next;
+		_Root.~value_type();
 		--_Size;
 	};
 
@@ -282,11 +250,12 @@ public:
 		{
 			if (_Size < N)
 			{
-				for (iterator it = _Root; it != end() ; ++it)
+				iterator it = _Root;
+				for (; it != end() ; ++it)
 				{
 					*it = *(it+1);
 				}
-				*it.value = val;
+				*it = val;
 				++_Size;
 			}
 			else 
@@ -308,11 +277,12 @@ public:
 		{
 			if (_Size < N)
 			{
-				for (iterator it = _Root; it != end(); ++it)
+				iterator it = _Root;
+				for (; it != end(); ++it)
 				{
 					*it = *(it + 1);
 				}
-				std::swap(*it.value = val);
+				std::swap(*it = val);
 				++_Size;
 			}
 			else
@@ -355,9 +325,9 @@ public:
 
 private:
 
-	ListNode<T>* _Root;
+	T* _Root;
 
-	ListNode<T> _Data[N];
+	T _Data[N];
 
 	size_t _Size;
 
