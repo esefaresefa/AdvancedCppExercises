@@ -24,9 +24,16 @@ int main()
 
 		// FixedSList
 		std::cout << "FixedSList default constructor... ";
-		SList<int> flist;
+		FixedSList<int, 1> flist;
 		assert(&flist != nullptr);
 		std::cout << "OK!";
+
+		// SListArray range constructor
+		std::cout << "FixedSList range constructor... ";
+		alist.push_back(1);
+		alist.push_back(2);
+		alist.push_back(3);
+		SListArray<int> alist2(alist.begin(), alist.end());
 	}
 
 	// TESTING ITERATORS
@@ -34,9 +41,7 @@ int main()
 		// SList
 		std::cout << "SList::iterator operator++ test... ";
 
-		std::cout << std::endl << "default constructor ...";
 		SList<int> slist;
-
 		slist.push_back(111);
 		slist.push_back(222);
 		slist.push_back(333);
