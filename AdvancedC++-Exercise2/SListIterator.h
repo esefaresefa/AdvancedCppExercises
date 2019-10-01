@@ -25,9 +25,11 @@ public:
 
 	typename U::value_type operator*();
 
-private:
+	U GetNode();
 
 	U* _CurrentNode;
+private:
+
 };
 
 
@@ -80,6 +82,12 @@ template<typename U>
 typename U::value_type SListIterator<U>::operator* ()
 {
 	return _CurrentNode->value;
+}
+
+template<typename U>
+typename U SListIterator<U>::GetNode()
+{
+	return *this->_CurrentNode;
 }
 
 
