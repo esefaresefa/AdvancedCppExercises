@@ -96,7 +96,7 @@ template<typename T>
 SListArray<T>::SListArray(std::initializer_list<value_type> il)
 {
 	_Root = nullptr;
-	const_iterator* it = il.cbegin(); //equivalent of std::initializer_list<value_type>::iterator
+	value_type* it = il.cbegin(); //equivalent of std::initializer_list<value_type>::iterator
 	_Size = il.size();
 	_Data.resize(il.size());
 	if (_Size > 0)

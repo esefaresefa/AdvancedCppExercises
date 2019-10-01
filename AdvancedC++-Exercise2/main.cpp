@@ -8,16 +8,15 @@ using namespace list;
 
 int main()
 {
-	// TESTING CONSTRUCTORS
+	// TESTING SList CONSTRUCTORS
 	{
+
+
+
+		std::cout << std::endl << "SList constructors... ";
 		// SList
 		std::cout << "SList default constructor... ";
 		SList<int> slist;
-		std::cout << "OK!" << std::endl;
-
-		// SListArray
-		std::cout << "SListArray default constructor... ";
-		SListArray<int> alist;
 		std::cout << "OK!" << std::endl;
 
 		// FixedSList
@@ -25,69 +24,7 @@ int main()
 		FixedSList<int, 1> flist;
 		std::cout << "OK!" << std::endl;
 
-		// SListArray range constructor
-		std::cout << "FixedSList range constructor... ";
-		alist.push_back(1);
-		alist.push_back(2);
-		alist.push_back(3);
-		SListArray<int> alist2(alist.begin(), alist.end());
-		SListArray<int>::const_iterator aiterator = alist2.cbegin();
-		assert(*aiterator++ == 1);
-		assert(*aiterator++ == 2);
-		assert(*aiterator++ == 3);
-		std::cout << "OK!" << std::endl;
-	}
-
-	// TESTING ITERATORS
-	{
-		// SList
-		std::cout << "SList::iterator operator++ test... ";
-
-		SList<int> slist;
-		slist.push_back(111);
-		slist.push_back(222);
-		slist.push_back(333);
-
-		SList<int>::iterator siterator = slist.begin();
-		assert(*siterator++ == 111);
-		assert(*siterator++ == 222);
-		assert(*siterator++ == 333);
-
-		std::cout << "OK!" << std::endl;
-
-		// SListArray
-		std::cout << "SListArray::iterator operator++ test... ";
-
-		SListArray<int> alist;
-		alist.push_back(444);
-		alist.push_back(555);
-		alist.push_back(666);
-
-		SListArray<int>::iterator abiterator = alist.begin();
-		assert(*abiterator++ == 444);
-		assert(*abiterator++ == 555);
-		assert(*abiterator++ == 666);
-
-		std::cout << "OK!" << std::endl;
-
-		// FixedSList
-		std::cout << "FixedSList::iterator operator++ test... ";
-
-		FixedSList<int, 5> flist;
-		flist.push_back(777);
-		flist.push_back(888);
-		flist.push_back(999);
-
-		FixedSList<int, 5>::iterator fiterator = flist.begin();
-		assert(*fiterator++ == 777);
-		assert(*fiterator++ == 888);
-		assert(*fiterator++ == 999);
-
-		std::cout << "OK!" << std::endl;
-	}
-
-	// TESTING SLIST
-	{
+		std::cout << "fill constructor... ";
 		SList<int>list2(12);
 		assert(list2.size() == 12);
 
@@ -142,7 +79,144 @@ int main()
 		std::cout << std::endl << "empty on empty ...";
 		assert(list7.empty());
 
+	}
 
+
+	// TESTING SArrayList CONSTRUCTORS
+	{
+		std::cout << std::endl << "SArrayList constructors... ";
+		// SListArray
+		std::cout << "SListArray default constructor... ";
+		SListArray<int> alist;
+		std::cout << "OK!" << std::endl;
+
+		// SListArray range constructor
+		std::cout << "range constructor... ";
+		alist.push_back(1);
+		alist.push_back(2);
+		alist.push_back(3);
+		SListArray<int> alist2(alist.begin(), alist.end());
+		SListArray<int>::const_iterator aiterator = alist2.cbegin();
+		assert(*aiterator++ == 1);
+		assert(*aiterator++ == 2);
+		assert(*aiterator++ == 3);
+		std::cout << "OK!" << std::endl;
+
+
+		std::cout << std::endl << "constructors... ";
+
+		std::cout << "fill constructor... ";
+		SListArray<int>list2(12);
+		assert(list2.size() == 12);
+
+		std::cout << std::endl << "fill constructor with val ...";
+		SListArray<int>list3(12, 5);
+		assert(list3.size() == 12);
+		for (SListArray<int>::iterator i = list3.begin(); i != list3.end(); ++i)
+		{
+			assert(*i == 5);
+		}
+
+
+		std::cout << std::endl << "iterator constructor ...";
+		SListArray<int>list4(++list3.begin(), list3.end());
+		assert(list4.size() == 11);
+		for (SListArray<int>::iterator i = list4.begin(); i != list4.end(); ++i)
+		{
+			assert(*i == 5);
+		}
+
+
+		std::cout << std::endl << "copy constructor ...";
+		SListArray<int>list5(list4);
+		assert(list5.size() == 11);
+		for (SListArray<int>::iterator i = list5.begin(); i != list5.end(); ++i)
+		{
+			assert(*i == 5);
+		}
+
+		std::cout << std::endl << "move constructor ...";
+		SListArray<int>list6(std::move(list4));
+		assert(list6.size() == 11);
+		for (SListArray<int>::iterator i = list6.begin(); i != list6.end(); ++i)
+		{
+			assert(*i == 5);
+		}
+		assert(list4.size() == 0);
+
+		std::cout << std::endl << "inizializer list constructor ...";
+		SListArray<int>list7{ 0,1,2,3,4 };
+		assert(list7.size() == 5);
+		int val = 0;
+		for (SListArray<int>::iterator i = list7.begin(); i != list7.end(); ++i, ++val)
+		{
+			assert(*i == val);
+		}
+
+		std::cout << std::endl << "destructor ...";
+		list7.~SListArray<int>();
+		std::cout << std::endl << "size ...";
+		assert(list7.size() == 0);
+		std::cout << std::endl << "empty on empty ...";
+		assert(list7.empty());
+
+	}
+
+
+	// TESTING ITERATORS
+	{
+		// SList
+		std::cout << "SList::iterator operator++ test... ";
+
+		SList<int> slist;
+		slist.push_back(111);
+		slist.push_back(222);
+		slist.push_back(333);
+
+		SList<int>::iterator siterator = slist.begin();
+		assert(*siterator++ == 111);
+		assert(*siterator++ == 222);
+		assert(*siterator++ == 333);
+
+		std::cout << "OK!" << std::endl;
+
+		// SListArray
+		std::cout << "SListArray::iterator operator++ test... ";
+
+		SListArray<int> alist;
+		alist.push_back(444);
+		alist.push_back(555);
+		alist.push_back(666);
+
+		SListArray<int>::iterator abiterator = alist.begin();
+		assert(*abiterator++ == 444);
+		assert(*abiterator++ == 555);
+		assert(*abiterator++ == 666);
+
+		std::cout << "OK!" << std::endl;
+
+		// FixedSList
+		std::cout << "FixedSList::iterator operator++ test... ";
+
+		FixedSList<int, 5> flist;
+		flist.push_back(777);
+		flist.push_back(888);
+		flist.push_back(999);
+
+		FixedSList<int, 5>::iterator fiterator = flist.begin();
+		assert(*fiterator++ == 777);
+		assert(*fiterator++ == 888);
+		assert(*fiterator++ == 999);
+
+		std::cout << "OK!" << std::endl;
+	}
+
+	// TESTING SLIST modifiers
+	{
+
+
+
+		SList<int>list6(11, 5);
 
 		std::cout << std::endl << "operator= ...";
 		SList<int>list8 = list6;
