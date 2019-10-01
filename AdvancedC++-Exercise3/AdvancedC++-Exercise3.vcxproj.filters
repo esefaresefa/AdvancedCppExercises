@@ -18,39 +18,13 @@
     <ClCompile Include="main.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="SmallObjectAllocator.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SList.h">
+    <ClInclude Include="SmallObjectAllocator.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="SListArray.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FixedSList.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="SListIterator.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="SListArrayIterator.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FixedSListIterator.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="ListNode.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FixedSList.inl">
-      <Filter>File di origine</Filter>
-    </None>
-    <None Include="SListArray.inl">
-      <Filter>File di origine</Filter>
-    </None>
-    <None Include="SList.inl">
-      <Filter>File di origine</Filter>
-    </None>
   </ItemGroup>
 </Project>

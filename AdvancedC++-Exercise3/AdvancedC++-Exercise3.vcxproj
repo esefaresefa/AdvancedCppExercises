@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{DB39A2C7-165E-4184-99DB-84DADB5F05BD}</ProjectGuid>
-    <RootNamespace>AdvancedCExercise2</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{8F36F10F-9631-431A-9666-474F58B700CB}</ProjectGuid>
+    <RootNamespace>AdvancedCExercise3</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -116,20 +116,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SmallObjectAllocator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FixedSList.h" />
-    <ClInclude Include="FixedSListIterator.h" />
-    <ClInclude Include="SList.h" />
-    <ClInclude Include="SListArray.h" />
-    <ClInclude Include="SListArrayIterator.h" />
-    <ClInclude Include="SListIterator.h" />
-    <ClInclude Include="ListNode.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FixedSList.inl" />
-    <None Include="SList.inl" />
-    <None Include="SListArray.inl" />
+    <ClInclude Include="SmallObjectAllocator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

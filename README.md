@@ -31,8 +31,8 @@ max_size Return maximum size (public member function )
 
 Element access:
 Luca: 
-front Access first element (public member function )	v
-back Access last element (public member function )		v
+front Access first element (public member function )
+back Access last element (public member function )
 
 Modifiers:
 Mattia:
@@ -43,13 +43,13 @@ pop_front Delete first element (public member function )
 emplace_back Construct and insert element at the end (public member function )
 push_back Add element at the end (public member function )
 Luca:
-pop_back Delete last element (public member function )				v
-emplace Construct and insert element (public member function )		x
-insert Insert elements (public member function )					v
-erase Erase elements (public member function )						v
-swap Swap content (public member function )							x
-resize Change size (public member function )						v
-clear Clear content (public member function )						v
+pop_back Delete last element (public member function )
+emplace Construct and insert element (public member function )
+insert Insert elements (public member function )
+erase Erase elements (public member function )
+swap Swap content (public member function )
+resize Change size (public member function )
+clear Clear content (public member function )
 
 Operations FORSE:
 splice Transfer elements from list to list (public member function )

@@ -23,7 +23,7 @@ public:
 
 	bool operator!=(const FixedSListIterator& iterator);
 
-	typename U::value_type operator*();
+	U operator*();
 
 	template<typename U>
 	friend size_t operator-(const FixedSListIterator<U>& lhs, const FixedSListIterator<U>& rhs);
@@ -80,9 +80,9 @@ bool FixedSListIterator<U>::operator!= (const FixedSListIterator<U>& iterator)
 
 
 template<typename U>
-typename U::value_type FixedSListIterator<U>::operator* ()
+U FixedSListIterator<U>::operator* ()
 {
-	return _CurrentNode->value;
+	return *_CurrentNode;
 }
 
 
