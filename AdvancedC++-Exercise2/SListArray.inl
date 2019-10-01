@@ -172,10 +172,34 @@ size_t SListArray<T>::size() const
 };
 
 
+
+// Member access
+template<typename T>
+ListNode<T>& SListArray<T>::front()
+{
+	return *_Root;
+}
+
+template<typename T>
+ListNode<T>& SListArray<T>::back()
+{
+	if (_Root == nullptr)
+		return *_Root;
+
+	ListNode<T>* AuxNode = _Root;
+
+	while (AuxNode->next != nullptr)
+	{
+		AuxNode = AuxNode->next;
+	}
+
+	return *AuxNode;
+}
+
 template<typename T>
 void SListArray<T>::push_front(const value_type& val)
 {
-	_Data.insert(0, { val,_Root });
+	_Data.insert(_Data.begin(), { val,_Root });
 	_Root = &_Data[0];
 	++_Size;
 };
@@ -230,6 +254,159 @@ void SListArray<T>::push_back(value_type&& val)
 		_Data[_Size - 2].next = &_Data[_Size - 1];
 	}
 };
+
+
+template<typename T>
+void SListArray<T>::pop_back()
+{
+	if (_Size > 0)
+	{
+		// if last node in list
+		if (_Root->next == nullptr)
+		{
+			_Root->value.~value_type();
+			_Data.pop_back();
+			--_Size;
+			_Root = nullptr;
+		}
+		// if there is more than one node
+		else
+		{
+			_Data[_Size - 1].value.~value_type();
+			_Data.pop_back();
+			--_Size;
+			_Data[_Size - 1].next = nullptr;
+		}
+
+	}
+}
+
+
+template<typename T>
+typename SListArray<T>::iterator SListArray<T>::insert(iterator pos, const T& value)
+{
+	iterator PrecIt = _Root;
+	// maintain list order
+	size_t index = pos - PrecIt;
+	if (index == 0)
+	{
+		push_front(value); 
+		PrecIt = _Root;
+	}
+	else 
+	{
+
+		// insert element
+		ListNode<T>* NewElement = new ListNode<T>();
+		NewElement->value = value;
+		_Data.insert(_Data.begin() + index, *NewElement);
+		++_Size;
+
+		_Data[index - 1].next = &_Data[index];
+		PrecIt = &_Data[index - 1];
+		if (index < _Size - 1)
+		{
+			_Data[index].next = &_Data[index + 1];
+		}
+		else
+		{
+			_Data[index].next = nullptr;
+		}
+	}
+
+
+	return PrecIt;
+}
+
+
+template<typename T>
+typename SListArray<T>::iterator SListArray<T>::erase(iterator pos)
+{
+
+	iterator PrecIt = _Root;
+	size_t index = pos - PrecIt;
+	if (index == 0) 
+	{
+		pop_front();
+		PrecIt = _Root;
+	}
+
+	if (index == _Size-1)
+	{
+		pop_back();
+	}
+	else {
+
+		_Data.erase(_Data.begin() + index);
+		_Data[index - 1].next = &_Data[index];
+		PrecIt = &_Data[index - 1];
+	}
+
+	--_Size;
+	return PrecIt;
+}
+
+
+template<typename T>
+typename SListArray<T>::iterator SListArray<T>::erase(iterator first, iterator last)
+{
+	iterator PrecIt = _Root;
+	size_t fisrtIndex = first - PrecIt;
+	size_t lastIndex = last - PrecIt;
+
+	_Data.erase(_Data.begin() + fisrtIndex, _Data.begin() + lastIndex);
+	_Size-= lastIndex - fisrtIndex;
+	if (fisrtIndex == 0) 
+	{
+		_Root= &_Data[lastIndex];
+		PrecIt = _Root;
+	}
+	else 
+	{
+		PrecIt = &_Data[fisrtIndex - 1];
+		if (lastIndex == _Size - 1)
+		{
+			_Data[fisrtIndex - 1].next = nullptr;
+		}
+		else 
+		{
+			_Data[fisrtIndex - 1].next = &_Data[lastIndex];
+		}
+
+	}
+
+	return PrecIt;
+}
+
+
+template<typename T>
+void SListArray<T>::resize(size_t count, const value_type& value)
+{
+	_Data.resize(count, { value, _Root });
+	_Size = count;
+	_Root = &_Data[0];
+	for (size_t i = 0; i < _Size-1; i++)
+	{
+		_Data[i].next = &_Data[i + 1];
+	}
+	_Data[_Size - 1].next = nullptr;
+}
+
+
+template<typename T>
+void SListArray<T>::resize(size_t count)
+{
+	resize(count, 0);
+}
+
+
+template<typename T>
+void SListArray<T>::clear()
+{
+	_Data.clear();
+	_Root = nullptr;
+	_Size = 0;
+}
 
 
 template<typename T>
