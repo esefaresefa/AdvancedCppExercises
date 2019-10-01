@@ -27,7 +27,7 @@ public:
 
 	typename U::value_type operator*();
 
-	U GetNode();
+	typename U GetNode();
 
 private:
 

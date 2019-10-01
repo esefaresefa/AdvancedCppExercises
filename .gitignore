@@ -5,7 +5,7 @@
 
 *.ipch
 
-.vs/AdvancedC\+\+-Exercise1/v15/.suo
+.vs/AdvancedC\+\+-Exercises/v15/.suo
 
 AdvancedC\+\+-Exercise1/x64/Debug/Advanced.8059C922.tlog/AdvancedC\+\+-Exercise1.lastbuildstate
 
@@ -50,6 +50,8 @@ x64/Debug/AdvancedC\+\+-Exercise1.pdb
 *.log
 
 *.obj
+
+*.suo
 
 AdvancedC\+\+Exercise2/x64/Debug/
 

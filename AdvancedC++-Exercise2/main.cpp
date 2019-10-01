@@ -22,6 +22,22 @@ void PrintListOfInt(SList<int>& list)
 	}
 }
 
+void PrintListOfInt(SListArray<int>& list)
+{
+	SListArray<int>::iterator siterator = list.begin();
+
+	if (list.size() == 0)
+	{
+		std::cout << "List Empty!" << std::endl;
+	}
+	else
+	{
+		for (siterator; siterator != list.end(); siterator++)
+			std::cout << siterator.GetNode().value << " ";
+		std::cout << std::endl;
+	}
+}
+
 
 int main()
 {
@@ -474,7 +490,7 @@ int main()
 		PrintListOfInt(list10);
 
 
-		std::cout << std::endl << "resize count = 10 ... ";
+		std::cout << std::endl << "resize count = 5 ... ";
 		int newSize = 5;
 		list10.resize(newSize);
 		assert(list10.size() == newSize);
@@ -572,7 +588,6 @@ int main()
 			assert(*i == val7);
 		}
 
-		std::cout << std::endl;
 
 		std::cout << std::endl << "push back move ...";
 		val6 = 6;
@@ -585,107 +600,110 @@ int main()
 		}
 
 
+
 		// To be tested
-		//std::cout << std::endl << "pop back ...";
-		//list10.pop_back();
-		//assert(list10.size() == 7);
-		//int val8 = -1;
-		//for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val8)
-		//{
-		//	assert(*i == val8);
-		//}
+		std::cout << std::endl << "pop back ...";
+		list10.pop_back();
+		assert(list10.size() == 7);
+		int val8 = -1;
+		for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val8)
+		{
+			assert(*i == val8);
+		}
+
+		PrintListOfInt(list10);
 
 
-		//std::cout << std::endl;
+		std::cout << std::endl;
 
 
-		//std::cout << "Member access: front = " << list10.front().value << std::endl;
-		//std::cout << "Member access: back = " << list10.back().value << std::endl;
+		std::cout << "Member access: front = " << list10.front().value << std::endl;
+		std::cout << "Member access: back = " << list10.back().value << std::endl;
 
 
-		//std::cout << std::endl << "insert begin() ... ";
-		//SListArray<int>::iterator siterator = list10.begin();
-		//list10.insert(siterator, -2);
-		//assert(list10.size() == 8);
-		//int val9 = -2;
-		//for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val9)
-		//{
-		//	assert(*i == val9);
-		//}
-		//std::cout << "List : ";
-		//PrintListOfInt(list10);
+		std::cout << std::endl << "insert begin() ... ";
+		SListArray<int>::iterator siterator = list10.begin();
+		list10.insert(siterator, -2);
+		assert(list10.size() == 8);
+		int val9 = -2;
+		for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val9)
+		{
+			assert(*i == val9);
+		}
+		std::cout << "List : ";
+		PrintListOfInt(list10);
 
-		//std::cout << std::endl << "insert at end()... ";
-		//SListArray<int>::iterator siterator2 = list10.end();
-		//list10.insert(siterator2, 6);
-		//assert(list10.size() == 9);
-		//int val10 = -2;
-		//for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val10)
-		//{
-		//	assert(*i == val10);
-		//}
-		//std::cout << "List : ";
-		//PrintListOfInt(list10);
-
-
-		//std::cout << std::endl << "insert at pos[3] ... ";
-		//SListArray<int>::iterator siterator3 = list10.begin();
-		//siterator3++;
-		//siterator3++;
-		//siterator3++;
-		//list10.insert(siterator3, 1000);
-		//assert(list10.size() == 10);
-		//std::cout << "List : ";
-		//PrintListOfInt(list10);
-
-		//std::cout << std::endl << "erase at pos[3] ... ";
-		//SListArray<int>::iterator siterator4 = list10.begin();
-		//siterator4++;
-		//siterator4++;
-		//siterator4++;
-		//list10.erase(siterator4);
-		//assert(list10.size() == 9);
-		//int val11 = -2;
-		//for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val11)
-		//{
-		//	assert(*i == val11);
-		//}
-		//std::cout << "List : ";
-		//PrintListOfInt(list10);
+		std::cout << std::endl << "insert at end()... ";
+		SListArray<int>::iterator siterator2 = list10.end();
+		list10.insert(siterator2, 6);
+		assert(list10.size() == 9);
+		int val10 = -2;
+		for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val10)
+		{
+			assert(*i == val10);
+		}
+		std::cout << "List : ";
+		PrintListOfInt(list10);
 
 
-		//std::cout << std::endl << "erase from pos[1] to [7] ... ";
-		//SListArray<int>::iterator siterator5 = list10.begin();
-		//SListArray<int>::iterator siterator6 = list10.begin();
-		//// siterator5 + 1
-		//siterator5++;
-		//// siterator6 + 7
-		//siterator6++;
-		//siterator6++;
-		//siterator6++;
-		//siterator6++;
-		//siterator6++;
-		//siterator6++;
-		//siterator6++;
-		//list10.erase(siterator5, siterator6);
-		//assert(list10.size() == 2);
-		//std::cout << "List : ";
-		//PrintListOfInt(list10);
+		std::cout << std::endl << "insert at pos[3] ... ";
+		SListArray<int>::iterator siterator3 = list10.begin();
+		siterator3++;
+		siterator3++;
+		siterator3++;
+		list10.insert(siterator3, 1000);
+		assert(list10.size() == 10);
+		std::cout << "List : ";
+		PrintListOfInt(list10);
+
+		std::cout << std::endl << "erase at pos[3] ... ";
+		SListArray<int>::iterator siterator4 = list10.begin();
+		siterator4++;
+		siterator4++;
+		siterator4++;
+		list10.erase(siterator4);
+		assert(list10.size() == 9);
+		int val11 = -2;
+		for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val11)
+		{
+			assert(*i == val11);
+		}
+		std::cout << "List : ";
+		PrintListOfInt(list10);
 
 
-		//std::cout << std::endl << "resize count = 10 ... ";
-		//int newSize = 5;
-		//list10.resize(newSize);
-		//assert(list10.size() == newSize);
-		//std::cout << "List : ";
-		//PrintListOfInt(list10);
+		std::cout << std::endl << "erase from pos[1] to [7] ... ";
+		SListArray<int>::iterator siterator5 = list10.begin();
+		SListArray<int>::iterator siterator6 = list10.begin();
+		// siterator5 + 1
+		siterator5++;
+		// siterator6 + 7
+		siterator6++;
+		siterator6++;
+		siterator6++;
+		siterator6++;
+		siterator6++;
+		siterator6++;
+		siterator6++;
+		list10.erase(siterator5, siterator6);
+		assert(list10.size() == 2);
+		std::cout << "List : ";
+		PrintListOfInt(list10);
 
 
-		//std::cout << std::endl << "clear list ... ";
-		//list10.clear();
-		//assert(list10.size() == 0);
-		//std::cout << "List : ";
-		//PrintListOfInt(list10);
+		std::cout << std::endl << "resize count = 5 ... ";
+		int newSize = 5;
+		list10.resize(newSize);
+		assert(list10.size() == newSize);
+		std::cout << "List : ";
+		PrintListOfInt(list10);
+
+
+		std::cout << std::endl << "clear list ... ";
+		list10.clear();
+		assert(list10.size() == 0);
+		std::cout << "List : ";
+		PrintListOfInt(list10);
 
 
 		std::cout << std::endl;
