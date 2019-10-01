@@ -23,12 +23,15 @@ public:
 
 	bool operator!=(const SListIterator& iterator);
 
+	bool operator==(const SListIterator& iterator);
+
 	typename U::value_type operator*();
 
 	typename U GetNode();
 
-	U* _CurrentNode;
 private:
+
+	U* _CurrentNode;
 
 };
 
@@ -75,6 +78,13 @@ template<typename U>
 bool SListIterator<U>::operator!= (const SListIterator<U>& iterator)
 {
 	return _CurrentNode != iterator._CurrentNode;
+}
+
+
+template<typename U>
+bool SListIterator<U>::operator== (const SListIterator<U>& iterator)
+{
+	return !(_CurrentNode != iterator._CurrentNode);
 }
 
 

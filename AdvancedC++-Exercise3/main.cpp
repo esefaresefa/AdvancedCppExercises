@@ -1,10 +1,11 @@
+#include "Config.h"
 #include <iostream>
 
+#ifdef USE_MM_ALLOC
 
 // Defining types
 typedef char tChar;
 typedef uint32_t tU32;
-
 
 // Defining function helpers
 #define Malloc(SIZE, TYPE, DESC) _Malloc(SIZE, TYPE, DESC, __FILE__, __LINE__)
@@ -12,21 +13,63 @@ typedef uint32_t tU32;
 #define New(CLASS, TYPE, DESC) new(TYPE, DESC, __FILE__, __LINE__) CLASS
 #define Delete delete
 
+void* operator new(size_t size)
+{
+	// MM_NEW(); // TODO
+	return nullptr; 
+}
 
-// Heap Store
-void* _Malloc(tU32 Size, tU32 AllocType, const tChar* Desc, const tChar* File, tU32 Line) { return nullptr; };
-void* _Realloc(void* Ptr, tU32 Size, const tChar* File, tU32 Line) { return nullptr; };
-void _Free(void* Ptr) {};
+void* operator new[](size_t size)
+{
+	// MM_NEW_ARRAY(); // TODO
+	return nullptr;
+}
+
+void operator delete(void* Ptr)
+{
+	// MM_DELETE(Ptr); // TODO
+}
+
+void operator delete[](void* Ptr)
+{
+	// MM_DELETE_ARRAY(Ptr); // TODO
+}
 
 
-// Free Store
-inline void* operator new(size_t Size, tU32 AllocType, const tChar* Desc, const tChar* File, tU32 Line) { return _Malloc(Size, AllocType, Desc, File, Line); }
-inline void* operator new[](size_t Size, tU32 AllocType, const tChar* Desc, const tChar* File, tU32 Line) { return _Malloc(Size, AllocType, Desc, File, Line); }
-inline void operator delete(void* Ptr) { _Free(Ptr); }
-inline void operator delete[](void* Ptr) { _Free(Ptr); }
+// Heap Store, overloading operators
+void* MM_ALLOC(tU32 Size, tU32 AllocType, const tChar* Desc, const tChar* File, tU32 Line)
+{
+	void* allocMem;
+
+	if (MAX_OBJECT_SIZE >= Size)
+	{
+		allocMem = nullptr;// TODO SmallObjAllocator
+	}
+	else
+	{
+		allocMem = nullptr;// TODO normal new
+	}
+
+	// MemoryManager::Trace(Size, AllocType, Desc, File, Line); // TODO trace
+
+	return allocMem;
+};
+
+void* MM_REALLOC(void* Ptr, tU32 Size, const tChar* File, tU32 Line)
+{
+	// TODO
+	return nullptr;
+};
+
+void MM_FREE(void* Ptr)
+{};
+
+#endif // USE_MM_ALLOC
+
 
 
 int main()
 {
+	int* a = new int{555};
 	return 0;
 }
