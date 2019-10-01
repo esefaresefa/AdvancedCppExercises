@@ -346,26 +346,28 @@ template<typename T>
 typename SList<T>::iterator SList<T>::insert(iterator pos, const T& value)
 {
 	iterator PrecIt = _Root;
+	ListNode<T>* aux = _Root;
 	
 	// if pos == begin()
-	if (pos._CurrentNode == _Root)
+	if (pos == begin())
 		push_front(value);
 	else
 	{
 
 		// maintain list order
 		//error
-		while (PrecIt._CurrentNode->next != pos._CurrentNode)
+		while (iterator(aux->next) != pos)
 		{
-			PrecIt++;
+			PrecIt++; 
+			aux = aux->next;
 		}
 
 		// insert element
 		ListNode<T>* NewElement = new ListNode<T>();
 		NewElement->value = value;
-		NewElement->next = pos._CurrentNode;
+		NewElement->next = aux->next;
 
-		PrecIt._CurrentNode->next = NewElement;
+		aux->next = NewElement;
 
 		_Size++;
 	}
@@ -378,23 +380,28 @@ template<typename T>
 typename SList<T>::iterator SList<T>::erase(iterator pos)
 {
 	iterator PrecIt = _Root;
+	ListNode<T>* aux = _Root;
 
 	// if pos == begin()
-	if (pos._CurrentNode == _Root)
+	if (pos == PrecIt)
 		pop_front();
 	else
 	{
 		// maintain list order
 		//error
-		while (PrecIt._CurrentNode->next != pos._CurrentNode)
+		while (iterator(aux->next) != pos)
 		{
 			PrecIt++;
+			aux = aux->next;
 		}
-		PrecIt._CurrentNode->next = pos._CurrentNode->next;
+
+		ListNode<T>* deleteNode = aux->next;
+		aux->next = aux->next->next;
 
 		// delete node in pos
-		pos._CurrentNode->value.~value_type();
-		delete pos._CurrentNode;
+		deleteNode->value.~value_type();
+		delete deleteNode;
+		deleteNode = nullptr;
 
 		_Size--;
 	}
@@ -407,32 +414,30 @@ template<typename T>
 typename SList<T>::iterator SList<T>::erase(iterator first, iterator last)
 {
 	iterator PrecIt = _Root;
+	ListNode<T>* aux = _Root;
 
 	// maintain list order
-	while (PrecIt._CurrentNode->next != first._CurrentNode)
+	while (iterator(aux->next) != first)
 	{
 		PrecIt++;
+		aux = aux->next;
 	}
-	PrecIt._CurrentNode->next = last._CurrentNode->next;
+	ListNode<T>* lastNode = aux->next;
+	ListNode<T>* deleteNode= lastNode;
 
-	iterator Prec_PrecIt = first._CurrentNode;
-	// delete first to last nodes
-	while (first != last)
+	while (iterator(lastNode) != last)
 	{
-		Prec_PrecIt = first._CurrentNode;
-
-		first._CurrentNode->value.~value_type();
-		first++;
-
-		delete Prec_PrecIt._CurrentNode;
+		deleteNode = lastNode;
+		lastNode = lastNode->next;
+		deleteNode->value.~value_type();
+		delete deleteNode;
 
 		_Size--;
 	}
-	last._CurrentNode->value.~value_type();
-	delete last._CurrentNode;
-
+	aux->next = lastNode->next;
+	lastNode->value.~value_type();
+	delete lastNode;
 	_Size--;
-
 	return ++PrecIt;
 }
 
@@ -458,19 +463,18 @@ void SList<T>::resize(size_t count, const value_type& value)
 
 		AuxNode = LastNode;
 
-		iterator it = AuxNode;
+		ListNode<T>* deleteNode = AuxNode;
 
 		// delete extra nodes
 		for (iter; iter < _Size - 1; iter++)
 		{
 			//error
-			it = AuxNode;
+			deleteNode = AuxNode;
 
 			AuxNode->value.~value_type();
 			AuxNode = AuxNode->next;
-			it._CurrentNode = nullptr;
 
-			delete it._CurrentNode;
+			delete deleteNode;
 
 
 			//PrecIt = it;
@@ -517,17 +521,17 @@ void SList<T>::resize(size_t count)
 template<typename T>
 void SList<T>::clear()
 {
-	iterator it = _Root;
-	iterator PrecIt = it;
+	ListNode<T>* AuxNode = _Root;
+	ListNode<T>* PrecIt = AuxNode;
 
-	while (it._CurrentNode != nullptr)
+	while (AuxNode != nullptr)
 	{
-		PrecIt = it;
+		PrecIt = AuxNode;
 
-		it._CurrentNode->value.~value_type();
-		it._CurrentNode = it._CurrentNode->next;
+		AuxNode->value.~value_type();
+		AuxNode = AuxNode->next;
 
-		delete PrecIt._CurrentNode;
+		delete PrecIt;
 	}
 
 	_Root->next = nullptr;
