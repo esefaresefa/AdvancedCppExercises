@@ -30,6 +30,8 @@ public:
 
 	typename U::value_type operator*();
 
+	typename U GetNode();
+
 	template<typename U>
 	friend size_t operator-(const SListArrayIterator<U>& lhs, const SListArrayIterator<U>& rhs);
 
@@ -95,6 +97,12 @@ size_t operator-(const SListArrayIterator<U>& lhs, const SListArrayIterator<U>& 
 {
 	size_t count = std::distance(rhs._CurrentNode, lhs._CurrentNode);
 	return count;
+}
+
+template<typename U>
+typename U SListArrayIterator<U>::GetNode()
+{
+	return *this->_CurrentNode;
 }
 
 

@@ -177,23 +177,17 @@ size_t SListArray<T>::size() const
 template<typename T>
 ListNode<T>& SListArray<T>::front()
 {
-	return *_Root;
+	return _Data[0];
 }
 
 template<typename T>
 ListNode<T>& SListArray<T>::back()
 {
-	if (_Root == nullptr)
-		return *_Root;
+	if (_Size > 0)
+		return _Data[_Size-1];
+		
+	return _Data[_Size];
 
-	ListNode<T>* AuxNode = _Root;
-
-	while (AuxNode->next != nullptr)
-	{
-		AuxNode = AuxNode->next;
-	}
-
-	return *AuxNode;
 }
 
 template<typename T>
@@ -285,13 +279,13 @@ void SListArray<T>::pop_back()
 template<typename T>
 typename SListArray<T>::iterator SListArray<T>::insert(iterator pos, const T& value)
 {
-	iterator PrecIt = _Root;
+	iterator PrecIt = &_Data[0];
 	// maintain list order
 	size_t index = pos - PrecIt;
 	if (index == 0)
 	{
 		push_front(value); 
-		PrecIt = _Root;
+		PrecIt = &_Data[0];
 	}
 	else 
 	{
@@ -323,12 +317,12 @@ template<typename T>
 typename SListArray<T>::iterator SListArray<T>::erase(iterator pos)
 {
 
-	iterator PrecIt = _Root;
+	iterator PrecIt = &_Data[0];
 	size_t index = pos - PrecIt;
 	if (index == 0) 
 	{
 		pop_front();
-		PrecIt = _Root;
+		PrecIt = &_Data[0];
 	}
 
 	if (index == _Size-1)
@@ -350,9 +344,9 @@ typename SListArray<T>::iterator SListArray<T>::erase(iterator pos)
 template<typename T>
 typename SListArray<T>::iterator SListArray<T>::erase(iterator first, iterator last)
 {
-	iterator PrecIt = _Root;
+	iterator PrecIt = &_Data[0];
 	size_t fisrtIndex = first - PrecIt;
-	size_t lastIndex = last - PrecIt;
+	size_t lastIndex = last - PrecIt + 1;
 
 	_Data.erase(_Data.begin() + fisrtIndex, _Data.begin() + lastIndex);
 	_Size-= lastIndex - fisrtIndex;
@@ -370,7 +364,7 @@ typename SListArray<T>::iterator SListArray<T>::erase(iterator first, iterator l
 		}
 		else 
 		{
-			_Data[fisrtIndex - 1].next = &_Data[lastIndex];
+			_Data[fisrtIndex - 1].next = &_Data[fisrtIndex];
 		}
 
 	}
@@ -412,7 +406,11 @@ void SListArray<T>::clear()
 template<typename T>
 typename SListArray<T>::iterator SListArray<T>::begin()
 {
-	return iterator(&_Data[0]);
+	if (_Size > 0)
+		return iterator(&_Data[0]);
+		
+	return nullptr;
+
 };
 
 
