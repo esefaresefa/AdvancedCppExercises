@@ -24,229 +24,57 @@ public:
 	typedef std::reverse_iterator<SListArrayIterator<T>> reverse_iterator;
 	typedef std::reverse_iterator<const SListArrayIterator<T>> const_reverse_iterator;
 
-	SListArray()
-	{
-		_Root = nullptr;
-		_Size = 0;
-	};
+	SListArray();
 
-	explicit SListArray(size_t n)
-	{
-		value_type val = {};
-		SListArray aux(n, val);
-		std::swap(_Data, aux._Data);
-		std::swap(_Root, aux._Root);
-		std::swap(_Size, aux._Size);
-	};
+	explicit SListArray(size_t n);
 
-	SListArray(size_t n, const value_type& val)
-	{
-		_Data.resize(n);
-		_Size = n;
-		if (n > 0)
-		{
-			_Data[0].value=val;
-			_Data[0].next = nullptr;
-			_Root = &_Data[0];
-		}
-		for (size_t i=1; i < n; ++i)
-		{
-			_Data[i-1].next = &_Data[i];
-			_Data[i].value = val;
-			_Data[i].next = nullptr;
-		}
-	};
+	SListArray(size_t n, const value_type& val);
 
-	SListArray(iterator first, iterator last)
-	{
-		size_t a = last - first;
-		_Data.resize(last - first);
-		if (first != last)
-		{
-			_Data[0].value = *first;
-			_Data[0].next = nullptr;
-			_Root = &_Data[0];
-			_Size = 1;
-			first++;
-		}
-		for (; first != last; ++first,++_Size)
-		{
-			_Data[_Size-1].next = &_Data[_Size];
-			_Data[_Size].value = *first;
-			_Data[_Size].next = nullptr;
-		}
-	};
+	SListArray(iterator first, iterator last);
 
-	SListArray(const SListArray& x)
-	{
-		_Size = x._Size;
-		_Data.resize(_Size);
-		const_iterator it = x.begin();
-		if (_Size > 0)
-		{
-			_Data[0].value = x._Data[0];
-			_Data[0].next = nullptr;
-			_Root = &_Data[0];
-		}
-		for (int i = 1; i < x._Size; ++i, ++it)
-		{
-			_Data[i - 1].next = &_Data[i];
-			_Data[i].value = x._Data[i];
-			_Data[i].next = nullptr;
-		}
-	};
+	SListArray(const SListArray& x);
 
-	SListArray(SListArray&& x)
-	{
-		swap(_Root, x._Root);
-		swap(_Size, x._Size);
-		swap(_Data, x._Data);
-	};
+	SListArray(SListArray&& x);
 
-	SListArray(std::initializer_list<value_type> il)
-	{
-		_Root = nullptr;
-		const_iterator* it = il.cbegin(); //equivalent of std::initializer_list<value_type>::iterator
-		_Size = il.size();
-		_Data.resize(il.size());
-		if (_Size > 0)
-		{
-			_Data[0].value = *it;
-			_Data[0].next = nullptr;
-			_Root = &_Data[0]; 
-			++it;
-		}
-		for (size_t i=1; it != il.end(); ++it,++i)
-		{
-			_Data[i-1].next = &_Data[i - 1];
-			_Data[i].value = *it;
-			_Data[i].next = nullptr;
-		}
-	};
+	SListArray(std::initializer_list<value_type> il);
 
-	virtual ~SListArray()
-	{
-		_Size = 0;
-		_Root = nullptr;
-	};
+	virtual ~SListArray();
 
-	SListArray& operator= (const SListArray& x)
-	{
-		_Size = 0;
-		_Root = nullptr;
+	SListArray& operator= (const SListArray& x);
 
-		SListArray aux(x);
-		std::swap(*this, aux);
-		return *this;
-	};
+	SListArray& operator= (SListArray&& x);
 
-	SListArray& operator= (SListArray&& x)
-	{
-		_Size = 0;
-		_Root = nullptr;
+	SListArray& operator= (std::initializer_list<value_type> il);
 
-		std::swap(*this, x);
-		return *this;
-	};
+	bool empty() const;
 
-	SListArray& operator= (std::initializer_list<value_type> il)
-	{
-		_Size = 0;
-		_Root = nullptr;
+	size_t size() const;
 
-		SListArray aux(il);
-		std::swap(*this, aux);
-		return *this;
-	};
+	void push_front(const value_type& val);
 
-	bool empty() const
-	{
-		return _Size <= 0;
-	};
+	void push_front(value_type&& val);
 
-	size_t size() const
-	{
-		return _Size;
-	};
+	void pop_front();
 
-	void push_front(const value_type& val)
-	{
-		_Data.insert(0, { val,_Root });
-		_Root = &_Data[0];
-		++_Size;
-	};
+	void push_back(const value_type& val);
 
-	void push_front(value_type&& val)
-	{
-		ListNode<T> newNode{ val,_Root };
-		//std::swap(newNode.val, val);
-		_Data.insert(0, newNode);
-		_Root = &_Data[0];
-		++_Size;
-	};
+	void push_back(value_type&& val);
 
-	void pop_front()
-	{
-		if (_Size > 0)
-		{
-			_Data[0].value.~value_type();
-			_Data.erase(_Data.begin());
-			_Root = &_Data[0];
-			--_Size;
-		}
-	};
+	iterator begin();
 
-	void push_back(const value_type& val)
-	{
-		_Data.push_back({ val,nullptr });
-		++_Size;
-		if (_Size > 1)
-		{
-			_Data[_Size - 2].next = &_Data[_Size - 1];
-		}
-	};
+	iterator end() ;
 
-	void push_back(value_type&& val)
-	{
-		ListNode<T> newNode{val, nullptr};
-		//std::swap(newNode.val, val);
-		_Data.push_back({ newNode });
-		++_Size;
-		if (_Size > 1)
-		{
-			_Data[_Size - 2].next = &_Data[_Size - 1];
-		}
-	};
+	const_iterator cbegin() const;
 
-	iterator begin() 
-	{ 
-		return iterator(&_Data[0]); 
-	};
+	const_iterator cend() const;
 
-	iterator end() 
-	{ 
-		return iterator(&_Data[_Size]); 
-	};
+	reverse_iterator rbegin();
 
-	const_iterator cbegin() const 
-	{ 
-		return const_iterator(&_Data[0]);
-	};
+	reverse_iterator rend();
 
-	const_iterator cend() const 
-	{ 
-		return const_iterator(&_Data[_Size]);
-	};
+	const_reverse_iterator crbegin() const;
 
-	reverse_iterator rbegin()
-	{
-		return reverse_iterator(&_Data[0]);
-	};
-
-	const_reverse_iterator rend()
-	{
-		return const_reverse_iterator(&_Data[_Size]);
-	};
+	const_reverse_iterator crend() const;
 
 private:
 
@@ -255,9 +83,9 @@ private:
 	std::vector<ListNode<T>> _Data;
 
 	size_t _Size;
-
 };
 
 
 } // namespace list
 
+#include "SListArray.inl"

@@ -128,6 +128,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="FixedSList.inl" />
+    <None Include="SList.inl" />
+    <None Include="SListArray.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

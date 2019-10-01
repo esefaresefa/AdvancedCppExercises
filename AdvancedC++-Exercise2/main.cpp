@@ -13,20 +13,17 @@ int main()
 		// SList
 		std::cout << "SList default constructor... ";
 		SList<int> slist;
-		assert(&slist != nullptr);
-		std::cout << "OK!";
+		std::cout << "OK!" << std::endl;
 
 		// SListArray
 		std::cout << "SListArray default constructor... ";
 		SListArray<int> alist;
-		assert(&alist != nullptr);
-		std::cout << "OK!";
+		std::cout << "OK!" << std::endl;
 
 		// FixedSList
 		std::cout << "FixedSList default constructor... ";
 		FixedSList<int, 1> flist;
-		assert(&flist != nullptr);
-		std::cout << "OK!";
+		std::cout << "OK!" << std::endl;
 
 		// SListArray range constructor
 		std::cout << "FixedSList range constructor... ";
@@ -34,6 +31,11 @@ int main()
 		alist.push_back(2);
 		alist.push_back(3);
 		SListArray<int> alist2(alist.begin(), alist.end());
+		SListArray<int>::const_iterator aiterator = alist2.cbegin();
+		assert(*aiterator++ == 1);
+		assert(*aiterator++ == 2);
+		assert(*aiterator++ == 3);
+		std::cout << "OK!" << std::endl;
 	}
 
 	// TESTING ITERATORS
