@@ -24,6 +24,8 @@ public:
 	typedef std::reverse_iterator<SListArrayIterator<T>> reverse_iterator;
 	typedef std::reverse_iterator<const SListArrayIterator<T>> const_reverse_iterator;
 
+	// Constructors
+
 	SListArray();
 
 	explicit SListArray(size_t n);
@@ -38,18 +40,32 @@ public:
 
 	SListArray(std::initializer_list<value_type> il);
 
+
+	// Destructor
 	virtual ~SListArray();
 
+
+	// Copy operators
 	SListArray& operator= (const SListArray& x);
 
 	SListArray& operator= (SListArray&& x);
 
 	SListArray& operator= (std::initializer_list<value_type> il);
 
+
+	// Capacity
 	bool empty() const;
 
 	size_t size() const;
 
+
+	// Member access
+	ListNode<T>& front();
+
+	ListNode<T>& back();
+
+
+	// Modifiers
 	void push_front(const value_type& val);
 
 	void push_front(value_type&& val);
@@ -59,6 +75,22 @@ public:
 	void push_back(const value_type& val);
 
 	void push_back(value_type&& val);
+
+	void pop_back();
+
+	iterator insert(iterator pos, const T& value);
+
+	iterator erase(iterator pos);
+
+	iterator erase(iterator first, iterator last);
+
+	void resize(size_t count, const value_type & value);
+
+	void resize(size_t count);
+
+	void clear();
+
+	// Iterators
 
 	iterator begin();
 
