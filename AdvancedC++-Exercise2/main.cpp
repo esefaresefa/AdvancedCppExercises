@@ -13,7 +13,7 @@ int main()
 
 
 
-		std::cout << std::endl << "SList constructors... ";
+		std::cout << std::endl << "SList constructors ////////////////////////////////////////////////////////////////////////////////////" << std::endl;
 		// SList
 		std::cout << "SList default constructor... ";
 		SList<int> slist;
@@ -84,7 +84,7 @@ int main()
 
 	// TESTING SArrayList CONSTRUCTORS
 	{
-		std::cout << std::endl << "SArrayList constructors... ";
+		std::cout << std::endl << std::endl << "SArrayList constructors //////////////////////////////////////////////////////////////////////////////////// " << std::endl;
 		// SListArray
 		std::cout << "SListArray default constructor... ";
 		SListArray<int> alist;
@@ -102,10 +102,7 @@ int main()
 		assert(*aiterator++ == 3);
 		std::cout << "OK!" << std::endl;
 
-
-		std::cout << std::endl << "constructors... ";
-
-		std::cout << "fill constructor... ";
+		std::cout << std::endl  << "fill constructor... ";
 		SListArray<int>list2(12);
 		assert(list2.size() == 12);
 
@@ -165,6 +162,8 @@ int main()
 
 	// TESTING ITERATORS
 	{
+
+		std::cout << std::endl << std::endl << " ITERATORS //////////////////////////////////////////////////////////////////////////////////// " << std::endl;
 		// SList
 		std::cout << "SList::iterator operator++ test... ";
 
@@ -215,6 +214,7 @@ int main()
 	{
 
 
+		std::cout << std::endl << std::endl << "SList modifiers //////////////////////////////////////////////////////////////////////////////////// " << std::endl;
 
 		SList<int>list6(11, 5);
 
@@ -290,6 +290,89 @@ int main()
 
 		std::cout << std::endl;
 	}
+
+
+	// TESTING SArrayLIST modifiers
+	{
+
+
+		std::cout << std::endl << std::endl << "SArrayLIST modifiers //////////////////////////////////////////////////////////////////////////////////// " << std::endl;
+
+		SListArray<int>list6(11, 5);
+
+		std::cout << std::endl << "operator= ...";
+		SListArray<int>list8 = list6;
+		assert(list8.size() == 11);
+		for (SListArray<int>::iterator i = list8.begin(); i != list8.end(); ++i)
+		{
+			assert(*i == 5);
+		}
+
+		std::cout << std::endl << "operator= move ...";
+		SListArray<int>list9 = std::move(list6);
+		assert(list9.size() == 11);
+		for (SListArray<int>::iterator i = list9.begin(); i != list9.end(); ++i)
+		{
+			assert(*i == 5);
+		}
+		assert(list6.size() == 0);
+
+
+		std::cout << std::endl << "operator= inizializer list ...";
+		SListArray<int>list10 = { 0,1,2,3,4 };
+		assert(list10.size() == 5);
+		int val1 = 0;
+		for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val1)
+		{
+			assert(*i == val1);
+		}
+
+		std::cout << std::endl << "not empty ...";
+		assert(!list10.empty());
+
+		std::cout << std::endl << "push front ...";
+		list10.push_front(-1);
+		assert(list10.size() == 6);
+		int val2 = -1;
+		for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val2)
+		{
+			assert(*i == val2);
+		}
+
+		std::cout << std::endl << "push front move ...";
+		int val4 = -2;
+		list10.push_front(std::move(val4));
+		assert(list10.size() == 7);
+		int val3 = -2;
+		for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val3)
+		{
+			assert(*i == val3);
+		}
+		assert(val4 == 0);
+
+
+		std::cout << std::endl << "pop front ...";
+		list10.pop_front();
+		assert(list10.size() == 6);
+		int val5 = -1;
+		for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val5)
+		{
+			assert(*i == val5);
+		}
+
+		std::cout << std::endl << "push back move ...";
+		int val6 = 5;
+		list10.push_back(std::move(val6));
+		assert(list10.size() == 7);
+		int val7 = -1;
+		for (SListArray<int>::iterator i = list10.begin(); i != list10.end(); ++i, ++val7)
+		{
+			assert(*i == val7);
+		}
+
+		std::cout << std::endl;
+	}
+
 
 	char end;
 	std::cout << std::endl << "Press any char and ENTER to quit :";
