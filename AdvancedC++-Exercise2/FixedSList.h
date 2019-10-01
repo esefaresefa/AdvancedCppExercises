@@ -267,10 +267,10 @@ public:
 
 	void push_back(value_type&& val)
 	{
-		int forwardData = _Root - &_Data[0];
+		int forwardData = 0; //_Root - &_Data[0]; TODO
 		if (forwardData + _Size < N)
 		{
-			_Data[_Size] = { val, nullptr };
+			_Data[_Size] =  val ;
 			++_Size;
 		}
 		else
@@ -280,9 +280,9 @@ public:
 				iterator it = _Root;
 				for (; it != end(); ++it)
 				{
-					*it = *(it + 1);
+					//*it = *(it + 1); TODO
 				}
-				std::swap(*it = val);
+				//std::swap(*it , val); TODO
 				++_Size;
 			}
 			else
