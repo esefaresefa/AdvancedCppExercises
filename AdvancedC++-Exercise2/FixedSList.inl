@@ -13,7 +13,7 @@ template<class T, unsigned int N>
 FixedSList<T, N>::FixedSList(size_t n) // n should be minor of N
 {
 	value_type val = {};
-	SListArray aux(n, val);
+	FixedSList aux(n, val);
 	std::swap(_Data, aux._Data);
 	std::swap(_Root, aux._Root);
 	std::swap(_Size, aux._Size);
@@ -56,7 +56,7 @@ template<class T, unsigned int N>
 FixedSList<T, N>::FixedSList(const FixedSList& x)
 {
 	_Size = x._Size;
-	const_iterator it = x.begin();
+	const_iterator it = x.cbegin();
 	size_t rootIndex = x._Root - &_Data[0];
 	if (_Size > 0)
 	{
@@ -74,12 +74,11 @@ FixedSList<T, N>::FixedSList(const FixedSList& x)
 template<class T, unsigned int N>
 FixedSList<T, N>::FixedSList(FixedSList&& x)
 {
-	_Root = x._Root;
-	_Size = x._Size;
-	_Data = x._Data;
-	x._Data = nullptr;
+	std::swap(_Data, x._Data);
+	_Root = &_Data[0];
+	_Root+= x._Root - &x._Data[0];
 	x._Root = nullptr;
-	x._Size = 0;
+	std::swap(_Size, x._Size);
 };
 
 
@@ -193,7 +192,7 @@ void FixedSList<T, N>::push_front(const value_type& val)
 	{
 		if (_Size < N)
 		{
-			for (size_t i = _Size; i > 0; --i)
+			for (int i = _Size; i >= 0; --i)
 			{
 				_Data[i + 1] = _Data[i];
 			}
@@ -223,7 +222,7 @@ void FixedSList<T, N>::push_front(value_type&& val)
 	{
 		if (_Size < N)
 		{
-			for (size_t i = _Size; i > 0; --i)
+			for (int i = _Size; i >= 0; --i)
 			{
 				_Data[i + 1] = _Data[i];
 			}
@@ -242,7 +241,8 @@ void FixedSList<T, N>::push_front(value_type&& val)
 template<class T, unsigned int N>
 void FixedSList<T, N>::pop_front()
 {
-	_Root.~value_type();
+	_Root->~value_type();
+	++_Root;
 	--_Size;
 };
 
@@ -253,20 +253,21 @@ void FixedSList<T, N>::push_back(const value_type& val)
 	int forwardData = _Root - &_Data[0];
 	if (forwardData + _Size < N)
 	{
-		_Data[_Size] = { val, nullptr };
+		_Data[_Size+ forwardData] =val;
 		++_Size;
 	}
 	else
 	{
 		if (_Size < N)
 		{
-			iterator it = _Root;
-			for (; it != end(); ++it)
+			size_t it = forwardData - 1;
+			for (; it < _Size + forwardData - 1; ++it)
 			{
-				*it = *(it + 1);
+				_Data[it] = _Data[it + 1];
 			}
-			*it = val;
+			_Data[it] = val;
 			++_Size;
+			--_Root;
 		}
 		else
 		{
@@ -279,23 +280,24 @@ void FixedSList<T, N>::push_back(const value_type& val)
 template<class T, unsigned int N>
 void FixedSList<T, N>::push_back(value_type&& val)
 {
-	int forwardData = 0; //_Root - &_Data[0]; TODO
+	size_t forwardData = _Root - &_Data[0];
 	if (forwardData + _Size < N)
 	{
-		_Data[_Size] = val;
+		_Data[_Size + forwardData] = val;
 		++_Size;
 	}
 	else
 	{
 		if (_Size < N)
 		{
-			iterator it = _Root;
-			for (; it != end(); ++it)
+			size_t it = forwardData-1;
+			for (; it < _Size + forwardData-1; ++it)
 			{
-				//*it = *(it + 1); TODO
+				_Data[it] = _Data[it + 1];
 			}
-			//std::swap(*it , val); TODO
+			std::swap(_Data[it],val);
 			++_Size;
+			--_Root;
 		}
 		else
 		{
@@ -308,56 +310,56 @@ void FixedSList<T, N>::push_back(value_type&& val)
 template<class T, unsigned int N>
 typename FixedSList<T, N>::iterator FixedSList<T, N>::begin()
 {
-	return iterator(&_Data[0]);
+	return iterator(_Root);
 };
 
 
 template<class T, unsigned int N>
 typename FixedSList<T, N>::iterator FixedSList<T, N>::end()
 {
-	return iterator(&_Data[_Size]);
+	return iterator(_Root+_Size);
 };
 
 
 template<class T, unsigned int N>
 typename FixedSList<T, N>::const_iterator FixedSList<T, N>::cbegin() const
 {
-	return const_iterator(&_Data[0]);
+	return const_iterator(_Root);
 };
 
 
 template<class T, unsigned int N>
 typename FixedSList<T, N>::const_iterator FixedSList<T, N>::cend() const
 {
-	return const_iterator(&_Data[_Size]);
+	return const_iterator(_Root + _Size);
 };
 
 
 template<class T, unsigned int N>
 typename FixedSList<T, N>::reverse_iterator FixedSList<T, N>::rbegin()
 {
-	return reverse_iterator(&_Data[0]);
+	return reverse_iterator(_Root);
 };
 
 
 template<class T, unsigned int N>
 typename FixedSList<T, N>::reverse_iterator FixedSList<T, N>::rend()
 {
-	return reverse_iterator(&_Data[_Size]);
+	return reverse_iterator(_Root + _Size);
 };
 
 
 template<class T, unsigned int N>
 typename FixedSList<T, N>::const_reverse_iterator FixedSList<T, N>::crbegin() const
 {
-	return const_reverse_iterator(&_Data[0]);
+	return const_reverse_iterator(_Root);
 };
 
 
 template<class T, unsigned int N>
 typename FixedSList<T, N>::const_reverse_iterator FixedSList<T, N>::crend() const
 {
-	return const_reverse_iterator(&_Data[_Size]);
+	return const_reverse_iterator(_Root + _Size);
 };
 
 

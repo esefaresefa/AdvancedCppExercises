@@ -175,7 +175,7 @@ size_t SListArray<T>::size() const
 template<typename T>
 void SListArray<T>::push_front(const value_type& val)
 {
-	_Data.insert(0, { val,_Root });
+	_Data.insert(_Data.begin(), { val,_Root });
 	_Root = &_Data[0];
 	++_Size;
 };
