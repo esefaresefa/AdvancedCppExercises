@@ -1,7 +1,6 @@
 namespace list {
 
 
-
 template<class T, unsigned int N>
 FixedSList<T, N>::FixedSList()
 {
@@ -360,7 +359,6 @@ typename FixedSList<T, N>::const_reverse_iterator FixedSList<T, N>::crend() cons
 {
 	return const_reverse_iterator(&_Data[_Size]);
 };
-
 
 
 } // namespace list
