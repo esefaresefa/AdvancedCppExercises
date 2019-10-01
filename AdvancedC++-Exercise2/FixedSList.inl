@@ -1,7 +1,6 @@
 namespace list {
 
 
-
 template<class T, unsigned int N>
 FixedSList<T, N>::FixedSList()
 {
@@ -20,6 +19,7 @@ FixedSList<T, N>::FixedSList(size_t n) // n should be minor of N
 	std::swap(_Size, aux._Size);
 };
 
+
 template<class T, unsigned int N>
 FixedSList<T, N>::FixedSList(size_t n, const value_type& val) // n should be minor of N
 {
@@ -34,6 +34,7 @@ FixedSList<T, N>::FixedSList(size_t n, const value_type& val) // n should be min
 		_Data[i] = val;
 	}
 };
+
 
 template<class T, unsigned int N>
 FixedSList<T, N>::FixedSList(iterator first, iterator last)//last - first should be minor of N
@@ -358,7 +359,6 @@ typename FixedSList<T, N>::const_reverse_iterator FixedSList<T, N>::crend() cons
 {
 	return const_reverse_iterator(&_Data[_Size]);
 };
-
 
 
 } // namespace list
