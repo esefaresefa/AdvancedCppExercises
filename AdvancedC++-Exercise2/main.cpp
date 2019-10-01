@@ -6,6 +6,15 @@
 
 using namespace list;
 
+void PrintListOfInt(SList<int>& list)
+{
+	SList<int>::iterator siterator = list.begin();
+
+	for (siterator; siterator != list.end(); siterator++)
+		std::cout << (siterator)._CurrentNode->value << " ";
+	std::cout << std::endl;
+}
+
 int main()
 {
 	// TESTING CONSTRUCTORS
@@ -34,6 +43,49 @@ int main()
 		assert(*siterator++ == 333);
 
 		std::cout << "OK!" << std::endl;
+
+		std::cout << slist.front().value << std::endl;
+		std::cout << slist.back().value << std::endl;
+
+		//slist.pop_back();
+		//std::cout << slist.back().value << std::endl;
+		
+		// Problema se si prova a inserire un elemento dal begin() --> PrecIt._CurrentNode == nullptr
+		//siterator = slist.begin();
+		slist.insert(siterator, 444);
+		std::cout << slist.back().value << std::endl;
+
+		siterator = slist.end();
+		slist.insert(siterator, 555);
+		siterator = slist.begin();
+		std::cout << (++siterator)._CurrentNode->value << std::endl;
+		PrintListOfInt(slist);
+
+		//Stessa cosa di sopra --> PrecIt._CurrentNode == nullptr
+		siterator = slist.begin();
+		siterator++;
+		SList<int>::iterator siterator2 = siterator;
+		siterator2++;
+		siterator2++;
+		slist.erase(siterator, siterator2);
+		siterator = slist.begin();
+		PrintListOfInt(slist);
+
+
+
+		std::cout << "SList::size() = " << slist.size() << std::endl;
+
+		// errore con resize (count < _Size)
+		//slist.resize(2);
+		slist.resize(10);
+		PrintListOfInt(slist);
+		std::cout << "SList::size() = " << slist.size() << std::endl;
+
+		slist.clear();
+		PrintListOfInt(slist);
+		std::cout << "SList::size() = " << slist.size() << std::endl;
+
+		std::cout << std::endl;
 
 		// SListArray
 		std::cout << "SListArray::iterator operator++ test... ";

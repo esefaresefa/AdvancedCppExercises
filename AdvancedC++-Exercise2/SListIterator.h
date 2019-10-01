@@ -25,9 +25,10 @@ public:
 
 	typename U::value_type operator*();
 
+	U* _CurrentNode;
+
 private:
 
-	U* _CurrentNode;
 };
 
 

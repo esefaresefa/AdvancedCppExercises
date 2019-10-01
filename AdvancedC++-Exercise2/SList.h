@@ -205,22 +205,22 @@ public:
 	// Access operators
 	ListNode<T>& front()
 	{
-		return _Root;
+		return *_Root;
 	}
 
 	ListNode<T>& back()
 	{
 		if (_Root == nullptr)
-			return _Root;
+			return *_Root;
 
-		ListNode* AuxNode = _Root;
+		ListNode<T>* AuxNode = _Root;
 
 		while (AuxNode->next != nullptr)
 		{
 			AuxNode = AuxNode->next;
 		}
 
-		return AuxNode;
+		return *AuxNode;
 	}
 
 
@@ -306,7 +306,6 @@ public:
 			{
 				--_Size;
 				_Root->value.~value_type();
-				_Root->value = nullptr;
 				delete _Root;
 			}
 			// if there is more than one node
@@ -330,10 +329,10 @@ public:
 
 	iterator insert(iterator pos, const T& value)
 	{
-		iterator PrecIt;
-		PrecIt._CurrentNode = _Root;
+		iterator PrecIt = _Root;
 
 		// maintain list order
+		//error
 		while (PrecIt._CurrentNode->next != pos._CurrentNode)
 		{
 			PrecIt++;
@@ -346,15 +345,17 @@ public:
 
 		PrecIt._CurrentNode->next = NewElement;
 
-		return --pos;
+		_Size++;
+
+		return PrecIt;
 	}
 
 	iterator erase(iterator pos)
 	{
-		iterator PrecIt;
-		PrecIt._CurrentNode = _Root;
+		iterator PrecIt = _Root;
 
 		// maintain list order
+		//error
 		while (PrecIt._CurrentNode->next != pos._CurrentNode)
 		{
 			PrecIt++;
@@ -365,13 +366,14 @@ public:
 		pos._CurrentNode->value.~value_type();
 		delete pos._CurrentNode;
 
+		_Size--;
+
 		return ++PrecIt;
 	}
 
 	iterator erase(iterator first, iterator last)
 	{
-		iterator PrecIt;
-		PrecIt._CurrentNode = _Root;
+		iterator PrecIt = _Root;
 
 		// maintain list order
 		while (PrecIt._CurrentNode->next != first._CurrentNode)
@@ -380,15 +382,23 @@ public:
 		}
 		PrecIt._CurrentNode->next = last._CurrentNode->next;
 
+		iterator Prec_PrecIt = first._CurrentNode;
 		// delete first to last nodes
 		while (first != last)
 		{
+			Prec_PrecIt = first._CurrentNode;
+
 			first._CurrentNode->value.~value_type();
-			delete first._CurrentNode;
 			first++;
+
+			delete Prec_PrecIt._CurrentNode;
+
+			_Size--;
 		}
 		last._CurrentNode->value.~value_type();
 		delete last._CurrentNode;
+
+		_Size--;
 
 		return ++PrecIt;
 	}
@@ -410,25 +420,31 @@ public:
 
 			LastNode = AuxNode;
 			
+			iterator PrecIt = AuxNode;
+
 			// delete extra nodes
 			for (iter; iter < _Size; iter++)
 			{
+				//error
+				PrecIt = AuxNode;
+
 				AuxNode->value.~value_type();
-				delete AuxNode;
 				AuxNode = AuxNode->next;
+
+				delete PrecIt._CurrentNode;
 			}
 				
 		}
 		// increase list
 		else if (_Size < count)
 		{
-			for (iter; iter < _Size; iter++)
+			for (iter; iter < _Size-1; iter++)
 			{
 				AuxNode = AuxNode->next;
 			}
 
 			// add extra nodes
-			for (iter; iter < count; iter++)
+			for (iter; iter < count-1; iter++)
 			{
 				AuxNode->value = value;
 				AuxNode->next = new ListNode<T>();
@@ -450,17 +466,21 @@ public:
 
 	void clear()
 	{
-		ListNode<T>* AuxNode = _Root;
+		iterator it = _Root;
+		iterator PrecIt = it;
 
-		while (AuxNode != nullptr)
+		while (it._CurrentNode != nullptr)
 		{
-			AuxNode->value.~value_type();
-			delete AuxNode;
-			AuxNode = AuxNode->next;
+			PrecIt = it;
+
+			it._CurrentNode->value.~value_type();
+			it._CurrentNode = it._CurrentNode->next;
+
+			delete PrecIt._CurrentNode;
 		}
 
-		_Root = nullptr;
 		_Root->next = nullptr;
+		_Root = nullptr;
 		_Size = 0;
 	}
 
