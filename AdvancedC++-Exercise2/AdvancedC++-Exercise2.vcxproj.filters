@@ -42,4 +42,9 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="FixedSList.inl">
+      <Filter>File di origine</Filter>
+    </None>
+  </ItemGroup>
 </Project>

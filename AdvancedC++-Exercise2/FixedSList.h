@@ -24,13 +24,9 @@ public:
 	typedef std::reverse_iterator<FixedSListIterator<ListNode<T>>> reverse_iterator;
 	typedef std::reverse_iterator<FixedSListIterator<const ListNode<T>>> const_reverse_iterator;
 
-	FixedSList()
-	{
-		_Root = &_Data[0];
-		_Size = 0;
-	};
+	FixedSList();
 
-	explicit FixedSList(size_t n)//n should be minor of N
+	explicit FixedSList(size_t n) // n should be minor of N
 	{
 		value_type val = {};
 		SListArray aux(n, val);
@@ -39,7 +35,7 @@ public:
 		std::swap(_Size, aux._Size);
 	};
 
-	FixedSList(size_t n, const value_type& val)//n should be minor of N
+	FixedSList(size_t n, const value_type& val) // n should be minor of N
 	{
 		_Size = n;
 		if (n > 0)
