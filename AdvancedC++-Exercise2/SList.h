@@ -23,298 +23,70 @@ public:
 	typedef std::reverse_iterator<SListIterator<T>> reverse_iterator;
 	typedef std::reverse_iterator<const SListIterator<T>> const_reverse_iterator;
 	
-	explicit SList() 
-	{
-		_Root = nullptr;
-		_Size = 0;
-	};
+	SList();
 
-	explicit SList(size_t n)
-	{
-		value_type val = {};
-		SList aux(n, val);
-		std::swap(_Size, aux._Size);
-		std::swap(_Root, aux._Root);
-	};
+	explicit SList(size_t n);
 
-	SList(size_t n, const value_type& val)
-	{
-		_Root = nullptr;
-		ListNode<T>* AuxNode = nullptr;
-		_Size = n;
-		if (n > 0)
-		{
-			_Root = new ListNode<T>();
-			_Root->value = val;
-			_Root->next = nullptr;
-			AuxNode = _Root;
-			--n;
-		}
-		for (; n > 0; --n)
-		{
-			AuxNode->next = new ListNode<T>();
-			AuxNode = AuxNode->next;
-			AuxNode->value = val;
-		}
-		AuxNode->next = nullptr;
-	};
+	SList(size_t n, const value_type& val);
 
-	SList(iterator first, iterator last)
-	{
-		_Root = new ListNode<T>();
-		_Root->value = *first;
-		_Root->next = nullptr;
-		_Size = 1;
-		ListNode<T>* AuxNode = _Root;
-		first++;
-		for (;first!=last;++first,++_Size)
-		{
-			AuxNode->next = new ListNode<T>();
-			AuxNode = AuxNode->next;
-			AuxNode->value = *first;
-		}
-		AuxNode->next = nullptr;
-	};
+	SList(iterator first, iterator last);
 
-	SList(const SList& x)
-	{
-		_Root = nullptr;
-		ListNode<T>* AuxNode = _Root;
-		const_iterator it = x.cbegin();
-		_Size = x._Size;
-		if (_Size > 0)
-		{
-			_Root = new ListNode<T>();
-			_Root->value = *it;
-			_Root->next = nullptr;
-			AuxNode = _Root;
-		}
-		for (int i=1; i < x._Size; ++i, ++it)
-		{
-			AuxNode->next = new ListNode<T>();
-			AuxNode = AuxNode->next;
-			AuxNode->value = *it;
-		}
-		AuxNode->next = nullptr;
-	};
+	SList(const SList& x);
 
-	SList(SList&& x)
-	{
-		std::swap(_Root, x._Root);
-		std::swap(_Size, x._Size);
-	};
+	SList(SList&& x);
 
-	SList(std::initializer_list<value_type> il)
-	{
-		_Root = nullptr;
-		ListNode<T>* AuxNode = _Root;
-		const value_type* it = il.begin(); //equivalent of std::initializer_list<value_type>::iterator
-		_Size = il.size();
-		if (il.size()>0)
-		{
-			_Root = new ListNode<T>();
-			_Root->value = *it;
-			_Root->next = nullptr;
-			AuxNode = _Root; 
-			++it;
-		}
-		for (; it != il.end(); ++it)
-		{
-			AuxNode->next = new ListNode<T>();
-			AuxNode = AuxNode->next;
-			AuxNode->value = *it;
-		}
-		AuxNode->next = nullptr;
-	};
+	SList(std::initializer_list<value_type> il);
 
-	virtual ~SList() 
-	{
-		ListNode<T>* AuxNode = nullptr;
-		for (; _Size > 0; _Size--)
-		{
-			AuxNode = _Root;
-			_Root = _Root->next;
-			AuxNode->value.~value_type();
-			delete AuxNode;
-		}
-		delete _Root;
-	};
+	virtual ~SList();
 
-	SList& operator= (const SList& x)
-	{
-		ListNode<T>* AuxNode = nullptr;
-		for (; _Size > 0; _Size--)
-		{
-			AuxNode = _Root;
-			_Root = _Root->next;
-			AuxNode->value.~value_type();
-			delete AuxNode;
-		}
-		SList aux(x);
-		std::swap(*this, aux);
-		return *this;
-	};
+	SList& operator= (const SList& x);
 
-	SList& operator= (SList&& x) 
-	{
-		ListNode<T>* AuxNode = nullptr;
-		for (; _Size > 0; _Size--)
-		{
-			AuxNode = _Root;
-			_Root = _Root->next;
-			AuxNode->value.~value_type();
-			delete AuxNode;
-		}
-		std::swap(*this, x);
-		return *this;
-	};
+	SList& operator= (SList&& x);
 
-	SList& operator= (std::initializer_list<value_type> il)
-	{
-		ListNode<T>* AuxNode = nullptr;
-		for (; _Size > 0; _Size--)
-		{
-			AuxNode = _Root;
-			_Root = _Root->next;
-			AuxNode->value.~value_type();
-			delete AuxNode;
-		}
-		SList aux(il);
-		std::swap(*this, aux);
-		return *this;
-	};
+	SList& operator= (std::initializer_list<value_type> il);
 
-	bool empty() const 
-	{
-		return _Size <= 0;
-	};
+	bool empty() const;
 
-	size_t size() const
-	{
-		return _Size;
-	};
+	size_t size() const;
 
-	void push_front(const value_type& val)
-	{
-		ListNode<T>* NewElement = new ListNode<T>();
-		NewElement->value = val;
-		NewElement->next = _Root;
-		_Root = NewElement;
-		++_Size;
-	};
+	void push_front(const value_type& val);
 
-	void push_front(value_type&& val) 
-	{
-		ListNode<T>* NewElement = new ListNode<T>();
-		std::swap(NewElement->value, val);
-		NewElement->next = _Root;
-		_Root = NewElement;
-		++_Size;
-	};
+	void push_front(value_type&& val);
 
-	void pop_front() 
-	{
-		if (_Size > 0)
-		{
-			ListNode<T>* AuxNode = _Root;
-			_Root = _Root->next;
-			--_Size;
-			AuxNode->value.~value_type();
-			delete AuxNode;
-		}
-	};
+	void pop_front();
 
-	void push_back(const value_type& val)
-	{
-		if (_Size > 0)
-		{
-			ListNode<T>* NewElement = GetLast();
+	void push_back(const value_type& val);
 
-			NewElement->next = new ListNode<T>();
-			NewElement = NewElement->next;
-			NewElement->value = val;
-			NewElement->next = nullptr;
-			++_Size;
-		}
-		else
-		{
-			_Root = new ListNode<T>();
-			_Root->value = val;
-			_Root->next = nullptr;
-			++_Size;
-		}
-	};
+	void push_back(value_type&& val);
 
-	void push_back(value_type&& val) 
-	{
-		if (_Size > 0)
-		{
-			ListNode<T>* NewElement = GetLast();
+	iterator begin();
 
-			NewElement->next = new ListNode<T>();
-			NewElement = NewElement->next;
-			std::swap(NewElement->value, val);
-			NewElement->next = nullptr;
-			++_Size;
-		}
-		else
-		{
-			_Root = new ListNode<T>();
-			std::swap(_Root->value , val);
-			_Root->next = nullptr;
-			++_Size;
-		}
-	};
+	iterator end();
 
-	iterator begin() 
-	{ 
-		return iterator(_Root); 
-	};
+	const_iterator cbegin() const;
 
-	iterator end() 
-	{ 
-		return iterator(nullptr); 
-	};
+	const_iterator cend() const;
 
-	const_iterator cbegin() const
-	{ 
-		return const_iterator(_Root); 
-	};
+	reverse_iterator rbegin();
 
-	const_iterator cend() const
-	{ 
-		return const_iterator(nullptr); 
-	};
+	reverse_iterator rend();
 
-	reverse_iterator rbegin()
-	{
-		return reverse_iterator(_Root);
-	};
-
-	const_reverse_iterator rend() const
-	{
-		return const_reverse_iterator(nullptr);
-	};
+	const_reverse_iterator crbegin() const;
+	
+	const_reverse_iterator crend() const;
 
 protected:
 
-	ListNode<T>* GetLast() 
-	{
-		ListNode<T>* Element = _Root;
-		while (Element->next)
-		{
-			Element = Element->next;
-		}
-		return Element;
-	}
+	ListNode<T>* GetLast();
 
 private:
 
 	ListNode<T>* _Root;
-	size_t _Size;
 
+	size_t _Size;
 };
 
 
-
 } // namespace list
+
+#include "SList.inl"

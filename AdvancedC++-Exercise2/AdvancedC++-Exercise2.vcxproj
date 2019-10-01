@@ -126,6 +126,11 @@
     <ClInclude Include="SListIterator.h" />
     <ClInclude Include="ListNode.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="FixedSList.inl" />
+    <None Include="SList.inl" />
+    <None Include="SListArray.inl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
