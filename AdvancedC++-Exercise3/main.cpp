@@ -13,13 +13,15 @@ typedef uint32_t tU32;
 #define Delete delete
 
 
-// Heap Store
+// Heap Store, overloading operators
 void* _Malloc(tU32 Size, tU32 AllocType, const tChar* Desc, const tChar* File, tU32 Line) { return nullptr; };
 void* _Realloc(void* Ptr, tU32 Size, const tChar* File, tU32 Line) { return nullptr; };
 void _Free(void* Ptr) {};
 
 
-// Free Store
+// Free Store, overloading operators new and delete
+void* operator new(size_t size) { /* return MemoryManager::Allocate(size, true); */ return nullptr; }
+void* operator new[](size_t size) { /* return MemoryManager::Allocate(size, true); */ return nullptr; }
 inline void* operator new(size_t Size, tU32 AllocType, const tChar* Desc, const tChar* File, tU32 Line) { return _Malloc(Size, AllocType, Desc, File, Line); }
 inline void* operator new[](size_t Size, tU32 AllocType, const tChar* Desc, const tChar* File, tU32 Line) { return _Malloc(Size, AllocType, Desc, File, Line); }
 inline void operator delete(void* Ptr) { _Free(Ptr); }
@@ -28,5 +30,6 @@ inline void operator delete[](void* Ptr) { _Free(Ptr); }
 
 int main()
 {
+	int* a = new int{555};
 	return 0;
 }
