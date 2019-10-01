@@ -118,6 +118,7 @@
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="FixedAllocator.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SimpleTracker.cpp" />
     <ClCompile Include="SmallObjAllocator.cpp" />
     <ClCompile Include="SmallObject.cpp" />
   </ItemGroup>
@@ -126,6 +127,7 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="FixedAllocator.h" />
     <ClInclude Include="MemoryManager.h" />
+    <ClInclude Include="SimpleTracker.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SmallObjAllocator.h" />
     <ClInclude Include="SmallObject.h" />

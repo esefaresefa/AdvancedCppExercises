@@ -1,6 +1,9 @@
 #pragma once
 
+#include "SmallObject.h"
+#include "SimpleTracker.h"
 #include <iostream>
+
 
 
 #ifdef USE_MM_ALLOC
@@ -11,74 +14,86 @@ typedef uint32_t tU32;
 
 
 // Defining function helpers
-#define MMNEW(SIZE, TYPE, DESC)		MM_NEW(SIZE, TYPE, DESC, __FILE__, __LINE__)
-#define MMNEWA(SIZE, TYPE, DESC)	MM_NEW_A(SIZE, TYPE, DESC, __FILE__, __LINE__)
-#define MMDELETE(PTR)				MM_DELETE(PTR, __FILE__, __LINE__)
-#define MMDELETEA(PTR)				MM_DELETE_A(PTR, __FILE__, __LINE__)
-#define MMALLOC(SIZE, TYPE, DESC)	MM_MALLOC(SIZE, TYPE, DESC, __FILE__, __LINE__)
-#define MMFREE(SIZE, TYPE, DESC)	MM_FREE(SIZE, TYPE, DESC, __FILE__, __LINE__)
-// #define MMREALLOC(PTR, SIZE)		MM_REALLOC(PTR, SIZE, __FILE__, __LINE__)
+#define MMNEW(size, type, desc)				MM_NEW(size, type, desc, __FILE__, __LINE__)
+#define MMNEWA(size, type, desc)			MM_NEW_A(size, type, desc, __FILE__, __LINE__)
+#define MMDELETE(prt, size, type, desc)		MM_DELETE(ptr, size, type, desc, __FILE__, __LINE__)
+#define MMDELETEA(prt, size, type, desc)	MM_DELETE_A(ptr, size, type, desc, __FILE__, __LINE__)
+#define MMALLOC(ptr, size, type, desc)		MM_MALLOC(ptr, size, type, desc, __FILE__, __LINE__)
+#define MMFREE(ptr, size, type, desc)		MM_FREE(ptr, size, type, desc, __FILE__, __LINE__)
 
 
 static size_t count = 0;
-void TraceAlloc(tU32 Size, tU32 AllocType, const tChar* Desc, const tChar* File, tU32 Line)
+void TraceAlloc(tU32 size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
 {
-	count += Size;
+	count += size;
 }
 
 
-void TraceDealloc(tU32 Size, tU32 AllocType, const tChar* Desc, const tChar* File, tU32 Line)
+void TraceDealloc(tU32 size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
 {
-	count -= Size;
+	count -= size;
 }
 
 
-void* MM_MALLOC(tU32 Size, tU32 AllocType, const tChar* Desc, const tChar* File, tU32 Line)
+void* MM_MALLOC(tU32 size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
 {
 	void* allocMem;
 
-	if (MAX_OBJECT_SIZE >= Size)
+	if (MAX_OBJECT_SIZE >= size)
 	{
-		allocMem = nullptr;
+		// use Simple Tracker Allocator
+		allocMem = SmallObjectAllocator::GetInstance()->Allocate(size);
 	}
 	else
 	{
-		allocMem = malloc(Size);
+		// use Small Object Allocator
+		allocMem = SimpleTrackerAllocator::GetInstance()->Allocate(size);
 	}
 
-	TraceAlloc(Size, AllocType, Desc, File, Line);
+	TraceAlloc(size, alloctype, desc, file, line); // ?
 
 	return allocMem;
 };
 
 
-void MM_FREE(void* ptr)
+void MM_FREE(void* ptr, tU32 size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
 {
-	free(ptr);
+	if (MAX_OBJECT_SIZE >= size)
+	{
+		// use Simple Tracker Allocator
+		SmallObjectAllocator::GetInstance()->Deallocate(ptr, size);
+	}
+	else
+	{
+		// use Small Object Allocator
+		SimpleTrackerAllocator::GetInstance()->Deallocate(ptr);
+	}
+
+	TraceDealloc(size, alloctype, desc, file, line);
 };
 
 
-void* MM_NEW(size_t Size, tU32 AllocType, const tChar* Desc, const tChar* File, tU32 Line)
+void* MM_NEW(size_t size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
 {
-	return MM_MALLOC(Size, AllocType, Desc, File, Line);
+	return MM_MALLOC(size, alloctype, desc, file, line);
 }
 
 
-void* MM_NEW_A(size_t Size, tU32 AllocType, const tChar* Desc, const tChar* File, tU32 Line)
+void* MM_NEW_A(size_t size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
 {
-	return MM_MALLOC(Size, AllocType, Desc, File, Line);
+	return MM_MALLOC(size, alloctype, desc, file, line);
 }
 
 
-void MM_DELETE(void* ptr, const tChar* File, tU32 Line)
+void MM_DELETE(void* ptr, size_t size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
 {
-	delete ptr;
+	MM_FREE(ptr, size, 0, desc, file, line);
 }
 
 
-void MM_DELETE_A(void* ptr, const tChar* File, tU32 Line)
+void MM_DELETE_A(void* ptr, size_t size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
 {
-	delete[] ptr;
+	MM_FREE(ptr, size, 0, desc, file, line);
 }
 
 
@@ -92,14 +107,14 @@ void* operator new[](size_t size)
 	return MMNEWA(size, 0, "");
 }
 
-void operator delete(void* ptr)
+void operator delete(void* ptr, size_t size)
 {
-	MMDELETE(ptr);
+	MMDELETE(ptr, size, 0, "");
 }
 
-void operator delete[](void* ptr)
+void operator delete[](void* ptr, size_t size)
 {
-	MMDELETEA(ptr); 
+	MMDELETEA(ptr, size, 0, ""); 
 }
 
 
