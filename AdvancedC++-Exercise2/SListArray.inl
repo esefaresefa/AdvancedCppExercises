@@ -67,17 +67,17 @@ SListArray<T>::SListArray(const SListArray& x)
 {
 	_Size = x._Size;
 	_Data.resize(_Size);
-	const_iterator it = x.begin();
+	const_iterator it = x.cbegin();
 	if (_Size > 0)
 	{
-		_Data[0].value = x._Data[0];
+		_Data[0].value=x._Data[0].value;
 		_Data[0].next = nullptr;
 		_Root = &_Data[0];
 	}
 	for (int i = 1; i < x._Size; ++i, ++it)
 	{
 		_Data[i - 1].next = &_Data[i];
-		_Data[i].value = x._Data[i];
+		_Data[i].value = x._Data[i].value;
 		_Data[i].next = nullptr;
 	}
 };
@@ -86,9 +86,9 @@ SListArray<T>::SListArray(const SListArray& x)
 template<typename T>
 SListArray<T>::SListArray(SListArray&& x)
 {
-	swap(_Root, x._Root);
-	swap(_Size, x._Size);
-	swap(_Data, x._Data);
+	std::swap(_Root, x._Root);
+	std::swap(_Size, x._Size);
+	std::swap(_Data, x._Data);
 };
 
 
@@ -96,7 +96,7 @@ template<typename T>
 SListArray<T>::SListArray(std::initializer_list<value_type> il)
 {
 	_Root = nullptr;
-	const_iterator* it = il.cbegin(); //equivalent of std::initializer_list<value_type>::iterator
+	const value_type* it = il.begin(); //equivalent of std::initializer_list<value_type>::iterator
 	_Size = il.size();
 	_Data.resize(il.size());
 	if (_Size > 0)
@@ -175,7 +175,7 @@ size_t SListArray<T>::size() const
 template<typename T>
 void SListArray<T>::push_front(const value_type& val)
 {
-	_Data.insert(0, { val,_Root });
+	_Data.insert(_Data.begin(), { val,_Root });
 	_Root = &_Data[0];
 	++_Size;
 };
@@ -184,9 +184,10 @@ void SListArray<T>::push_front(const value_type& val)
 template<typename T>
 void SListArray<T>::push_front(value_type&& val)
 {
-	ListNode<T> newNode{ val,_Root };
-	//std::swap(newNode.val, val);
-	_Data.insert(0, newNode);
+	ListNode<T> newNode = {};
+	std::swap(newNode.value , val);
+	newNode.next = _Root;
+	_Data.insert(_Data.begin(), newNode);
 	_Root = &_Data[0];
 	++_Size;
 };
