@@ -51,6 +51,8 @@ x64/Debug/AdvancedC\+\+-Exercise1.pdb
 
 *.obj
 
+*.suo
+
 AdvancedC\+\+Exercise2/x64/Debug/
 
 x64/Debug/
