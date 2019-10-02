@@ -45,14 +45,15 @@ void MemoryManager::MM_FREE(void* ptr, tU32 alloctype, const tChar* desc, const 
 	AllocDesc* allocDesc = GetDesc(ptr);
 	if(allocDesc && !allocDesc->Freed)
 	{
+		tU32 allocType = allocDesc->AllocationType;
 		size_t size = allocDesc->Size;
 
-		if (MAX_OBJECT_SIZE >= size)
+		if (allocType == 0)
 		{
 			// use Simple Tracker Allocator
-			SmallObjectAllocator::GetInstance()->Deallocate(ptr);
+			SmallObjectAllocator::GetInstance()->Deallocate(ptr, size);
 		}
-		else
+		else if(allocType == 1)
 		{
 			// use Small Object Allocator
 			SimpleTrackerAllocator::GetInstance()->Deallocate(ptr);
