@@ -9,6 +9,8 @@ public:
 
 	void* Allocate();
 
+	void Deallocate(void* ChunkToDeallocate);
+
 private:
 
 	size_t _BlockSize;
