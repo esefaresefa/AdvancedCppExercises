@@ -76,6 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/D USE_MM_ALLOC %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -108,6 +109,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/D USE_MM_ALLOC %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -123,8 +125,9 @@
     <ClCompile Include="SmallObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AllocDesc.h" />
     <ClInclude Include="Chunk.h" />
-    <ClInclude Include="Config.h" />
+    <ClInclude Include="MMConfig.h" />
     <ClInclude Include="FixedAllocator.h" />
     <ClInclude Include="MemoryManager.h" />
     <ClInclude Include="SimpleTracker.h" />

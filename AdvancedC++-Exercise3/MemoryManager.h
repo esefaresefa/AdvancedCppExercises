@@ -1,17 +1,11 @@
 #pragma once
 
+#include "MMConfig.h"
 #include "SmallObject.h"
 #include "SimpleTracker.h"
-#include <iostream>
 
 
-
-#ifdef USE_MM_ALLOC
-
-// Defining types
-typedef char tChar;
-typedef uint32_t tU32;
-
+#ifdef  USE_MM_ALLOC
 
 // Defining function helpers
 #define MMNEW(size, type, desc)			MM_NEW(size, type, desc, __FILE__, __LINE__)
