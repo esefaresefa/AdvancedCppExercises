@@ -25,6 +25,7 @@ SListArray<T>::SListArray(size_t n, const value_type& val)
 {
 	_Data.resize(n);
 	_Size = n;
+	_Root = nullptr;
 	if (n > 0)
 	{
 		_Data[0].value = val;
@@ -43,21 +44,16 @@ SListArray<T>::SListArray(size_t n, const value_type& val)
 template<typename T>
 SListArray<T>::SListArray(iterator first, iterator last)
 {
-	size_t a = last - first;
-	_Data.resize(last - first);
+	_Root = nullptr;
 	if (first != last)
 	{
-		_Data[0].value = *first;
-		_Data[0].next = nullptr;
+		push_back(*first);
 		_Root = &_Data[0];
-		_Size = 1;
 		first++;
 	}
-	for (; first != last; ++first, ++_Size)
+	for (; first != last; ++first)
 	{
-		_Data[_Size - 1].next = &_Data[_Size];
-		_Data[_Size].value = *first;
-		_Data[_Size].next = nullptr;
+		push_back(*first);
 	}
 };
 
@@ -67,6 +63,7 @@ SListArray<T>::SListArray(const SListArray& x)
 {
 	_Size = x._Size;
 	_Data.resize(_Size);
+	_Root = nullptr;
 	const_iterator it = x.cbegin();
 	if (_Size > 0)
 	{
@@ -108,7 +105,7 @@ SListArray<T>::SListArray(std::initializer_list<value_type> il)
 	}
 	for (size_t i = 1; it != il.end(); ++it, ++i)
 	{
-		_Data[i - 1].next = &_Data[i - 1];
+		_Data[i - 1].next = &_Data[i];
 		_Data[i].value = *it;
 		_Data[i].next = nullptr;
 	}
@@ -118,6 +115,7 @@ SListArray<T>::SListArray(std::initializer_list<value_type> il)
 template<typename T>
 SListArray<T>::~SListArray()
 {
+	_Data.clear();
 	_Size = 0;
 	_Root = nullptr;
 };
@@ -177,61 +175,130 @@ size_t SListArray<T>::size() const
 template<typename T>
 ListNode<T>& SListArray<T>::front()
 {
-	return _Data[0];
+	return *_Root;
 }
 
 template<typename T>
 ListNode<T>& SListArray<T>::back()
 {
-	if (_Size > 0)
-		return _Data[_Size-1];
-		
-	return _Data[_Size];
+	if (_Root == nullptr)
+		return *_Root;
 
+	ListNode<T>* AuxNode = _Root;
+
+	while (AuxNode->next != nullptr)
+	{
+		AuxNode = AuxNode->next;
+	}
+
+	return *AuxNode;
 }
 
 template<typename T>
 void SListArray<T>::push_front(const value_type& val)
 {
-	_Data.insert(_Data.begin(), { val,_Root });
-	_Root = &_Data[0];
-	++_Size;
+	if (_Data.size() <_Data.capacity()  || _Root == nullptr)
+	{
+		_Data.push_back({ val , _Root });
+		_Root = &_Data[_Data.size()-1];
+		_Size++;
+	}
+	else 
+	{
+
+		ListNode<T>* AuxNode = _Root;
+
+		std::vector<ListNode<T>> auxData(_Size + 1); 
+		size_t i = 0;
+		auxData[i] = { val , &auxData[i+1]};
+		++i;
+		for (; AuxNode->next != nullptr; ++i)
+		{
+			auxData[i] = { AuxNode->value , &auxData[i + 1] };
+			AuxNode = AuxNode->next;
+		}
+		auxData[i] = { AuxNode->value ,nullptr };
+		_Data.clear();
+		_Data = std::move(auxData);
+		_Root = &_Data[0];
+		++_Size;
+	}
 };
 
 
 template<typename T>
 void SListArray<T>::push_front(value_type&& val)
 {
-	ListNode<T> newNode = {};
-	std::swap(newNode.value , val);
-	newNode.next = _Root;
-	_Data.insert(_Data.begin(), newNode);
-	_Root = &_Data[0];
-	++_Size;
+	if (_Data.size() < _Data.capacity() || _Root == nullptr)
+	{
+		_Data.push_back({ T{} , _Root });
+		std::swap(_Data[_Data.size() - 1].value,val);
+		_Root = &_Data[_Data.size()-1];
+		_Size++;
+	}
+	else
+	{
+
+		ListNode<T>* AuxNode = _Root;
+
+		std::vector<ListNode<T>> auxData(_Size + 1);
+		size_t i = 0;
+		auxData[i] = { T{} , &auxData[i + 1] };
+		std::swap(auxData[i].value, val);
+		++i;
+		for (; AuxNode->next != nullptr; ++i)
+		{
+			auxData[i] = { AuxNode->value , &auxData[i + 1] };
+			AuxNode = AuxNode->next;
+		}
+		auxData[i] = { AuxNode->value ,nullptr };
+		_Data.clear();
+		_Data = std::move(auxData);
+		_Root = &_Data[0];
+		++_Size;
+	}
 };
 
 
 template<typename T>
 void SListArray<T>::pop_front()
 {
-	if (_Size > 0)
-	{
-		_Data[0].value.~value_type();
-		_Data.erase(_Data.begin());
-		_Root = &_Data[0];
-		--_Size;
-	}
+	ListNode<T>* DeleteNode = _Root;
+	_Root = _Root->next;
+	DeleteNode->value.~value_type();
+	--_Size;
 };
 
 
 template<typename T>
 void SListArray<T>::push_back(const value_type& val)
 {
-	_Data.push_back({ val,nullptr });
-	++_Size;
-	if (_Size > 1)
+	if (_Data.size() < _Data.capacity() || _Root == nullptr)
 	{
-		_Data[_Size - 2].next = &_Data[_Size - 1];
+		_Data.push_back({ val , nullptr });
+		_Size++;
+		if (_Root == nullptr)
+		{
+			_Root = &_Data[0];
+		}
+	}
+	else
+	{
+
+		ListNode<T>* AuxNode = _Root;
+
+		std::vector<ListNode<T>> auxData(_Size + 1);
+		size_t i = 0;
+		for (; AuxNode != nullptr; ++i)
+		{
+			auxData[i] = { AuxNode->value , &auxData[i + 1] };
+			AuxNode = AuxNode->next;
+		}
+		auxData[i] = { val , nullptr };
+		_Data.clear();
+		_Data = std::move(auxData);
+		_Root = &_Data[0];
+		++_Size;
 	}
 };
 
@@ -239,13 +306,34 @@ void SListArray<T>::push_back(const value_type& val)
 template<typename T>
 void SListArray<T>::push_back(value_type&& val)
 {
-	ListNode<T> newNode{ val, nullptr };
-	//std::swap(newNode.val, val);
-	_Data.push_back({ newNode });
-	++_Size;
-	if (_Size > 1)
+	if (_Data.size() < _Data.capacity() || _Root == nullptr)
 	{
-		_Data[_Size - 2].next = &_Data[_Size - 1];
+		_Data.push_back({ T{} , nullptr });
+		std::swap(_Data[_Data.size() - 1].value, val);
+		_Size++;
+		if (_Root == nullptr)
+		{
+			_Root = &_Data[0];
+		}
+	}
+	else
+	{
+
+		ListNode<T>* AuxNode = _Root;
+
+		std::vector<ListNode<T>> auxData(_Size + 1);
+		size_t i = 0;
+		for (; AuxNode != nullptr; ++i)
+		{
+			auxData[i]={ AuxNode->value , &auxData[i + 1] };
+			AuxNode = AuxNode->next;
+		}
+		auxData[i] = { T{} , nullptr };
+		std::swap(auxData[i].value, val);
+		_Data.clear();
+		_Data = std::move(auxData);
+		_Root = &_Data[0];
+		++_Size;
 	}
 };
 
@@ -266,12 +354,17 @@ void SListArray<T>::pop_back()
 		// if there is more than one node
 		else
 		{
-			_Data[_Size - 1].value.~value_type();
-			_Data.pop_back();
-			--_Size;
-			_Data[_Size - 1].next = nullptr;
-		}
 
+			ListNode<T>* AuxNode = _Root;
+
+			while (AuxNode->next->next != nullptr)
+			{
+				AuxNode = AuxNode->next;
+			}
+			AuxNode->next->value.~value_type();
+			AuxNode->next = nullptr;
+			--_Size;
+		}
 	}
 }
 
@@ -279,35 +372,61 @@ void SListArray<T>::pop_back()
 template<typename T>
 typename SListArray<T>::iterator SListArray<T>::insert(iterator pos, const T& value)
 {
-	iterator PrecIt = &_Data[0];
-	// maintain list order
-	size_t index = pos - PrecIt;
-	if (index == 0)
+	iterator PrecIt = _Root;
+	ListNode<T>* aux = _Root;
+
+	// if pos == begin()
+	if (pos == begin())
 	{
-		push_front(value); 
-		PrecIt = &_Data[0];
+		push_front(value);
+		return PrecIt;
 	}
-	else 
+	if (pos == end())
 	{
-
-		// insert element
-		ListNode<T>* NewElement = new ListNode<T>();
-		NewElement->value = value;
-		_Data.insert(_Data.begin() + index, *NewElement);
-		++_Size;
-
-		_Data[index - 1].next = &_Data[index];
-		PrecIt = &_Data[index - 1];
-		if (index < _Size - 1)
+		PrecIt = &back();
+		push_back(value);
+	}
+	else
+	{
+		if (_Data.size() < _Data.capacity())
 		{
-			_Data[index].next = &_Data[index + 1];
+			// maintain list order
+			//error
+			while (iterator(aux->next) != pos)
+			{
+				PrecIt++;
+				aux = aux->next;
+			}
+
+			_Data.push_back({ value , aux->next });
+			aux->next = &_Data[_Data.size()-1];
+			_Size++;
 		}
 		else
 		{
-			_Data[index].next = nullptr;
+			std::vector<ListNode<T>> auxData(_Size + 1);
+			size_t i = 0;
+			for (; iterator(aux) != pos; ++i)
+			{
+				auxData[i]={ aux->value , &auxData[i + 1] };
+				PrecIt++;
+				aux = aux->next;
+			}
+
+			auxData[i] = { value , &auxData[i + 1] };
+			++i;
+			for (; iterator(aux->next) != nullptr; ++i)
+			{
+				auxData[i] = { aux->value , &auxData[i + 1] };
+				aux = aux->next;
+			}
+			auxData[i] = { aux->value , nullptr };
+			_Data.clear();
+			_Data = std::move(auxData);
+			_Root = &_Data[0];
+			_Size++;
 		}
 	}
-
 
 	return PrecIt;
 }
@@ -316,67 +435,79 @@ typename SListArray<T>::iterator SListArray<T>::insert(iterator pos, const T& va
 template<typename T>
 typename SListArray<T>::iterator SListArray<T>::erase(iterator pos)
 {
+	iterator PrecIt = _Root;
+	ListNode<T>* aux = _Root;
 
-	iterator PrecIt = &_Data[0];
-	size_t index = pos - PrecIt;
-	if (index == 0) 
+	// if pos == begin()
+	if (pos == PrecIt)
 	{
 		pop_front();
-		PrecIt = &_Data[0];
+		return ++PrecIt;
 	}
-
-	if (index == _Size-1)
+	if (pos == end())
 	{
 		pop_back();
+		PrecIt = &back();
 	}
-	else {
+	else
+	{
+		// maintain list order
+		//error
+		while (iterator(aux->next) != pos)
+		{
+			PrecIt++;
+			aux = aux->next;
+		}
 
-		_Data.erase(_Data.begin() + index);
-		_Data[index - 1].next = &_Data[index];
-		PrecIt = &_Data[index - 1];
+		ListNode<T>* deleteNode = aux->next;
+		aux->next = aux->next->next;
+
+		// delete node in pos
+		deleteNode->value.~value_type();
+		deleteNode = nullptr;
+
+		_Size--;
 	}
 
-	--_Size;
-	return PrecIt;
+	return ++PrecIt;
 }
 
 
 template<typename T>
 typename SListArray<T>::iterator SListArray<T>::erase(iterator first, iterator last)
 {
-	iterator PrecIt = &_Data[0];
-	size_t fisrtIndex = first - PrecIt;
-	size_t lastIndex = last - PrecIt + 1;
+	iterator PrecIt = _Root;
+	ListNode<T>* aux = _Root;
 
-	_Data.erase(_Data.begin() + fisrtIndex, _Data.begin() + lastIndex);
-	_Size-= lastIndex - fisrtIndex;
-	if (fisrtIndex == 0) 
+	// maintain list order
+	while (iterator(aux->next) != first)
 	{
-		_Root= &_Data[lastIndex];
-		PrecIt = _Root;
+		PrecIt++;
+		aux = aux->next;
 	}
-	else 
+	ListNode<T>* lastNode = aux->next;
+	ListNode<T>* deleteNode = lastNode;
+
+	while (iterator(lastNode) != last)
 	{
-		PrecIt = &_Data[fisrtIndex - 1];
-		if (lastIndex == _Size - 1)
-		{
-			_Data[fisrtIndex - 1].next = nullptr;
-		}
-		else 
-		{
-			_Data[fisrtIndex - 1].next = &_Data[fisrtIndex];
-		}
+		deleteNode = lastNode;
+		lastNode = lastNode->next;
+		deleteNode->value.~value_type();
+		deleteNode->next=nullptr;
 
+		_Size--;
 	}
-
-	return PrecIt;
+	aux->next = lastNode->next;
+	lastNode->value.~value_type();
+	_Size--;
+	return ++PrecIt;
 }
 
 
 template<typename T>
 void SListArray<T>::resize(size_t count, const value_type& value)
 {
-	_Data.resize(count, { value, _Root });
+	_Data.resize(count, { value, nullptr });
 	_Size = count;
 	_Root = &_Data[0];
 	for (size_t i = 0; i < _Size-1; i++)
@@ -390,7 +521,7 @@ void SListArray<T>::resize(size_t count, const value_type& value)
 template<typename T>
 void SListArray<T>::resize(size_t count)
 {
-	resize(count, 0);
+	resize(count, T{});
 }
 
 
@@ -407,9 +538,9 @@ template<typename T>
 typename SListArray<T>::iterator SListArray<T>::begin()
 {
 	if (_Size > 0)
-		return iterator(&_Data[0]);
-		
-	return nullptr;
+		return iterator(_Root);
+
+	return iterator(nullptr);
 
 };
 
@@ -417,49 +548,52 @@ typename SListArray<T>::iterator SListArray<T>::begin()
 template<typename T>
 typename SListArray<T>::iterator SListArray<T>::end()
 {
-	return iterator(&_Data[_Size - 1] + 1);
+	return iterator(nullptr);
 };
 
 
 template<typename T>
 typename SListArray<T>::const_iterator SListArray<T>::cbegin() const
 {
-	return const_iterator(&_Data[0]);
+	if (_Size > 0)
+		return const_iterator(_Root);
+
+	return const_iterator(nullptr);
 };
 
 
 template<typename T>
 typename SListArray<T>::const_iterator SListArray<T>::cend() const
 {
-	return const_iterator(&_Data[_Size - 1] + 1);
+	return const_iterator(nullptr);
 };
 
 
 template<typename T>
 typename SListArray<T>::reverse_iterator SListArray<T>::rbegin()
 {
-	return reverse_iterator(&_Data[0]);
+	return reverse_iterator(_Root);
 };
 
 
 template<typename T>
 typename SListArray<T>::reverse_iterator SListArray<T>::rend()
 {
-	return reverse_iterator(&_Data[_Size - 1] + 1);
+	return reverse_iterator(nullptr);
 };
 
 
 template<typename T>
 typename SListArray<T>::const_reverse_iterator SListArray<T>::crbegin() const
 {
-	return const_reverse_iterator(&_Data[0]);
+	return const_reverse_iterator(_Root);
 };
 
 
 template<typename T>
 typename SListArray<T>::const_reverse_iterator SListArray<T>::crend() const
 {
-	return const_reverse_iterator(&_Data[_Size - 1] + 1);
+	return const_reverse_iterator(nullptr);
 };
 
 
