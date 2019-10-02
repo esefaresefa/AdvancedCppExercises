@@ -50,3 +50,10 @@ void Chunk::Deallocate(void* p, size_t blockSize)
 
 	++_BlocksAvailable;
 }
+
+void Chunk::Release()
+{
+	assert(_Data != nullptr);
+
+	::operator delete (_Data);
+}
