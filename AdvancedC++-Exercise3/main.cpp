@@ -4,7 +4,11 @@
 
 class Test
 {
-	int a, b, c;
+public:
+	Test() { a = 555; b = 666; c = 777; }
+	void print() { std::cout << a << ", " << b << ", " << c << std::endl; }
+private:
+int a, b, c;
 };
 
 
@@ -30,12 +34,12 @@ int main()
 	int* ccc = new int(777);
 	delete aaa;
 	// bbb leaked!
-	// delete bbb;
 	delete ccc;
 	*/
 
 	MemoryManager::DumpMemory();
 
+	// delete bbb;
 	delete[] cc;
 	delete c;
 	return 0;
