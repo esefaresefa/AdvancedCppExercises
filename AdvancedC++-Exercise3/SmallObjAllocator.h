@@ -10,6 +10,8 @@ class SmallObjAllocator
 public:
 
 	SmallObjAllocator(std::size_t pageSize, std::size_t maxObjectSize, std::size_t objectAlignSize);
+
+	~SmallObjAllocator();
 	
 	void* Allocate(std::size_t numBytes);
 	
@@ -17,7 +19,7 @@ public:
 
 private:
 
-	std::vector<FixedAllocator> _Pool;
+	FixedAllocator* _Pool;
 	
 	FixedAllocator* _LastAlloc;
 	

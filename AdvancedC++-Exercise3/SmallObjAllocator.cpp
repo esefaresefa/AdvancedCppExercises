@@ -24,14 +24,14 @@ _ObjectAlignSize(objectAlignSize)
 
  // SmallObjAllocator::~SmallObjAllocator --------------------------------------
 
- SmallObjAllocator::~SmallObjAllocator(void)
+ SmallObjAllocator::~SmallObjAllocator()
 {
 		     delete[] _Pool;
 }
 
  // SmallObjAllocator::TrimExcessMemory ----------------------------------------
 
- bool SmallObjAllocator::TrimExcessMemory(void)
+ bool SmallObjAllocator::TrimExcessMemory()
  {
 	     bool found = false;
 	     const std::size_t allocCount = GetOffset(_MaxSmallObjectSize, _ObjectAlignSize);
@@ -86,33 +86,7 @@ _ObjectAlignSize(objectAlignSize)
 	     FixedAllocator & allocator = _Pool[index];
 	     //assert(allocator.BlockSize() >= numBytes);
 	     //assert(allocator.BlockSize() < numBytes + GetAlignment());
-	     const bool found = allocator.Deallocate(p, NULL);
-	     (void)found;
-	     assert(found);
-	 }
-
- // SmallObjAllocator::Deallocate ----------------------------------------------
-
- void SmallObjAllocator::Deallocate(void * p)
- {
-	     if (NULL == p) return;
-	     //assert(NULL != _Pool);
-	     FixedAllocator * pAllocator = NULL;
-	     const std::size_t allocCount = GetOffset(_MaxSmallObjectSize, _ObjectAlignSize);
-	     Chunk * chunk = NULL;
-	
-		     for (std::size_t ii = 0; ii < allocCount; ++ii)
-		     {
-		         chunk = _Pool[ii].HasBlock(p);
-		         if (NULL != chunk)
-			         {
-			             pAllocator = &_Pool[ii];
-			             break;
-			         }
-		     }
-	
-		     assert(NULL != chunk);
-	     const bool found = pAllocator->Deallocate(p, chunk);
+	     const bool found = allocator.Deallocate(p);
 	     (void)found;
 	     assert(found);
 	 }

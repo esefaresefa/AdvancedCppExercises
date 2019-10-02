@@ -10,6 +10,7 @@ public:
 	FixedAllocator();
 
 	FixedAllocator(const FixedAllocator& other);
+
 	FixedAllocator& operator=(const FixedAllocator&);
 
 	~FixedAllocator();
