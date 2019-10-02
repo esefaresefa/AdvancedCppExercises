@@ -39,6 +39,8 @@ int main()
 
 	MemoryManager::DumpMemory();
 
+	// std::vector<int, MMAllocator<int>> a = {1, 2, 3, 4, 5};
+
 	// delete bbb;
 	delete[] cc;
 	delete c;
