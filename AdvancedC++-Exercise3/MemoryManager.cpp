@@ -98,8 +98,8 @@ void MemoryManager::DumpMemory()
 				<< ", Freed: " << (p->Freed == false ? "false" : "true")
 				<< ", Allocation type: " << p->AllocationType
 				<< ", Allocation size: " << p->Size
-				<< ", File: " << p->File
-				<< ", Line: " << p->Line
+				// << ", File: " << p->File
+				// << ", Line: " << p->Line
 				<< std::endl;
 
 		p = p->Next;
