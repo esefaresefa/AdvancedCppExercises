@@ -120,6 +120,8 @@
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="FixedAllocator.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MemoryManager.cpp" />
+    <ClCompile Include="MMConfig.cpp" />
     <ClCompile Include="SimpleTracker.cpp" />
     <ClCompile Include="SmallObjAllocator.cpp" />
     <ClCompile Include="SmallObject.cpp" />
