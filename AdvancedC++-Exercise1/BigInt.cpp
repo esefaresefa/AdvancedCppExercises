@@ -258,7 +258,7 @@ BigInt& BigInt::operator-= (const BigInt& other)
 	{
 		if (Abs() >= other.Abs())
 		{
-			unsigned long long tmp = 0;
+			uint64_t tmp = 0;
 			for (int i = 0, carry = 0; i < (int)other._data.size() || carry; ++i)
 			{
 				if (i < (int)other._data.size() && _data[i]>= other._data[i]+carry)
@@ -324,7 +324,7 @@ BigInt& BigInt::operator*= (const BigInt & other)
 	for (int i = 0; i < first._data.size(); i++)
 	{
 		for (int j = 0; j < other._data.size(); j++) {
-			unsigned long long int aux = static_cast<unsigned long long int>(first._data[i]) * static_cast<unsigned long long int>(other._data[j]);
+			uint64_t aux = static_cast<uint64_t>(first._data[i]) * static_cast<uint64_t>(other._data[j]);
 			aux += _data[i + j];
 			if (aux <= MaxBlockValue())
 			{
