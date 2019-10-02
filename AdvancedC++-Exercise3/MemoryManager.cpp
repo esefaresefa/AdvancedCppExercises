@@ -2,6 +2,7 @@
 #include "AllocDesc.h"
 #include <stdio.h>
 #include <string.h>
+#include <iostream>
 
 
 AllocDesc* MemoryManager::FreeList;
@@ -30,7 +31,7 @@ void* MemoryManager::MM_MALLOC(tU32 size, tU32 alloctype, const tChar* desc, con
 	allocDesc->Description = desc;
 	allocDesc->File = file;
 	allocDesc->Line = line;
-	allocDesc->Freed = false;
+	allocDesc->Freed = !allocMem;
 	allocDesc->Next = nullptr;
 
 	TraceAlloc(allocDesc);
@@ -42,20 +43,23 @@ void* MemoryManager::MM_MALLOC(tU32 size, tU32 alloctype, const tChar* desc, con
 void MemoryManager::MM_FREE(void* ptr, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
 {
 	AllocDesc* allocDesc = GetDesc(ptr);
-	size_t size = allocDesc->Size;
-
-	if (MAX_OBJECT_SIZE >= size)
+	if(allocDesc && !allocDesc->Freed)
 	{
-		// use Simple Tracker Allocator
-		SmallObjectAllocator::GetInstance()->Deallocate(ptr);
-	}
-	else
-	{
-		// use Small Object Allocator
-		SimpleTrackerAllocator::GetInstance()->Deallocate(ptr);
-	}
+		size_t size = allocDesc->Size;
 
-	TraceDealloc(allocDesc);
+		if (MAX_OBJECT_SIZE >= size)
+		{
+			// use Simple Tracker Allocator
+			SmallObjectAllocator::GetInstance()->Deallocate(ptr);
+		}
+		else
+		{
+			// use Small Object Allocator
+			SimpleTrackerAllocator::GetInstance()->Deallocate(ptr);
+		}
+
+		TraceDealloc(allocDesc);
+	}
 };
 
 
@@ -83,14 +87,41 @@ void MemoryManager::MM_DELETE_A(void* ptr, tU32 alloctype, const tChar* desc, co
 }
 
 
-void MemoryManager::TraceAlloc(AllocDesc* desc)
+void MemoryManager::DumpMemory()
 {
 	AllocDesc* p = FreeList;
+
 	while (p != nullptr)
 	{
+		std::cout	
+				<< "Memory address: " << p->Ptr
+				<< ", Freed: " << (p->Freed == false ? "false" : "true")
+				<< ", Allocation type: " << p->AllocationType
+				<< ", Allocation size: " << p->Size
+				// << ", File: " << p->File
+				// << ", Line: " << p->Line
+				<< std::endl;
+
 		p = p->Next;
 	}
-	p = desc;
+}
+
+
+void MemoryManager::TraceAlloc(AllocDesc* desc)
+{
+	if (!FreeList)
+	{
+		FreeList = desc;
+	}
+	else 
+	{
+		AllocDesc* p = FreeList;
+		while (p->Next != nullptr)
+		{
+			p = p->Next;
+		}
+		p->Next = desc;
+	}
 }
 
 
@@ -114,12 +145,12 @@ AllocDesc* MemoryManager::GetDesc(void* ptr)
 {
 	AllocDesc* p = FreeList;
 
-	while (p->Ptr != ptr)
+	while (p)
 	{
+		if (p->Ptr == ptr)
+			break;
 		p = p->Next;
 	}
 
 	return p;
 }
-
-

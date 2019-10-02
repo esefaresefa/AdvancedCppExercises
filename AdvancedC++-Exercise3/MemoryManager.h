@@ -24,6 +24,8 @@ public:
 
 	static void MM_DELETE_A(void* ptr, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line);
 
+	static void DumpMemory();
+
 protected:
 
 	static void TraceAlloc(AllocDesc* desc);
@@ -43,6 +45,13 @@ template<typename T>
 class MMAllocator
 {
 public:
+	typedef size_t    size_type;
+	typedef ptrdiff_t difference_type;
+	typedef T*        pointer;
+	typedef const T*  const_pointer;
+	typedef T&        reference;
+	typedef const T&  const_reference;
+	typedef T         value_type;
 
 	MMAllocator() {};
 

@@ -9,11 +9,11 @@ class SmallObjAllocator
 {
 public:
 
-	SmallObjAllocator(size_t chunkSize = CHUNK_SIZE, size_t maxObjectSize = MAX_OBJECT_SIZE) {};
+	SmallObjAllocator(std::size_t pageSize, std::size_t maxObjectSize, std::size_t objectAlignSize);
 	
-	void* Allocate(size_t numBytes) { return nullptr; };
+	void* Allocate(std::size_t numBytes);
 	
-	void Deallocate(void* p, size_t size = 0) {};
+	void Deallocate(void* p, size_t size = 0);
 
 private:
 
@@ -22,4 +22,10 @@ private:
 	FixedAllocator* _LastAlloc;
 	
 	FixedAllocator* _LastDealloc;
+
+	bool TrimExcessMemory(void);
+
+	size_t _MaxSmallObjectSize;
+
+	size_t _ObjectAlignSize;
 };
