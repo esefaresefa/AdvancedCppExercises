@@ -52,7 +52,7 @@ _ObjectAlignSize(objectAlignSize)
 
  // SmallObjAllocator::Allocate ------------------------------------------------
 
- void * SmallObjAllocator::Allocate(std::size_t numBytes, bool doThrow)
+ void * SmallObjAllocator::Allocate(std::size_t numBytes)
  {	
 		     //assert(NULL != _Pool);
 	     if (0 == numBytes) numBytes = 1;
@@ -68,11 +68,7 @@ _ObjectAlignSize(objectAlignSize)
 	
 		     if ((NULL == place) && TrimExcessMemory())
 		         place = allocator.Allocate();
-	
-		     if ((NULL == place) && doThrow)
-		     {
-			      throw std::bad_alloc();
-			 }
+
 	     return place;
 	 }
 
