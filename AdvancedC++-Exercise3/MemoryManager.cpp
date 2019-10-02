@@ -13,7 +13,7 @@ void* MemoryManager::MM_MALLOC(tU32 size, tU32 alloctype, const tChar* desc, con
 
 	AllocDesc* allocDesc = (AllocDesc*)malloc(sizeof(AllocDesc));
 
-	if (MAX_OBJECT_SIZE >= size)
+	if (MAX_OBJECT_SIZE >= size && MIN_OBJECT_SIZE <= size)
 	{
 		// use Small Object Allocator
 		allocMem = SmallObjectAllocator::GetInstance()->Allocate(size);
@@ -50,12 +50,12 @@ void MemoryManager::MM_FREE(void* ptr, tU32 alloctype, const tChar* desc, const 
 
 		if (allocType == 0)
 		{
-			// use Simple Tracker Allocator
+			// use Small Object Allocator
 			SmallObjectAllocator::GetInstance()->Deallocate(ptr, size);
 		}
 		else if(allocType == 1)
 		{
-			// use Small Object Allocator
+			// use Simple Tracker Allocator
 			SimpleTrackerAllocator::GetInstance()->Deallocate(ptr);
 		}
 
@@ -88,7 +88,7 @@ void MemoryManager::MM_DELETE_A(void* ptr, tU32 alloctype, const tChar* desc, co
 }
 
 
-void MemoryManager::DumpMemory()
+void MemoryManager::PrintMemory()
 {
 	AllocDesc* p = FreeList;
 
@@ -134,7 +134,6 @@ void MemoryManager::TraceDealloc(AllocDesc* desc)
 	{
 		p = p->Next;
 	}
-
 	if (p) 
 	{
 		p->Freed = true;

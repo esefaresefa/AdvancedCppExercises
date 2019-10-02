@@ -11,10 +11,6 @@ public:
 
 	void Deallocate(void *ptr);
 
-	void* operator new(size_t size);
-
-	void operator delete(void* p);
-
 private:
 
 	unsigned int _ByteCount = 0;

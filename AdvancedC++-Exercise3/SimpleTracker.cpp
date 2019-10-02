@@ -49,15 +49,3 @@ void SimpleTracker::TrackDeallocatedBytes(unsigned int byteCount)
 {
 	_ByteCount -= byteCount;
 };
-
-
-void* SimpleTracker::operator new(size_t size)
-{
-	return SimpleTrackerAllocator::GetInstance()->Allocate(size);
-}
-
-
-void SimpleTracker::operator delete(void* p)
-{
-	SimpleTrackerAllocator::GetInstance()->Deallocate(p);
-}

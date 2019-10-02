@@ -36,8 +36,7 @@ int main()
 	delete ccc;
 
 	// std::vector<int, MMAllocator<int>> v = {1, 2, 3, 4, 5};
-
-	MemoryManager::DumpMemory();
+	MemoryManager::PrintMemory();
 
 	return 0;
 }

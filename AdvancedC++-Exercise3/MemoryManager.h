@@ -24,7 +24,7 @@ public:
 
 	static void MM_DELETE_A(void* ptr, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line);
 
-	static void DumpMemory();
+	static void PrintMemory();
 
 protected:
 
@@ -41,6 +41,7 @@ private:
 
 
 /* ////////////////////////// ALLOCATOR ////////////////////////// */
+/*
 template<typename T>
 class MMAllocator
 {
@@ -84,3 +85,4 @@ private:
 
 template<typename T>
 MemoryManager MMAllocator<T>::_MMObject;
+*/
