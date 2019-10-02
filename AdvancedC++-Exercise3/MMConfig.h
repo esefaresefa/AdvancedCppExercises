@@ -11,3 +11,6 @@ typedef uint64_t tU64;
 const size_t CHUNK_SIZE = 64;
 const size_t MAX_OBJECT_SIZE = 8;
 
+const unsigned char MinObjectsPerChunk_ = 8;
+const unsigned char MaxObjectsPerChunk_ = UCHAR_MAX;
+

@@ -9,7 +9,7 @@ class SmallObjAllocator
 {
 public:
 
-	SmallObjAllocator(std::size_t pageSize, std::size_t maxObjectSize, std::size_t objectAlignSize);
+	SmallObjAllocator(std::size_t pageSize= CHUNK_SIZE, std::size_t maxObjectSize= MAX_OBJECT_SIZE);
 
 	~SmallObjAllocator();
 	
@@ -19,15 +19,7 @@ public:
 
 private:
 
-	FixedAllocator* _Pool;
-	
-	FixedAllocator* _LastAlloc;
-	
-	FixedAllocator* _LastDealloc;
-
-	bool TrimExcessMemory(void);
+	std::vector<FixedAllocator> _Pool;
 
 	size_t _MaxSmallObjectSize;
-
-	size_t _ObjectAlignSize;
 };

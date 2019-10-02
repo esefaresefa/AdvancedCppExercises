@@ -21,12 +21,6 @@ public:
 
 	bool Deallocate(void* ChunkToDeallocate);
 
-	const Chunk* HasBlock(void* p);
-
-	bool TrimEmptyChunk(void);
-
-	bool TrimChunkList(void);
-
 private:
 
 	size_t _BlockSize;
@@ -42,11 +36,4 @@ private:
 	Chunk* _DeallocChunk;
 
 	Chunk* _EmptyChunk;
-
-	static unsigned char MinObjectsPerChunk_;
-		
-	static unsigned char MaxObjectsPerChunk_;
 };
-
-unsigned char FixedAllocator::MinObjectsPerChunk_ = 8;
-unsigned char FixedAllocator::MaxObjectsPerChunk_ = UCHAR_MAX;

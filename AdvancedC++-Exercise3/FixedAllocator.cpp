@@ -1,5 +1,7 @@
 #include "FixedAllocator.h"
 #include <cassert>
+#include "MMConfig.h"
+
 
 
 FixedAllocator::FixedAllocator()
@@ -187,78 +189,6 @@ bool FixedAllocator::Deallocate(void* BlockToDeallocate)
 		_EmptyChunk = _DeallocChunk;
 	}
 		
-	return true;
-}
-
-
-const Chunk* FixedAllocator::HasBlock(void* p)
-{
-	const size_t chunkLength = _NumBlocks * _BlockSize;
-
-	Chunks::iterator it = _Chunks.begin();
-	for (; it != _Chunks.end(); ++it)
-	{
-		const Chunk& chunk = *it;
-		if (chunk.HasBlock(p, chunkLength))
-			return &chunk;
-	}
-
-	return nullptr;
-}
-
-bool FixedAllocator::TrimEmptyChunk(void)
-{
-	if (_EmptyChunk == nullptr) 
-		return false;
-	
-	Chunk* lastChunk = &_Chunks.back();
-
-	if (lastChunk != _EmptyChunk)
-		std::swap(*_EmptyChunk, *lastChunk);
-
-	assert(lastChunk->HasAvailable(_NumBlocks));
-
-	lastChunk->Release();
-	_Chunks.pop_back();
-	
-	if (_Chunks.empty())
-	{
-		_AllocChunk = nullptr;
-		_DeallocChunk = nullptr;
-	}
-	else
-	{
-		if (_DeallocChunk == _EmptyChunk)
-			{
-			_DeallocChunk = &_Chunks.front();
-				assert(_DeallocChunk->_BlocksAvailable < _NumBlocks);
-			}
-		if (_AllocChunk == _EmptyChunk)
-			{
-			_AllocChunk = &_Chunks.back();
-				assert(_AllocChunk->_BlocksAvailable < _NumBlocks);
-			}
-	}
-	
-	_EmptyChunk = nullptr;
-	
-	return true;
-}
-
-bool FixedAllocator::TrimChunkList(void)
-{
-	if (_Chunks.empty())
-	{
-		assert(_AllocChunk == nullptr);
-		assert(_DeallocChunk == nullptr);
-	}
-	
-	if (_Chunks.size() == _Chunks.capacity())
-		return false;
-
-	// Use the "make-a-temp-and-swap" trick to remove excess capacity.
-	Chunks(_Chunks).swap(_Chunks);
-	
 	return true;
 }
 
