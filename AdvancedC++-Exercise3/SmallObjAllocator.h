@@ -13,7 +13,7 @@ public:
 	
 	void* Allocate(size_t numBytes) { return nullptr; };
 	
-	void Deallocate(void* p, size_t size) {};
+	void Deallocate(void* p, size_t size = 0) {};
 
 private:
 
