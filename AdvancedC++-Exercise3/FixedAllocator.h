@@ -27,7 +27,7 @@ private:
 
 	unsigned char _NumBlocks;
 
-	typedef std::vector<Chunk> Chunks;
+	typedef std::vector<Chunk, std::allocator<Chunk>> Chunks;
 
 	Chunks _Chunks;
 
