@@ -7,8 +7,6 @@
 
 .vs/AdvancedC\+\+-Exercises/v15/.suo
 
-.vs/AdvancedC++-Exercises/v15/.suo
-
 AdvancedC\+\+-Exercise1/x64/Debug/Advanced.8059C922.tlog/AdvancedC\+\+-Exercise1.lastbuildstate
 
 AdvancedC\+\+-Exercise1/x64/Debug/Advanced.8059C922.tlog/CL.command.1.tlog
@@ -53,8 +51,6 @@ x64/Debug/AdvancedC\+\+-Exercise1.pdb
 
 *.obj
 
-*.suo
-
 AdvancedC\+\+Exercise2/x64/Debug/
 
 x64/Debug/
@@ -64,5 +60,3 @@ AdvancedC++-Exercise2/x64/
 AdvancedC++-Exercise3/x64
 
 AdvancedC++-Exercise1.sln
-
-/.vs/AdvancedC++-Exercises/v15/.suo
