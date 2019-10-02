@@ -19,10 +19,10 @@ public:
 	typedef T& reference_type;
 	typedef const T& const_reference_type;
 
-	typedef SListArrayIterator<ListNode<T>> iterator;
-	typedef SListArrayIterator<const ListNode<T>> const_iterator;
-	typedef std::reverse_iterator<SListArrayIterator<T>> reverse_iterator;
-	typedef std::reverse_iterator<const SListArrayIterator<T>> const_reverse_iterator;
+	typedef SListIterator<ListNode<T>> iterator;
+	typedef SListIterator<const ListNode<T>> const_iterator;
+	typedef std::reverse_iterator<SListIterator<T>> reverse_iterator;
+	typedef std::reverse_iterator<const SListIterator<T>> const_reverse_iterator;
 
 	// Constructors
 

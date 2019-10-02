@@ -514,7 +514,7 @@ void SList<T>::resize(size_t count, const value_type& value)
 template<typename T>
 void SList<T>::resize(size_t count)
 {
-	resize(count, 0);
+	resize(count, T{});
 }
 
 
