@@ -28,20 +28,20 @@ int main()
 	delete[] bb;
 	// cc leaked!
 
-	/*
+	
 	int* aaa = new int(555);
 	int* bbb = new int(666);
 	int* ccc = new int(777);
 	delete aaa;
 	// bbb leaked!
 	delete ccc;
-	*/
+	
 
 	MemoryManager::DumpMemory();
 
 	// std::vector<int, MMAllocator<int>> a = {1, 2, 3, 4, 5};
 
-	// delete bbb;
+	delete bbb;
 	delete[] cc;
 	delete c;
 	return 0;
