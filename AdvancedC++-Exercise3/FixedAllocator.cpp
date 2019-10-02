@@ -39,3 +39,60 @@ void* FixedAllocator::Allocate()
 }
 
 
+void FixedAllocator::Deallocate(void* BlockToDeallocate)
+{
+	if (_DeallocChunk != BlockToDeallocate)
+	{
+		const std::size_t chunkLength = _NumBlocks * _BlockSize;
+		Chunk * LowerPtr = _DeallocChunk;
+		Chunk * UpperPtr = _DeallocChunk + 1;
+		const Chunk * loBound = &_Chunks.front();
+		const Chunk * hiBound = &_Chunks.back() + 1;
+		
+		// Special case: deallocChunk_ is the last in the array
+		if (UpperPtr == hiBound)
+			UpperPtr = nullptr;
+		
+		while(true)
+		{
+			if (LowerPtr)
+				{
+					if (LowerPtr == BlockToDeallocate)
+					{
+						_DeallocChunk = LowerPtr;
+						break;
+					}
+					if (LowerPtr->HasBlock(BlockToDeallocate, chunkLength))
+						{
+							LowerPtr = nullptr;
+							if (UpperPtr == nullptr) break;
+						}
+					else --LowerPtr;
+				}
+			
+				if (UpperPtr)
+				{
+					if (UpperPtr->HasBlock(BlockToDeallocate, chunkLength))
+					{
+						_DeallocChunk = UpperPtr;
+						break;
+					}
+					if (++UpperPtr == hiBound)
+						{
+							UpperPtr = nullptr;
+							if (LowerPtr == nullptr) break;
+						}
+				}
+		}
+			
+		// if no ptr found, exception?
+		if (!UpperPtr && !LowerPtr)
+			return;
+
+
+	}
+		
+	_DeallocChunk->Deallocate(BlockToDeallocate, _BlockSize);
+}
+
+

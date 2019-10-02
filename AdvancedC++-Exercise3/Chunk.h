@@ -14,4 +14,10 @@ struct Chunk
 	unsigned char _FirstAvailableBlock;
 
 	unsigned char _BlocksAvailable;
+
+	inline bool HasBlock(void* p, std::size_t chunkLength) const
+	{
+		unsigned char * pc = static_cast<unsigned char *>(p);
+		return (_Data <= pc) && (pc < _Data + chunkLength);
+	}
 };
