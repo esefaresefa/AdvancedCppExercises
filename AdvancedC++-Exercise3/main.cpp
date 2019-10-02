@@ -19,30 +19,25 @@ int main()
 	Test* c = new Test();
 	delete b;
 	delete a;
-	// c leaked!
-
+	delete c;
+	
 	int* aa = new int[5];
 	Test* bb = new Test[5];
 	int* cc = new int[5];
 	delete[] aa;
 	delete[] bb;
-	// cc leaked!
+	delete[] cc;
 
-	
 	int* aaa = new int(555);
 	int* bbb = new int(666);
 	int* ccc = new int(777);
 	delete aaa;
-	// bbb leaked!
+	delete bbb;
 	delete ccc;
 	
+	// std::vector<int, MMAllocator<int>> v = {1, 2, 3, 4, 5};
 
 	MemoryManager::DumpMemory();
 
-	// std::vector<int, MMAllocator<int>> a = {1, 2, 3, 4, 5};
-
-	delete bbb;
-	delete[] cc;
-	delete c;
 	return 0;
 }
