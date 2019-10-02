@@ -47,6 +47,7 @@ void MemoryManager::MM_FREE(void* ptr, tU32 alloctype, const tChar* desc, const 
 	{
 		size_t size = allocDesc->Size;
 
+		// avvolte sbaglia allocatore TODO
 		if (MAX_OBJECT_SIZE >= size)
 		{
 			// use Simple Tracker Allocator
