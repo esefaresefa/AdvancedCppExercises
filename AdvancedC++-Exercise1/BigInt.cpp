@@ -361,15 +361,8 @@ BigInt& BigInt::operator*=(const long long& value)
 // Division
 std::pair<BigInt, BigInt> BigInt::DivMod(const BigInt Dividend, const BigInt Divisor)
 {
-	// division by zero //////////////////////////////////////	CONTROLLA
 	if (Dividend == 0 || Divisor == 0)
 		return std::pair<BigInt, BigInt>(Dividend, Divisor);
-	//if (Divisor == 0)
-	//{
-	//	return std::pair<BigInt, BigInt>(Dividend, Divisor);
-
-	//}
-
 
 	BigInt dividend = Dividend.Abs();
 	BigInt divisor = Divisor.Abs();
@@ -679,7 +672,6 @@ BigInt& BigInt::operator>>= (int steps)
 	operator/= (pow(2, steps));
 	return *this;
 };
-
 
 
 BigInt& BigInt::operator&= (const BigInt & other)

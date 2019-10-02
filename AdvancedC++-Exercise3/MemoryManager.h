@@ -1,123 +1,77 @@
 #pragma once
 
+#include "MMConfig.h"
+#include "AllocDesc.h"
 #include "SmallObject.h"
 #include "SimpleTracker.h"
-#include <iostream>
+#include <map>
 
 
 
-#ifdef USE_MM_ALLOC
-
-// Defining types
-typedef char tChar;
-typedef uint32_t tU32;
-
-
-// Defining function helpers
-#define MMNEW(size, type, desc)			MM_NEW(size, type, desc, __FILE__, __LINE__)
-#define MMNEWA(size, type, desc)		MM_NEW_A(size, type, desc, __FILE__, __LINE__)
-#define MMDELETE(ptr, type, desc)		MM_DELETE(ptr, type, desc, __FILE__, __LINE__)
-#define MMDELETEA(ptr, type, desc)		MM_DELETE_A(ptr, type, desc, __FILE__, __LINE__)
-#define MMALLOC(ptr, size, type, desc)	MM_MALLOC(ptr, size, type, desc, __FILE__, __LINE__)
-#define MMFREE(ptr, type, desc)			MM_FREE(ptr, type, desc, __FILE__, __LINE__)
-
-
-static size_t count = 0;
-void TraceAlloc(tU32 size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
+class MemoryManager
 {
-	count += size;
-}
+public:
 
+	static void* MM_MALLOC(tU32 size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line);
 
-void TraceDealloc(tU32 size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
-{
-	count -= size;
-}
+	static void MM_FREE(void* ptr, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line);
 
+	static void* MM_NEW(size_t size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line);
 
-void* MM_MALLOC(tU32 size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
-{
-	void* allocMem;
+	static void* MM_NEW_A(size_t size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line);
 
-	if (MAX_OBJECT_SIZE >= size)
-	{
-		// use Simple Tracker Allocator
-		allocMem = SmallObjectAllocator::GetInstance()->Allocate(size);
-	}
-	else
-	{
-		// use Small Object Allocator
-		allocMem = SimpleTrackerAllocator::GetInstance()->Allocate(size);
-	}
+	static void MM_DELETE(void* ptr, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line);
 
-	TraceAlloc(size, alloctype, desc, file, line); // ?
+	static void MM_DELETE_A(void* ptr, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line);
 
-	return allocMem;
+protected:
+
+	static void TraceAlloc(AllocDesc* desc);
+
+	static void TraceDealloc(AllocDesc* desc);
+
+	static AllocDesc* GetDesc(void* ptr);
+
+private:
+
+	static AllocDesc* FreeList;
 };
 
 
-void MM_FREE(void* ptr, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
+/* ////////////////////////// ALLOCATOR ////////////////////////// */
+template<typename T>
+class MMAllocator
 {
-	size_t size = 4; // TODO geto from map indirizzo-size / indirizzo-desc ? / indirizzo-line ?
+public:
 
-	if (MAX_OBJECT_SIZE >= size)
+	MMAllocator() {};
+
+	T* allocate(size_t cnt)
 	{
-		// use Simple Tracker Allocator
-		SmallObjectAllocator::GetInstance()->Deallocate(ptr);
-	}
-	else
-	{
-		// use Small Object Allocator
-		SimpleTrackerAllocator::GetInstance()->Deallocate(ptr);
+		return reinterpret_cast<T*>(_MMObject.allocate(sizeof(T) * cnt));
 	}
 
-	TraceDealloc(size, alloctype, desc, file, line);
+	void deallocate(T* p, size_t cnt)
+	{
+		_MMObject.deallocate(p, sizeof(T) * cnt);
+	}
+
+	void construct(T* p, T const& val)
+	{
+		::new((void *)p) T(val);
+	}
+
+	void destroy(T* p)
+	{
+		return ((T*)p)->~T();
+	}
+
+	using value_type = T;
+
+private:
+	static MemoryManager _MMObject;
 };
 
 
-void* MM_NEW(size_t size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
-{
-	return MM_MALLOC(size, alloctype, desc, file, line);
-}
-
-
-void* MM_NEW_A(size_t size, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
-{
-	return MM_MALLOC(size, alloctype, desc, file, line);
-}
-
-
-void MM_DELETE(void* ptr, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
-{
-	MM_FREE(ptr, 0, desc, file, line);
-}
-
-
-void MM_DELETE_A(void* ptr, tU32 alloctype, const tChar* desc, const tChar* file, tU32 line)
-{
-	MM_FREE(ptr, 0, desc, file, line);
-}
-
-
-void* operator new(size_t size)
-{
-	return MMNEW(size, 0, "");
-}
-
-void* operator new[](size_t size)
-{
-	return MMNEWA(size, 0, "");
-}
-
-void operator delete(void* ptr)
-{
-	MMDELETE(ptr, 0, "");
-}
-
-void operator delete[](void* ptr)
-{
-	MMDELETEA(ptr, 0, ""); 
-}
-
-
-#endif // USE_MM_ALLOC
+template<typename T>
+MemoryManager MMAllocator<T>::_MMObject;

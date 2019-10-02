@@ -1,7 +1,11 @@
 #pragma once
 
-// Using custom memory manager MM
-#define USE_MM_ALLOC
+#include <iostream>
+
+// Defining types
+typedef char tChar;
+typedef uint32_t tU32;
+typedef uint64_t tU64;
 
 // Small Object Allocator configuration
 const size_t CHUNK_SIZE = 64;

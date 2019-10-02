@@ -33,6 +33,12 @@
     <ClCompile Include="SimpleTracker.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="MMConfig.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryManager.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chunk.h">
@@ -50,13 +56,16 @@
     <ClInclude Include="SmallObject.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="Config.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="MemoryManager.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="SimpleTracker.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MMConfig.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="AllocDesc.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
