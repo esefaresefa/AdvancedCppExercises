@@ -2,11 +2,10 @@
 
 // SmallObjAllocator::SmallObjAllocator ---------------------------------------
 
- SmallObjAllocator::SmallObjAllocator(std::size_t pageSize, std::size_t maxObjectSize) :
-_Pool(maxObjectSize),
+ SmallObjAllocator::SmallObjAllocator(size_t pageSize, size_t maxObjectSize) :
 _MaxSmallObjectSize(maxObjectSize)
  {
-	     for (std::size_t i = 0; i < maxObjectSize; ++i)
+	     for (size_t i = 0; i < maxObjectSize; ++i)
 			 _Pool[i].Initialize(i+1, pageSize);
  }
 
@@ -14,12 +13,12 @@ _MaxSmallObjectSize(maxObjectSize)
 
  SmallObjAllocator::~SmallObjAllocator()
  {
-		     _Pool.clear();
+		     // _Pool.clear();
  }
 
  // SmallObjAllocator::Allocate ------------------------------------------------
 
- void * SmallObjAllocator::Allocate(std::size_t numBytes)
+ void * SmallObjAllocator::Allocate(size_t numBytes)
  {
 	 FixedAllocator& alloc = _Pool[numBytes - 1];
 	 return alloc.Allocate();
@@ -27,7 +26,7 @@ _MaxSmallObjectSize(maxObjectSize)
 
  // SmallObjAllocator::Deallocate ----------------------------------------------
 
- void SmallObjAllocator::Deallocate(void * p, std::size_t numBytes)
+ void SmallObjAllocator::Deallocate(void * p, size_t numBytes)
  {
 	 FixedAllocator& alloc = _Pool[numBytes - 1];
 	 alloc.Deallocate(p);

@@ -7,7 +7,7 @@
 FixedAllocator::FixedAllocator()
 	: _BlockSize(0)
 	, _NumBlocks(0)
-	, _Chunks(0)
+	, _Chunks()
 	, _AllocChunk(NULL)
 	, _DeallocChunk(NULL)
 	, _EmptyChunk(NULL)

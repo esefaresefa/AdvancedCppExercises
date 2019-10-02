@@ -34,10 +34,9 @@ int main()
 	delete aaa;
 	delete bbb;
 	delete ccc;
-	
+
 	// std::vector<int, MMAllocator<int>> v = {1, 2, 3, 4, 5};
 
 	MemoryManager::DumpMemory();
-
 	return 0;
 }
